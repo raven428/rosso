@@ -1,6 +1,6 @@
 CC = x86_64-w64-mingw32-gcc -fdiagnostics-color
 LD = x86_64-w64-mingw32-gcc
-LDFLAGS = -liconv
+LDFLAGS = -liconv -static
 .RECIPEPREFIX +=
 
 ifdef DEBUG
