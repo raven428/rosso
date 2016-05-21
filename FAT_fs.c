@@ -26,80 +26,6 @@
 #include <sys/mount.h>
 #endif
 
-int32_t check_mounted(char *filename) {
-/*
-  check if filesystem is already mounted
-*/
-
-#if defined(__LINUX__)
-  FILE *fd;
-  struct mntent *mnt;
-  int32_t ret = 0;
-  char rp_filename[MAXPATHLEN+1], rp_mnt_fsname[MAXPATHLEN+1];
-  
-  if ((fd = setmntent("/etc/mtab", "r")) == NULL) {
-    stderror();
-    return -1;
-  }
-
-  // get real path
-  if (realpath(filename, rp_filename) == NULL) {
-    myerror("Unable to get realpath of filename!");
-    return -1;
-  }
-  
-  while ((mnt = getmntent(fd)) != NULL) {
-    if (realpath(mnt->mnt_fsname, rp_mnt_fsname) != NULL) {
-      if (strcmp(rp_mnt_fsname, rp_filename) == 0) {
-        ret = 1;
-        break;
-      }
-    }
-  }
-  
-  if (endmntent(fd) != 1) {
-    myerror("Closing mtab failed!");
-    return -1;
-  }
-
-  return ret;
-
-#elif defined(__BSD__)
-  struct statfs *mntbuf;
-  int i, mntsize;
-  int32_t ret = 0;
-  char rp_filename[MAXPATHLEN], rp_mnt_fsname[MAXPATHLEN+1];
-
-  // get real path
-  if (realpath(filename, rp_filename) == NULL) {
-    myerror("Unable to get realpath of filename!");
-    return -1;
-  }
-
-  mntsize = getmntinfo(&mntbuf, MNT_NOWAIT);
-
-  if (mntsize == 0) {
-    stderror();
-    return -1;
-  }
-  
-  for (i = mntsize - 1; i >= 0; i--) {
-    realpath(mntbuf[i].f_mntfromname, rp_mnt_fsname);
-    if (strcmp(rp_mnt_fsname, rp_filename) == 0) {
-      ret = 1;
-      break;
-    }
-  }
-  
-  return ret;
-#else  
-  // ok, we don't know how to check this on an unknown platform
-  myerror("Don't know how to check whether filesystem is mounted! Use option '-f' to sort nonetheless.");
-
-  return -1;
-#endif
-}
-
 int32_t check_bootsector(struct sBootSector *bs) {
 /*
   lazy check if this is really a FAT bootsector
@@ -658,8 +584,6 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   assert(path != NULL);
   assert(fs != NULL);
 
-  int32_t ret;
-
   fs->rfd=0;
 
   switch(mode) {
@@ -672,35 +596,6 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
     case FS_MODE_RW:
       if ((fs->fd=fopen(path, "r+b")) == NULL) {
         stderror();
-        return -1;
-      }
-      break;
-    case FS_MODE_RO_EXCL:
-    case FS_MODE_RW_EXCL:
-      // this check is only done for user convenience
-      // open would fail too if device is mounted, but without specific error message
-      ret=check_mounted(path);
-      switch (ret) {
-        case 0: break;  // filesystem not mounted
-        case 1:    // filesystem mounted
-          myerror("Filesystem is mounted!");
-          return -1;
-        case -1:  // unable to check
-        default:
-          myerror("Could not check whether filesystem is mounted!");
-          return -1;
-      }
-
-      // opens the device exclusively. This is not mandatory! e.g. mkfs.vfat ignores it!
-      if ((fs->rfd=open(path, (mode == FS_MODE_RO_EXCL) ? O_RDONLY | O_EXCL : O_RDWR | O_EXCL)) == -1) {
-        stderror();
-        return -1;
-      }
-
-      // connect the file descriptor to a stream
-      if ((fs->fd=fdopen(fs->rfd, (mode == FS_MODE_RO_EXCL) ? "rb" : "r+b")) == NULL) {
-        stderror();
-        close(fs->rfd);
         return -1;
       }
       break;
