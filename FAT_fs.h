@@ -50,6 +50,8 @@
 #include <stdint.h>
 #include "platform.h"
 
+#pragma pack(1)
+
 // Directory entry structures
 // Structure for long directory names
 struct sLongDirEntry {
@@ -61,7 +63,7 @@ struct sLongDirEntry {
   char LDIR_Name2[12];    // Chars 6-11 of long name
   uint16_t LDIR_FstClusLO;  // Zero
   char LDIR_Name3[4];    // Chars 12-13 of long name
-} __attribute__((packed));
+};
 
 // Structure for old short directory names
 struct sShortDirEntry {
@@ -77,12 +79,12 @@ struct sShortDirEntry {
   uint16_t DIR_WrtDate;    // Date of last write
   uint16_t DIR_FstClusLO;  // Loword of first cluster
   uint32_t DIR_FileSize;    // file size in bytes
-} __attribute__((packed));
+};
 
 union sDirEntry {
   struct sShortDirEntry ShortDirEntry;
   struct sLongDirEntry LongDirEntry;
-} __attribute__((packed));
+};
 
 // Bootsector structures
 // FAT12 and FAT16
@@ -94,7 +96,7 @@ struct sFAT12_16 {
   char BS_VolLab[11];    // Volume Label
   char BS_FilSysType[8];    // FAT file system type (e.g. FAT, FAT12, FAT16, FAT32)
   uint8_t unused[448];    // unused space in bootsector
-} __attribute__((packed));
+};
 
 // FAT32
 struct sFAT32 {
@@ -112,12 +114,12 @@ struct sFAT32 {
   char BS_VolLab[11];
   char BS_FilSysType[8];
   uint8_t unused[420];    // unused space in bootsector
-} __attribute__((packed));
+};
 
 union sFATxx {
   struct sFAT12_16 FAT12_16;
   struct sFAT32 FAT32;
-} __attribute__((packed));
+};
 
 // First sector = boot sector
 struct sBootSector {
@@ -137,7 +139,7 @@ struct sBootSector {
   uint32_t BS_TotSec32;    // Total sectors (bits 16-47)
   union sFATxx FATxx;
   uint16_t BS_EndOfBS;    // marks end of bootsector
-} __attribute__((packed));
+};
 
 // FAT32 FSInfo structure
 struct sFSInfo {
@@ -148,7 +150,7 @@ struct sFSInfo {
   uint32_t FSI_Nxt_Free;
   uint8_t FSI_Reserved2[12];
   uint32_t FSI_TrailSig;
-} __attribute__((packed));
+};
 
 // holds information about the file system
 struct sFileSystem {
