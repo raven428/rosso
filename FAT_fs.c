@@ -606,13 +606,13 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 
   switch(mode) {
     case FS_MODE_RO:
-      if ((fs->fd=fopen(path, "rb")) == NULL) {
+      if ((fs->fd=fs_open(path, GENERIC_READ)) == NULL) {
         stderror();
         return -1;
       }      
       break;
     case FS_MODE_RW:
-      if ((fs->fd=fopen(path, "r+b")) == NULL) {
+      if ((fs->fd=fs_open(path, GENERIC_READ | GENERIC_WRITE)) == NULL) {
         stderror();
         return -1;
       }
