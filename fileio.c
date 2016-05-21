@@ -10,11 +10,11 @@ int fs_seek(FILE *stream, off_t offset, int whence) {
   return fseeko(stream, offset, whence);
 }
 
-off_t fs_read(void *ptr, u_int32_t size, u_int32_t n, FILE *stream) {
+off_t fs_read(void *ptr, uint32_t size, uint32_t n, FILE *stream) {
   return fread(ptr, size, n, stream);
 }
 
-off_t fs_write(const void *ptr, u_int32_t size, u_int32_t n, FILE *stream) {
+off_t fs_write(const void *ptr, uint32_t size, uint32_t n, FILE *stream) {
   return fwrite(ptr, size, n, stream);
 }
 

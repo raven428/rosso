@@ -47,35 +47,36 @@
 #include <sys/types.h>
 #include <iconv.h>
 
+#include <stdint.h>
 #include "platform.h"
 
 // Directory entry structures
 // Structure for long directory names
 struct sLongDirEntry {
-  u_char LDIR_Ord;    // Order of entry in sequence
+  uint8_t LDIR_Ord;    // Order of entry in sequence
   char LDIR_Name1[10];    // Chars 1-5 of long name
-  u_char LDIR_Attr;    // Attributes (ATTR_LONG_NAME must be set)
-  u_char LDIR_Type;    // Type
-  u_char LDIR_Checksum;    // Short name checksum
+  uint8_t LDIR_Attr;    // Attributes (ATTR_LONG_NAME must be set)
+  uint8_t LDIR_Type;    // Type
+  uint8_t LDIR_Checksum;    // Short name checksum
   char LDIR_Name2[12];    // Chars 6-11 of long name
-  u_int16_t LDIR_FstClusLO;  // Zero
+  uint16_t LDIR_FstClusLO;  // Zero
   char LDIR_Name3[4];    // Chars 12-13 of long name
 } __attribute__((packed));
 
 // Structure for old short directory names
 struct sShortDirEntry {
   char DIR_Name[11];    // Short name
-  u_char DIR_Atrr;    // File attributes
-  u_char DIR_NTRes;    // Reserved for NT
-  u_char DIR_CrtTimeTenth;  // Time of creation in ms
-  u_int16_t DIR_CrtTime;    // Time of creation
-  u_int16_t DIR_CrtDate;    // Date of creation
-  u_int16_t DIR_LstAccDate;  // Last access date
-  u_int16_t DIR_FstClusHI;  // Hiword of first cluster
-  u_int16_t DIR_WrtTime;    // Time of last write
-  u_int16_t DIR_WrtDate;    // Date of last write
-  u_int16_t DIR_FstClusLO;  // Loword of first cluster
-  u_int32_t DIR_FileSize;    // file size in bytes
+  uint8_t DIR_Atrr;    // File attributes
+  uint8_t DIR_NTRes;    // Reserved for NT
+  uint8_t DIR_CrtTimeTenth;  // Time of creation in ms
+  uint16_t DIR_CrtTime;    // Time of creation
+  uint16_t DIR_CrtDate;    // Date of creation
+  uint16_t DIR_LstAccDate;  // Last access date
+  uint16_t DIR_FstClusHI;  // Hiword of first cluster
+  uint16_t DIR_WrtTime;    // Time of last write
+  uint16_t DIR_WrtDate;    // Date of last write
+  uint16_t DIR_FstClusLO;  // Loword of first cluster
+  uint32_t DIR_FileSize;    // file size in bytes
 } __attribute__((packed));
 
 union sDirEntry {
@@ -86,31 +87,31 @@ union sDirEntry {
 // Bootsector structures
 // FAT12 and FAT16
 struct sFAT12_16 {
-  u_char BS_DrvNum;    // Physical drive number
-  u_char BS_Reserved;    // Current head
-  u_char BS_BootSig;    // Signature
-  u_int32_t BS_VolID;    // Volume ID
+  uint8_t BS_DrvNum;    // Physical drive number
+  uint8_t BS_Reserved;    // Current head
+  uint8_t BS_BootSig;    // Signature
+  uint32_t BS_VolID;    // Volume ID
   char BS_VolLab[11];    // Volume Label
   char BS_FilSysType[8];    // FAT file system type (e.g. FAT, FAT12, FAT16, FAT32)
-  u_char unused[448];    // unused space in bootsector
+  uint8_t unused[448];    // unused space in bootsector
 } __attribute__((packed));
 
 // FAT32
 struct sFAT32 {
-  u_int32_t BS_FATSz32;    // Sectors per FAT
-  u_int16_t BS_ExtFlags;    // Flags
-  u_int16_t BS_FSVer;    // Version
-  u_int32_t BS_RootClus;    // Root Directory Cluster
-  u_int16_t BS_FSInfo;    // Sector of FSInfo structure
-  u_int16_t BS_BkBootSec;    // Sector number of the boot sector copy in reserved sectors
+  uint32_t BS_FATSz32;    // Sectors per FAT
+  uint16_t BS_ExtFlags;    // Flags
+  uint16_t BS_FSVer;    // Version
+  uint32_t BS_RootClus;    // Root Directory Cluster
+  uint16_t BS_FSInfo;    // Sector of FSInfo structure
+  uint16_t BS_BkBootSec;    // Sector number of the boot sector copy in reserved sectors
   char BS_Reserved[12];    // for future expansion
   char BS_DrvNum;      // see fat12/16
   char BS_Reserved1;    // see fat12/16
   char BS_BootSig;    // ...
-  u_int32_t BS_VolID;
+  uint32_t BS_VolID;
   char BS_VolLab[11];
   char BS_FilSysType[8];
-  u_char unused[420];    // unused space in bootsector
+  uint8_t unused[420];    // unused space in bootsector
 } __attribute__((packed));
 
 union sFATxx {
@@ -120,60 +121,60 @@ union sFATxx {
 
 // First sector = boot sector
 struct sBootSector {
-  u_char BS_JmpBoot[3];    // Jump instruction (to skip over header on boot)
+  uint8_t BS_JmpBoot[3];    // Jump instruction (to skip over header on boot)
   char BS_OEMName[8];    // OEM Name (padded with spaces)
-  u_int16_t BS_BytesPerSec;  // Bytes per sector
-  u_char BS_SecPerClus;    // Sectors per cluster
-  u_int16_t BS_RsvdSecCnt;  // Reserved sector count (including boot sector)
-  u_char BS_NumFATs;    // Number of file allocation tables
-  u_int16_t BS_RootEntCnt;  // Number of root directory entries
-  u_int16_t BS_TotSec16;    // Total sectors (bits 0-15)
-  u_char BS_Media;    // Media descriptor
-  u_int16_t BS_FATSz16;    // Sectors per file allocation table
-  u_int16_t BS_SecPerTrk;    // Sectors per track
-  u_int16_t BS_NumHeads;    // Number of heads
-  u_int32_t BS_HiddSec;    // Hidden sectors
-  u_int32_t BS_TotSec32;    // Total sectors (bits 16-47)
+  uint16_t BS_BytesPerSec;  // Bytes per sector
+  uint8_t BS_SecPerClus;    // Sectors per cluster
+  uint16_t BS_RsvdSecCnt;  // Reserved sector count (including boot sector)
+  uint8_t BS_NumFATs;    // Number of file allocation tables
+  uint16_t BS_RootEntCnt;  // Number of root directory entries
+  uint16_t BS_TotSec16;    // Total sectors (bits 0-15)
+  uint8_t BS_Media;    // Media descriptor
+  uint16_t BS_FATSz16;    // Sectors per file allocation table
+  uint16_t BS_SecPerTrk;    // Sectors per track
+  uint16_t BS_NumHeads;    // Number of heads
+  uint32_t BS_HiddSec;    // Hidden sectors
+  uint32_t BS_TotSec32;    // Total sectors (bits 16-47)
   union sFATxx FATxx;
-  u_int16_t BS_EndOfBS;    // marks end of bootsector
+  uint16_t BS_EndOfBS;    // marks end of bootsector
 } __attribute__((packed));
 
 // FAT32 FSInfo structure
 struct sFSInfo {
-  u_int32_t FSI_LeadSig;
-  u_int8_t FSI_Reserved1[480];
-  u_int32_t FSI_StrucSig;
-  u_int32_t FSI_Free_Count;
-  u_int32_t FSI_Nxt_Free;
-  u_int8_t FSI_Reserved2[12];
-  u_int32_t FSI_TrailSig;
+  uint32_t FSI_LeadSig;
+  uint8_t FSI_Reserved1[480];
+  uint32_t FSI_StrucSig;
+  uint32_t FSI_Free_Count;
+  uint32_t FSI_Nxt_Free;
+  uint8_t FSI_Reserved2[12];
+  uint32_t FSI_TrailSig;
 } __attribute__((packed));
 
 // holds information about the file system
 struct sFileSystem {
   FILE *fd;
   int32_t rfd;
-  u_int32_t mode;
+  uint32_t mode;
   char path[MAX_PATH_LEN+1];
   struct sBootSector bs;
   int32_t FATType;
-  u_int32_t clusterCount;
-  u_int16_t sectorSize;
-  u_int32_t totalSectors;
-  u_int32_t clusterSize;
+  uint32_t clusterCount;
+  uint16_t sectorSize;
+  uint32_t totalSectors;
+  uint32_t clusterSize;
   int32_t clusters;
-  u_int32_t FATSize;
-  u_int64_t FSSize;
-  u_int32_t maxDirEntriesPerCluster;
-  u_int32_t maxClusterChainLength;
-  u_int32_t firstDataSector;
+  uint32_t FATSize;
+  uint64_t FSSize;
+  uint32_t maxDirEntriesPerCluster;
+  uint32_t maxClusterChainLength;
+  uint32_t firstDataSector;
   iconv_t cd;
 };
 
 // functions
 
 // opens file system and calculates file system information
-int32_t openFileSystem(char *path, u_int32_t mode, struct sFileSystem *fs);
+int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs);
 
 // update boot sector
 int32_t writeBootSector(struct sFileSystem *fs);
@@ -188,37 +189,37 @@ int32_t closeFileSystem(struct sFileSystem *fs);
 int32_t check_bootsector(struct sBootSector *bs);
 
 // retrieves FAT entry for a cluster number
-int32_t getFATEntry(struct sFileSystem *fs, u_int32_t cluster, u_int32_t *data);
+int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data);
 
 // read FAT from file system
-void *readFAT(struct sFileSystem *fs, u_int16_t nr);
+void *readFAT(struct sFileSystem *fs, uint16_t nr);
 
 // write FAT to file system
 int32_t writeFAT(struct sFileSystem *fs, void *fat);
 
 // read cluster from file systen
-void *readCluster(struct sFileSystem *fs, u_int32_t cluster);
+void *readCluster(struct sFileSystem *fs, uint32_t cluster);
 
 // write cluster to file systen
-int32_t writeCluster(struct sFileSystem *fs, u_int32_t cluster, void *data);
+int32_t writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data);
 
 // checks whether data marks a free cluster
-u_int16_t isFreeCluster(const u_int32_t data);
+uint16_t isFreeCluster(const uint32_t data);
 
 // checks whether data marks the end of a cluster chain
-u_int16_t isEOC(struct sFileSystem *fs, const u_int32_t data);
+uint16_t isEOC(struct sFileSystem *fs, const uint32_t data);
 
 // checks whether data marks a bad cluster
-u_int16_t isBadCluster(struct sFileSystem *fs, const u_int32_t data);
+uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data);
 
 // returns the offset of a specific cluster in the data region of the file system
-off_t getClusterOffset(struct sFileSystem *fs, u_int32_t cluster);
+off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
 
 // parses one directory entry
 int32_t parseEntry(struct sFileSystem *fs, union sDirEntry *de);
 
 // calculate checksum for short dir entry name
-u_char calculateChecksum (char *sname);
+uint8_t calculateChecksum (char *sname);
 
 // checks whether all FATs have the same content
 int32_t checkFATs(struct sFileSystem *fs);

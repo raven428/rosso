@@ -15,7 +15,6 @@
 
 // project includes
 #include "endianness.h"
-#include "signal.h"
 #include "FAT_fs.h"
 #include "options.h"
 #include "errors.h"
@@ -65,15 +64,9 @@
         "\n" \
         "Examples:\n" \
         "\trosso /dev/sda\t\tSort /dev/sda.\n" \
-        "\trosso -n /dev/sdb1\t\tSort /dev/sdb1 with natural order.\n" \
-        "\n" \
+        "\trosso -n /dev/sdb1\t\tSort /dev/sdb1 with natural order.\n"
 
-#define INFO_OPTION_VERSION  INFO_PROGRAM " " INFO_VERSION "\n" \
-        "\n" \
-        INFO_COPYRIGHT \
-        INFO_LICENSE \
-        "\n" \
-        INFO_AUTHOR
+#define INFO_OPTION_VERSION  INFO_PROGRAM "\n"
 
 #define INFO_OPTION_HELP  INFO_DESCRIPTION \
         "\n" \
@@ -87,7 +80,7 @@ int32_t printFSInfo(char *filename) {
 
   assert(filename != NULL);
 
-  u_int32_t value, clen;
+  uint32_t value, clen;
   int32_t usedClusters, badClusters;
   int32_t i;
   struct sClusterChain *chain;
@@ -181,8 +174,6 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  // initialize blocked signals
-  init_signal_handling();
   char *filename;
 
   if (parse_options(argc, argv) == -1) {

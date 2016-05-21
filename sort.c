@@ -99,9 +99,9 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
 */
   assert(list != NULL);
 
-  u_char calculatedChecksum;
-  u_int32_t i;
-  u_int32_t nr;
+  uint8_t calculatedChecksum;
+  uint32_t i;
+  uint32_t nr;
   struct sLongDirEntryList  *tmp;
 
   if (list->entries > 1) {
@@ -136,7 +136,7 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
   return 0;
 }
 
-int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain, struct sDirEntryList *list, u_int32_t *direntries) {
+int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain, struct sDirEntryList *list, uint32_t *direntries) {
 /*
   parses a cluster chain and puts found directory entries to list
 */
@@ -146,9 +146,9 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain, s
   assert(list != NULL);
   assert(direntries != NULL);
 
-  u_int32_t j;
+  uint32_t j;
   int32_t ret;
-  u_int32_t entries=0;
+  uint32_t entries=0;
   union sDirEntry de;
   struct sDirEntryList *lnde;
   struct sLongDirEntryList *llist;
@@ -185,7 +185,7 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain, s
         if (OPT_LIST &&
            strcmp(sname, ".") &&
            strcmp(sname, "..") &&
-           (((u_char) sname[0]) != DE_FREE) &&
+           (((uint8_t) sname[0]) != DE_FREE) &&
           !(de.ShortDirEntry.DIR_Atrr & ATTR_VOLUME_ID)) {
           
           if (!OPT_MORE_INFO) {
@@ -250,7 +250,7 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain, s
   return 0;
 }
 
-int32_t parseFAT1xRootDirEntries(struct sFileSystem *fs, struct sDirEntryList *list, u_int32_t *direntries) {
+int32_t parseFAT1xRootDirEntries(struct sFileSystem *fs, struct sDirEntryList *list, uint32_t *direntries) {
 /*
   parses FAT1x root directory entries to list
 */
@@ -261,7 +261,7 @@ int32_t parseFAT1xRootDirEntries(struct sFileSystem *fs, struct sDirEntryList *l
 
   off_t BSOffset;
   int32_t j, ret;
-  u_int32_t entries=0;
+  uint32_t entries=0;
   union sDirEntry de;
   struct sDirEntryList *lnde;
   struct sLongDirEntryList *llist;
@@ -299,7 +299,7 @@ int32_t parseFAT1xRootDirEntries(struct sFileSystem *fs, struct sDirEntryList *l
       if (OPT_LIST &&
          strcmp(sname, ".") &&
          strcmp(sname, "..") &&
-         (((u_char) sname[0]) != DE_FREE) &&
+         (((uint8_t) sname[0]) != DE_FREE) &&
         !(de.ShortDirEntry.DIR_Atrr & ATTR_VOLUME_ID)) {
         
         if (!OPT_MORE_INFO) {
@@ -372,25 +372,16 @@ int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
 
   struct sLongDirEntryList *tmp;
 
-  // no signal handling while writing (atomic action)
-  start_critical_section();
-
   while(list->next!=NULL) {
     tmp=list->next->ldel;
     while(tmp != NULL) {
       if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-        // end of critical section
-        end_critical_section();
-
         stderror();
         return -1;
       }
       tmp=tmp->next;
     }
     if (fs_write(list->next->sde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-      // end of critical section
-      end_critical_section();
-
       stderror();
       return -1;
     }
@@ -400,13 +391,10 @@ int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
   // sync fs
   syncFileSystem(fs);
 
-  // end of critical section
-  end_critical_section();
-
   return 0;
 }
 
-int32_t getClusterChain(struct sFileSystem *fs, u_int32_t startCluster, struct sClusterChain *chain) {
+int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster, struct sClusterChain *chain) {
 /*
   retrieves an array of all clusters in a cluster chain
   starting with startCluster
@@ -416,7 +404,7 @@ int32_t getClusterChain(struct sFileSystem *fs, u_int32_t startCluster, struct s
   assert(chain != NULL);
 
   int32_t cluster;
-  u_int32_t data,i=0;
+  uint32_t data,i=0;
 
   cluster=startCluster;
 
@@ -518,7 +506,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list, st
   assert(list != NULL);
   assert(chain != NULL);
 
-  u_int32_t i=0, entries=0;
+  uint32_t i=0, entries=0;
   struct sLongDirEntryList *tmp;
   struct sDirEntryList *p=list->next;
   char empty[DIR_ENTRY_SIZE]={0};
@@ -530,26 +518,17 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list, st
     return -1;
   }
 
-  // no signal handling while writing (atomic action)
-  start_critical_section();
-
   while(p != NULL) {
     if (entries+p->entries <= fs->maxDirEntriesPerCluster) {
       tmp=p->ldel;
       for (i=1;i<p->entries;i++) {
         if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-          // end of critical section
-          end_critical_section();
-
           stderror();
           return -1;
         }
         tmp=tmp->next;
       }
       if (fs_write(p->sde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-        // end of critical section
-        end_critical_section();
-
         stderror();
         return -1;
       }
@@ -558,9 +537,6 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list, st
       tmp=p->ldel;
       for (i=1;i<=fs->maxDirEntriesPerCluster-entries;i++) {
         if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-          // end of critical section
-          end_critical_section();
-
           stderror();
           return -1;
         }
@@ -568,27 +544,17 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list, st
       }
       chain=chain->next; entries=p->entries - (fs->maxDirEntriesPerCluster - entries);  // next cluster
       if (fs_seek(fs->fd, getClusterOffset(fs, chain->cluster), SEEK_SET)==-1) {
-
-        // end of critical section
-        end_critical_section();
-
         myerror("Seek error!");
         return -1;
       }
       while(tmp!=NULL) {
         if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-          // end of critical section
-          end_critical_section();
-
           stderror();
           return -1;
         }
         tmp=tmp->next;
       }
       if (fs_write(p->sde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-        // end of critical section
-        end_critical_section();
-
         stderror();
         return -1;
       }
@@ -597,9 +563,6 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list, st
   }
   if (entries < fs->maxDirEntriesPerCluster) {
     if (fs_write(empty, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-      // end of critical section
-      end_critical_section();
-
       stderror();
       return -1;
     }
@@ -607,9 +570,6 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list, st
 
   // sync fs
   syncFileSystem(fs);
-
-  // end of critical section
-  end_critical_section();
 
   return 0;
 
@@ -625,13 +585,13 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list, c
 
   struct sDirEntryList *p;
   char newpath[MAX_PATH_LEN+1]={0};
-  u_int32_t c, value;
+  uint32_t c, value;
 
   // sort sub directories
   p=list->next;
   while (p != NULL) {
     if ((p->sde->DIR_Atrr & ATTR_DIRECTORY) &&
-      ((u_char) p->sde->DIR_Name[0] != DE_FREE) &&
+      ((uint8_t) p->sde->DIR_Name[0] != DE_FREE) &&
       !(p->sde->DIR_Atrr & ATTR_VOLUME_ID) &&
       (strcmp(p->sname, ".")) && strcmp(p->sname, "..")) {
 
@@ -667,7 +627,7 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list, c
   return 0;
 }
 
-int32_t sortClusterChain(struct sFileSystem *fs, u_int32_t cluster, const char (*path)[MAX_PATH_LEN+1]) {
+int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster, const char (*path)[MAX_PATH_LEN+1]) {
 /*
   sorts directory entries in a cluster
 */
@@ -675,12 +635,12 @@ int32_t sortClusterChain(struct sFileSystem *fs, u_int32_t cluster, const char (
   assert(fs != NULL);
   assert(path != NULL);
 
-  u_int32_t direntries;
+  uint32_t direntries;
   int32_t clen;
   struct sClusterChain *ClusterChain;
   struct sDirEntryList *list;
 
-  u_int32_t match;
+  uint32_t match;
 
   match=matchesDirPathLists(OPT_INCL_DIRS, OPT_INCL_DIRS_REC, OPT_EXCL_DIRS, OPT_EXCL_DIRS_REC, path);
 
@@ -762,11 +722,11 @@ int32_t sortFAT1xRootDirectory(struct sFileSystem *fs) {
 
   off_t BSOffset;
 
-  u_int32_t direntries=0;
+  uint32_t direntries=0;
 
   struct sDirEntryList *list;
 
-  u_int32_t match;
+  uint32_t match;
 
   match=matchesDirPathLists(OPT_INCL_DIRS,
         OPT_INCL_DIRS_REC,
@@ -834,7 +794,7 @@ int32_t sortFileSystem(char *filename) {
 
   assert(filename != NULL);
 
-  u_int32_t mode;
+  uint32_t mode;
 
   struct sFileSystem fs;
 

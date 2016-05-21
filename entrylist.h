@@ -26,7 +26,7 @@ struct sDirEntryList {
   char *sname, *lname;    // short and long name strings
   struct sShortDirEntry *sde;  // short dir entry
   struct sLongDirEntryList *ldel;  // long name entries in a list
-  u_int32_t entries;    // number of entries
+  uint32_t entries;    // number of entries
   struct sDirEntryList *next;  // next dir entry
 };
 
@@ -35,11 +35,11 @@ struct sDirEntryList *
   newDirEntryList(void);
 
 // randomize entry list
-void randomizeDirEntryList(struct sDirEntryList *list, u_int32_t entries);
+void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries);
 
 // create a new directory entry holder
 struct sDirEntryList *
-  newDirEntry(char *sname, char *lname, struct sShortDirEntry *sde, struct sLongDirEntryList *ldel, u_int32_t entries);
+  newDirEntry(char *sname, char *lname, struct sShortDirEntry *sde, struct sLongDirEntryList *ldel, uint32_t entries);
 
 // insert a long directory entry to list
 struct sLongDirEntryList *

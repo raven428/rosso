@@ -260,7 +260,7 @@ int32_t getCountOfClusters(struct sBootSector *bs) {
 
   assert(bs != NULL);
 
-  u_int32_t RootDirSectors, FATSz, TotSec, DataSec;
+  uint32_t RootDirSectors, FATSz, TotSec, DataSec;
   int32_t retvalue;
 
   RootDirSectors = ((SwapInt16(bs->BS_RootEntCnt) * DIR_ENTRY_SIZE) + (SwapInt16(bs->BS_BytesPerSec) - 1));
@@ -308,7 +308,7 @@ int32_t getFATType(struct sBootSector *bs) {
   }
 }
 
-u_int16_t isFreeCluster(const u_int32_t data) {
+uint16_t isFreeCluster(const uint32_t data) {
 /*  
   checks whether data marks a free cluster
 */
@@ -316,7 +316,7 @@ u_int16_t isFreeCluster(const u_int32_t data) {
       return (data & 0x0FFFFFFF) == 0;
 }
 
-u_int16_t isEOC(struct sFileSystem *fs, const u_int32_t data) {
+uint16_t isEOC(struct sFileSystem *fs, const uint32_t data) {
 /*  
   checks whether data marks the end of a cluster chain
 */
@@ -337,7 +337,7 @@ u_int16_t isEOC(struct sFileSystem *fs, const u_int32_t data) {
   return 0;
 }
 
-u_int16_t isBadCluster(struct sFileSystem *fs, const u_int32_t data) {
+uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data) {
 /*
   checks whether data marks a bad cluster
 */
@@ -358,7 +358,7 @@ u_int16_t isBadCluster(struct sFileSystem *fs, const u_int32_t data) {
 }
 
 
-void *readFAT(struct sFileSystem *fs, u_int16_t nr) {
+void *readFAT(struct sFileSystem *fs, uint16_t nr) {
 /*
   reads a FAT from file system fs
 */
@@ -366,7 +366,7 @@ void *readFAT(struct sFileSystem *fs, u_int16_t nr) {
   assert(fs != NULL);
   assert(nr < fs->bs.BS_NumFATs);
 
-  u_int32_t FATSizeInBytes;
+  uint32_t FATSizeInBytes;
   off_t BSOffset;
 
   void *FAT;
@@ -401,7 +401,7 @@ int32_t writeFAT(struct sFileSystem *fs, void *fat) {
   assert(fs != NULL);
   assert(fat != NULL);
 
-  u_int32_t FATSizeInBytes, nr;
+  uint32_t FATSizeInBytes, nr;
   off_t BSOffset;
 
   FATSizeInBytes = fs->FATSize * fs->sectorSize;
@@ -430,7 +430,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
 
   assert(fs != NULL);
 
-  u_int32_t FATSizeInBytes;
+  uint32_t FATSizeInBytes;
   int32_t result=0;
   int32_t i;  
 
@@ -495,7 +495,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
   return result;
 }
 
-int32_t getFATEntry(struct sFileSystem *fs, u_int32_t cluster, u_int32_t *data) {
+int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
 /*
   retrieves FAT entry for a cluster number
 */
@@ -564,7 +564,7 @@ int32_t getFATEntry(struct sFileSystem *fs, u_int32_t cluster, u_int32_t *data) 
 
 }
 
-off_t getClusterOffset(struct sFileSystem *fs, u_int32_t cluster) {
+off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
 /*
   returns the offset of a specific cluster in the
   data region of the file system
@@ -577,7 +577,7 @@ off_t getClusterOffset(struct sFileSystem *fs, u_int32_t cluster) {
 
 }
 
-void *readCluster(struct sFileSystem *fs, u_int32_t cluster) {
+void *readCluster(struct sFileSystem *fs, uint32_t cluster) {
 /*
   read cluster from file system
 */
@@ -601,7 +601,7 @@ void *readCluster(struct sFileSystem *fs, u_int32_t cluster) {
   return dummy;
 }
 
-int32_t writeCluster(struct sFileSystem *fs, u_int32_t cluster, void *data) {
+int32_t writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data) {
 /*
   write cluster to file systen
 */
@@ -639,9 +639,9 @@ int32_t parseEntry(struct sFileSystem *fs, union sDirEntry *de) {
   return 1; // short dir entry
 }
 
-u_char calculateChecksum (char *sname) {
-  u_char len;
-  u_char sum;
+uint8_t calculateChecksum (char *sname) {
+  uint8_t len;
+  uint8_t sum;
 
   sum = 0;
   for (len=11; len!=0; len--) {
@@ -651,7 +651,7 @@ u_char calculateChecksum (char *sname) {
 }
 
 
-int32_t openFileSystem(char *path, u_int32_t mode, struct sFileSystem *fs) {
+int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 /*
   opens file system and assemlbes file system information into data structure
 */
@@ -792,13 +792,13 @@ int32_t openFileSystem(char *path, u_int32_t mode, struct sFileSystem *fs) {
 
   fs->clusterSize=fs->bs.BS_SecPerClus * SwapInt16(fs->bs.BS_BytesPerSec);
 
-  fs->FSSize = (u_int64_t) fs->clusters * fs->clusterSize;
+  fs->FSSize = (uint64_t) fs->clusters * fs->clusterSize;
 
   fs->maxDirEntriesPerCluster = fs->clusterSize / DIR_ENTRY_SIZE;
 
-  fs->maxClusterChainLength = (u_int32_t) MAX_FILE_LEN / fs->clusterSize;
+  fs->maxClusterChainLength = (uint32_t) MAX_FILE_LEN / fs->clusterSize;
 
-  u_int32_t rootDirSectors;
+  uint32_t rootDirSectors;
 
   rootDirSectors = ((SwapInt16(fs->bs.BS_RootEntCnt) * DIR_ENTRY_SIZE) +
         (SwapInt16(fs->bs.BS_BytesPerSec) - 1)) / SwapInt16(fs->bs.BS_BytesPerSec);
@@ -821,10 +821,6 @@ int32_t syncFileSystem(struct sFileSystem *fs) {
 */
   if (fflush(fs->fd) != 0) {
     myerror("Could not flush stream!");
-    return -1;
-  }
-  if (fsync(fileno(fs->fd)) != 0) {
-    myerror("Could not sync file descriptor!");
     return -1;
   }
 

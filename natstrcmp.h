@@ -6,6 +6,7 @@
 #define __natstrcmp_h__
 
 #include <sys/types.h>
+#include <stdint.h>
 
 // natural order comparison
 int32_t natstrcmp(const char *str1, const char *str2);

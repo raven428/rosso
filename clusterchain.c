@@ -30,7 +30,7 @@ struct sClusterChain *newClusterChain(void) {
   return tmp;
 }
 
-int32_t insertCluster(struct sClusterChain *chain, u_int32_t cluster) {
+int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster) {
 /*
   allocate memory and insert cluster into cluster chain
 */

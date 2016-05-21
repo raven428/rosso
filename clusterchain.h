@@ -9,6 +9,7 @@
 #define __clusterchain_h__
 
 #include <sys/types.h>
+#include <stdint.h>
 
 #include "platform.h"
 
@@ -16,7 +17,7 @@ struct sClusterChain {
 /*
   this structure contains cluster chains
 */
-  u_int32_t cluster;
+  uint32_t cluster;
   struct sClusterChain *next;
 };
 
@@ -24,7 +25,7 @@ struct sClusterChain {
 struct sClusterChain *newClusterChain(void);
 
 // allocate memory and insert cluster into cluster chain
-int32_t insertCluster(struct sClusterChain *chain, u_int32_t cluster);
+int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster);
 
 // free cluster chain
 void freeClusterChain(struct sClusterChain *chain);

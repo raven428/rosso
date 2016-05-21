@@ -35,7 +35,7 @@ int32_t parseNumber(char **s) {
   return value;
 }
 
-int32_t natstrcompare(const char *str1, const char *str2, const u_int32_t respectCase) {
+int32_t natstrcompare(const char *str1, const char *str2, const uint32_t respectCase) {
 /*
   natural order string compare
 */

@@ -1,5 +1,6 @@
-CC=gcc
-LD=gcc
+CC = x86_64-w64-mingw32-gcc -fdiagnostics-color
+LD = x86_64-w64-mingw32-gcc
+LDFLAGS = -liconv
 .RECIPEPREFIX +=
 
 ifdef DEBUG
@@ -14,39 +15,17 @@ override CFLAGS+= -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 
 INSTALL_FLAGS=-m 0755 -p -D
 
-# Detect Mac OS X ($OSTYPE = darwin9.0 for Mac OS X 10.5 and darwin10.0 for Mac OS X 10.6)
 UNAME=$(shell uname -s)
-ifeq ($(UNAME),Darwin)
-NEED_ICONV_LIB = 1
-# OS X's install does not support the '-D' flag.
-INSTALL_FLAGS=-m 0755 -p
-endif
-
-ifeq ($(OSTYPE),FreeBSD)
-override CFLAGS += -I/usr/local/include
-LDFLAGS += -L/usr/local/lib
-NEED_ICONV_LIB = 1
-endif
-
-ifdef NEED_ICONV_LIB
-LDFLAGS += -liconv
-endif
-
-# Mac OS X does not have a "/usr/local/sbin"
-ifeq ($(UNAME),Darwin)
-SBINDIR=/usr/local/bin
-else
 SBINDIR=/usr/local/sbin
-endif
-
-OBJ=rosso.o FAT_fs.o fileio.o endianness.o signal.o entrylist.o errors.o options.o clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
+OBJ=rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o options.o \
+  clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
 
 all: rosso
 
 rosso: $(OBJ) $(DEBUG_OBJ) Makefile
-  ${LD} ${LDFLAGS} $(OBJ) $(DEBUG_OBJ) -o $@
+  ${LD} $(OBJ) ${LDFLAGS} $(DEBUG_OBJ) -o $@
 
-rosso.o: rosso.c endianness.h signal.h FAT_fs.h platform.h options.h \
+rosso.o: rosso.c endianness.h FAT_fs.h platform.h options.h \
  stringlist.h errors.h sort.h clusterchain.h misc.h mallocv.h Makefile
   $(CC) ${CFLAGS} -c $< -o $@
 
@@ -58,9 +37,6 @@ fileio.o: fileio.c fileio.h platform.h Makefile
   $(CC) ${CFLAGS} -c $< -o $@
 
 endianness.o: endianness.c endianness.h mallocv.h Makefile
-  $(CC) ${CFLAGS} -c $< -o $@
-
-signal.o: signal.c signal.h mallocv.h Makefile
   $(CC) ${CFLAGS} -c $< -o $@
 
 entrylist.o: entrylist.c entrylist.h FAT_fs.h platform.h options.h \
@@ -79,7 +55,7 @@ clusterchain.o: clusterchain.c clusterchain.h platform.h errors.h \
   $(CC) ${CFLAGS} -c $< -o $@
 
 sort.o: sort.c sort.h FAT_fs.h platform.h clusterchain.h entrylist.h \
- errors.h options.h stringlist.h endianness.h signal.h misc.h fileio.h \
+ errors.h options.h stringlist.h endianness.h misc.h fileio.h \
  mallocv.h Makefile
   $(CC) ${CFLAGS} -c $< -o $@
 

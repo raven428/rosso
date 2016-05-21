@@ -16,10 +16,10 @@
 #include "stringlist.h"
 
 // random number
-u_int32_t irand( u_int32_t b, u_int32_t e)
+uint32_t irand( uint32_t b, uint32_t e)
 {
     double r = e - b + 1;
-    return b + (u_int32_t)(r * rand()/(RAND_MAX+1.0));
+    return b + (uint32_t)(r * rand()/(RAND_MAX+1.0));
 }
 
 // List functions
@@ -39,7 +39,7 @@ struct sDirEntryList * newDirEntryList(void) {
 }
 
 struct sDirEntryList *
-  newDirEntry(char *sname, char *lname, struct sShortDirEntry *sde, struct sLongDirEntryList *ldel, u_int32_t entries) {
+  newDirEntry(char *sname, char *lname, struct sShortDirEntry *sde, struct sLongDirEntryList *ldel, uint32_t entries) {
 /*
   create a new directory entry holder
 */
@@ -170,9 +170,9 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   } else if (strcmp(de2->sname, "..") == 0) {
     return(1);
   // deleted entries should be moved to the end of the directory
-  } else if ((u_char) de1->sname[0] == DE_FREE) {
+  } else if ((uint8_t) de1->sname[0] == DE_FREE) {
     return(1);
-  } else if ((u_char) de2->sname[0] == DE_FREE) {
+  } else if ((uint8_t) de2->sname[0] == DE_FREE) {
     return(-1);
   }
 
@@ -214,7 +214,7 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   // consider last modification time
   if (OPT_MODIFICATION) {
-    u_int32_t md1, md2;
+    uint32_t md1, md2;
     md1 = de1->sde->DIR_WrtDate<<16 | de1->sde->DIR_WrtTime;
     md2 = de2->sde->DIR_WrtDate<<16 | de2->sde->DIR_WrtTime;
     // printf("md1: %x, md2: %x\n", md1, md2);
@@ -325,15 +325,15 @@ void freeDirEntryList(struct sDirEntryList *list) {
   }
 }
 
-void randomizeDirEntryList(struct sDirEntryList *list, u_int32_t entries) {
+void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
 /*
   randomize entry list
 */
   assert(list != NULL);
 
   struct sDirEntryList *randlist, *tmp, *dummy1, *dummy2;
-  u_int32_t i, j, pos;
-  u_int32_t skip=0;
+  uint32_t i, j, pos;
+  uint32_t skip=0;
   
   randlist=list;
   

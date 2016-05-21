@@ -7,11 +7,12 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#include <stdint.h>
 #include "platform.h"
 
 int fs_seek(FILE *stream, off_t offset, int whence);
-off_t fs_read(void *ptr, u_int32_t size, u_int32_t n, FILE *stream);
-off_t fs_write(const void *ptr, u_int32_t size, u_int32_t n, FILE *stream);
+off_t fs_read(void *ptr, uint32_t size, uint32_t n, FILE *stream);
+off_t fs_write(const void *ptr, uint32_t size, uint32_t n, FILE *stream);
 int fs_close(FILE* file);
 
 #endif  // __fileio_h__
