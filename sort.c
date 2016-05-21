@@ -798,11 +798,7 @@ int32_t sortFileSystem(char *filename) {
 
   struct sFileSystem fs;
 
-  if (!OPT_FORCE && OPT_LIST) {
-    mode = FS_MODE_RO_EXCL;
-  } else if (!OPT_FORCE && !OPT_LIST) {
-    mode = FS_MODE_RW_EXCL;
-  } else if (OPT_FORCE && OPT_LIST) {
+  if (OPT_LIST) {
     mode = FS_MODE_RO;
   } else {
     mode = FS_MODE_RW;
