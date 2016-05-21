@@ -449,15 +449,17 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
   case FATTYPE_FAT32:
     FATOffset = (off_t)cluster * 4;
     BSOffset = (off_t)SwapInt16(fs->bs.BS_RsvdSecCnt) *
-      SwapInt16(fs->bs.BS_BytesPerSec) + FATOffset;
+      SwapInt16(fs->bs.BS_BytesPerSec);
     if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
       myerror("Seek error!");
       return -1;
     }
-    if (fs_read(data, 4, 1, fs->fd) < 1) {
+    char* q = alloca(fs->sectorSize);
+    if (fs_read(q, fs->sectorSize, 1, fs->fd) < 1) {
       myerror("Failed to read from file!");
       return -1;
     }
+    memcpy(data, q + FATOffset, sizeof *data);
     *data=SwapInt32(*data);
     *data = *data & 0x0fffffff;
     break;

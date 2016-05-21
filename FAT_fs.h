@@ -50,8 +50,6 @@
 #include <stdint.h>
 #include "platform.h"
 
-#pragma pack(1)
-
 // Directory entry structures
 // Structure for long directory names
 struct sLongDirEntry {
