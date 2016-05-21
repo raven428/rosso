@@ -570,11 +570,6 @@ int32_t parseEntry(struct sFileSystem *fs, union sDirEntry *de) {
   assert(fs != NULL);
   assert(de != NULL);
 
-  if ((fs_read(de, DIR_ENTRY_SIZE, 1, fs->fd)<1)) {
-    myerror("Failed to read from file!");
-    return -1;
-  }
-
   if (de->ShortDirEntry.DIR_Name[0] == DE_FOLLOWING_FREE )
     return 0; // no more entries
 

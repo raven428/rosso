@@ -160,9 +160,13 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain, s
 
   llist = NULL;
   lname[0]='\0';
+  char* q = alloca(fs->clusterSize);
   while (chain != NULL) {
     fs_seek(fs->fd, getClusterOffset(fs, chain->cluster), SEEK_SET);
+    fs_read(q, 1, fs->clusterSize, fs->fd);
     for (j=0;j<fs->maxDirEntriesPerCluster;j++) {
+      memcpy(&de, q, DIR_ENTRY_SIZE);
+      q += DIR_ENTRY_SIZE;
       entries++;
       ret=parseEntry(fs, &de);
 
