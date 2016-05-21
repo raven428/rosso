@@ -719,18 +719,6 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   return 0;
 }
 
-int32_t syncFileSystem(struct sFileSystem *fs) {
-/*
-  sync file system
-*/
-  if (fflush(fs->fd) != 0) {
-    myerror("Could not flush stream!");
-    return -1;
-  }
-
-  return 0;
-}
-
 int32_t closeFileSystem(struct sFileSystem *fs) {
 /*
   closes file system

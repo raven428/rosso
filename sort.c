@@ -399,9 +399,6 @@ int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
     list=list->next;
   }
 
-  // sync fs
-  syncFileSystem(fs);
-
   return 0;
 }
 
@@ -522,7 +519,6 @@ struct sClusterChain *chain) {
   uint32_t i=0, entries=0;
   struct sLongDirEntryList *tmp;
   struct sDirEntryList *p=list->next;
-  char empty[DIR_ENTRY_SIZE]={0};
 
   chain=chain->next;  // we don't need to look at the head element
 
@@ -531,28 +527,26 @@ struct sClusterChain *chain) {
     return -1;
   }
 
+  char* ya = alloca(fs->clusterSize);
+  char* zu = ya;
+  fs_read(ya, 1, fs->clusterSize, fs->fd);
+  fs_seek(fs->fd, -fs->clusterSize, SEEK_CUR);
   while(p != NULL) {
     if (entries+p->entries <= fs->maxDirEntriesPerCluster) {
       tmp=p->ldel;
       for (i=1;i<p->entries;i++) {
-        if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-          stderror();
-          return -1;
-        }
+        memcpy(zu, tmp->lde, DIR_ENTRY_SIZE);
+        zu += DIR_ENTRY_SIZE;
         tmp=tmp->next;
       }
-      if (fs_write(p->sde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-        stderror();
-        return -1;
-      }
+      memcpy(zu, p->sde, DIR_ENTRY_SIZE);
+      zu += DIR_ENTRY_SIZE;
       entries+=p->entries;
     } else {
       tmp=p->ldel;
       for (i=1;i<=fs->maxDirEntriesPerCluster-entries;i++) {
-        if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-          stderror();
-          return -1;
-        }
+        memcpy(zu, tmp->lde, DIR_ENTRY_SIZE);
+        zu += DIR_ENTRY_SIZE;
         tmp=tmp->next;
       }
       chain=chain->next;
@@ -563,28 +557,22 @@ struct sClusterChain *chain) {
         return -1;
       }
       while(tmp!=NULL) {
-        if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-          stderror();
-          return -1;
-        }
+        memcpy(zu, tmp->lde, DIR_ENTRY_SIZE);
+        zu += DIR_ENTRY_SIZE;
         tmp=tmp->next;
       }
-      if (fs_write(p->sde, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
-        stderror();
-        return -1;
-      }
+      memcpy(zu, p->sde, DIR_ENTRY_SIZE);
+      zu += DIR_ENTRY_SIZE;
     }
     p=p->next;
   }
   if (entries < fs->maxDirEntriesPerCluster) {
-    if (fs_write(empty, DIR_ENTRY_SIZE, 1, fs->fd)<1) {
+    memset(zu, 0, DIR_ENTRY_SIZE);
+    if (fs_write(ya, fs->clusterSize, 1, fs->fd)<1) {
       stderror();
       return -1;
     }
   }
-
-  // sync fs
-  syncFileSystem(fs);
 
   return 0;
 
