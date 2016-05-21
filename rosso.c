@@ -26,9 +26,10 @@
 
 // program information
 #define INFO_PROGRAM    "rosso"
-#define INFO_DESCRIPTION  "Rosso sorts directory structures of FAT file systems. " \
-        "but play them in the  order they were transferred to the " \
-        "device. Rosso can help here.\n"
+#define INFO_DESCRIPTION \
+"Rosso sorts directory structures of FAT file systems. Many hardware\n" \
+"players do not sort files automatically but play them in the order they\n" \
+"were transferred to the device. Rosso can help here.\n"
 
 #define INFO_USAGE    "Usage: rosso [OPTIONS] DEVICE\n" \
         "\n" \
