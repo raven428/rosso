@@ -1,5 +1,6 @@
 CC=gcc
 LD=gcc
+.RECIPEPREFIX +=
 
 ifdef DEBUG
 CFLAGS += -g -DDEBUG=$(DEBUG) -fstack-protector-all
