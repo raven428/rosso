@@ -599,8 +599,6 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   assert(path != NULL);
   assert(fs != NULL);
 
-  fs->rfd=0;
-
   switch(mode) {
     case FS_MODE_RO:
       if ((fs->fd=fs_open(path, GENERIC_READ)) == NULL) {
@@ -622,8 +620,7 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   // read boot sector
   if (read_bootsector(fs->fd, &(fs->bs))) {
     myerror("Failed to read boot sector!");
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;
   }
 
@@ -639,29 +636,25 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 
   if (fs->totalSectors == 0) {
     myerror("Count of total sectors must not be zero!");
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;
   }
 
   fs->FATType = getFATType(&(fs->bs));
   if (fs->FATType == -1) {
     myerror("Failed to get FAT type!");
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;
   }
 
   if ((fs->FATType == FATTYPE_FAT32) && (fs->bs.FATxx.FAT32.BS_FATSz32 == 0)) {
     myerror("32-bit count of FAT sectors must not be zero for FAT32!");
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;
   } else if (((fs->FATType == FATTYPE_FAT12) ||
   (fs->FATType == FATTYPE_FAT16)) && (fs->bs.BS_FATSz16 == 0)) {
     myerror("16-bit count of FAT sectors must not be zero for FAT1x!");
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;
   }  
 
@@ -675,31 +668,27 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   if (((fs->FATType == FATTYPE_FAT16) || (fs->FATType == FATTYPE_FAT12)) &&
   (SwapInt16(fs->bs.BS_RootEntCnt) == 0)) {
     myerror("Count of root directory entries must not be zero for FAT1x!");
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;  
   } else if ((fs->FATType == FATTYPE_FAT32) &&
   (SwapInt16(fs->bs.BS_RootEntCnt) != 0)) {
     myerror("Count of root directory entries must be zero for FAT32 (%u)!",
       SwapInt16(fs->bs.BS_RootEntCnt));
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;  
   }
 
   fs->clusters=getCountOfClusters(&(fs->bs));
   if (fs->clusters == -1) {
     myerror("Failed to get count of clusters!");
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;
   }
 
   if (fs->clusters > 268435445) {
     myerror("Count of clusters should be less than 268435446, but is %d!",
       fs->clusters);
-    fclose(fs->fd);
-    close(fs->rfd);
+    fs_close(fs->fd);
     return -1;
   }
 
@@ -748,9 +737,7 @@ int32_t closeFileSystem(struct sFileSystem *fs) {
 */
   assert(fs != NULL);
 
-  fclose(fs->fd);
-  if ((fs->mode == FS_MODE_RW_EXCL) || (fs->mode == FS_MODE_RO_EXCL))
-    close(fs->rfd);
+  fs_close(fs->fd);
   iconv_close(fs->cd);
 
   return 0;

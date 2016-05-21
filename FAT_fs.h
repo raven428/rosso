@@ -153,7 +153,6 @@ struct sFSInfo {
 // holds information about the file system
 struct sFileSystem {
   FILE *fd;
-  int32_t rfd;
   uint32_t mode;
   char path[MAX_PATH_LEN+1];
   struct sBootSector bs;
