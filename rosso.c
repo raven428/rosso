@@ -68,8 +68,6 @@
         "\trosso /dev/sda\t\tSort /dev/sda.\n" \
         "\trosso -n /dev/sdb1\t\tSort /dev/sdb1 with natural order.\n"
 
-#define INFO_OPTION_VERSION  INFO_PROGRAM " " MAJOR "." MINOR "." PATCH "\n"
-
 #define INFO_OPTION_HELP  INFO_DESCRIPTION \
         "\n" \
         INFO_USAGE
@@ -187,7 +185,7 @@ int main(int argc, char *argv[]) {
     printf(INFO_OPTION_HELP);
     return 0;
   } else if (OPT_VERSION) {
-    printf(INFO_OPTION_VERSION);
+    printf("%s %d.%d.%d\n", INFO_PROGRAM, MAJOR, MINOR, PATCH);
     return 0;
   } else if (optind < argc -1) {
     myerror("Too many arguments!");
