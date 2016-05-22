@@ -1,0 +1,17 @@
+#include "ver.h"
+0 ICON rosso.ico
+1 VERSIONINFO FILEVERSION MAJOR, MINOR, PATCH
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904b0"
+    BEGIN
+      VALUE "FileDescription", "Rosso"
+      VALUE "CompanyName", "Steven Penny"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 0x4b0
+  END
+END

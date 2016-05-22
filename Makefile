@@ -3,6 +3,7 @@ MINOR = 0
 PATCH = 1
 CC = x86_64-w64-mingw32-gcc -fdiagnostics-color
 LD = x86_64-w64-mingw32-gcc
+WINDRES = x86_64-w64-mingw32-windres
 LDFLAGS = -liconv -static
 .RECIPEPREFIX +=
 
@@ -16,13 +17,16 @@ endif
 CFLAGS += -Wall -Wextra
 override CFLAGS+= -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 
-OBJ=rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o options.o \
-  clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
+OBJ=rosso.coff rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o \
+  options.o clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
 
-rosso.exe: ver.h $(OBJ) $(DEBUG_OBJ)
+rosso.exe: $(OBJ) $(DEBUG_OBJ)
   ${LD} $(OBJ) ${LDFLAGS} $(DEBUG_OBJ) -o $@
 
-ver.h:
+%.coff: ver.h
+  $(WINDRES) rosso.rc $@
+
+%.h:
   ./ver.sed Makefile > $@
 
 release: rosso-$(MAJOR).$(MINOR).$(PATCH).zip
@@ -32,4 +36,4 @@ release: rosso-$(MAJOR).$(MINOR).$(PATCH).zip
   zip $@ $< readme.md
 
 clean:
-  rm -f *.exe *.o *.zip ver.h
+  rm -f *.exe *.o *.zip *.coff
