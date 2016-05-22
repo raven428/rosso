@@ -23,6 +23,7 @@
 #include "misc.h"
 #include "platform.h"
 #include "mallocv.h"
+#include "ver.h"
 
 // program information
 #define INFO_PROGRAM    "rosso"
@@ -67,7 +68,7 @@
         "\trosso /dev/sda\t\tSort /dev/sda.\n" \
         "\trosso -n /dev/sdb1\t\tSort /dev/sdb1 with natural order.\n"
 
-#define INFO_OPTION_VERSION  INFO_PROGRAM "\n"
+#define INFO_OPTION_VERSION  INFO_PROGRAM " " MAJOR "." MINOR "." PATCH "\n"
 
 #define INFO_OPTION_HELP  INFO_DESCRIPTION \
         "\n" \

@@ -29,7 +29,7 @@ rosso: $(OBJ) $(DEBUG_OBJ) Makefile
   ${LD} $(OBJ) ${LDFLAGS} $(DEBUG_OBJ) -o $@
 
 rosso.o: rosso.c endianness.h FAT_fs.h platform.h options.h \
- stringlist.h errors.h sort.h clusterchain.h misc.h mallocv.h Makefile
+ stringlist.h errors.h sort.h clusterchain.h misc.h mallocv.h ver.h Makefile
   $(CC) ${CFLAGS} -c $< -o $@
 
 FAT_fs.o: FAT_fs.c FAT_fs.h platform.h errors.h endianness.h fileio.h \
@@ -76,11 +76,14 @@ stringlist.o: stringlist.c stringlist.h platform.h FAT_fs.h errors.h \
 mallocv.o: mallocv.c mallocv.h errors.h
   $(CC) ${CFLAGS} -c $< -o $@
 
+ver.h: Makefile
+  ./ver.sed $< > $@
+
 install:
   install $(INSTALL_FLAGS) rosso $(DESTDIR)$(SBINDIR)/rosso
   
 clean:
-  rm -f *.o rosso
+  rm -f rosso *.o ver.h
 
 .PHONY: all clean
 
