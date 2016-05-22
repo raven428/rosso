@@ -1,6 +1,6 @@
 MAJOR = 1
 MINOR = 0
-PATCH = 1
+PATCH = 2
 CC = x86_64-w64-mingw32-gcc -fdiagnostics-color
 LD = x86_64-w64-mingw32-gcc
 WINDRES = x86_64-w64-mingw32-windres
