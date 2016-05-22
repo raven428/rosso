@@ -1,3 +1,4 @@
 *.o
 *.exe
+*.zip
 ver.h

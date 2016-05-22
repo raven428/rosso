@@ -23,9 +23,7 @@ SBINDIR=/usr/local/sbin
 OBJ=rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o options.o \
   clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
 
-all: rosso
-
-rosso: $(OBJ) $(DEBUG_OBJ) Makefile
+rosso.exe: $(OBJ) $(DEBUG_OBJ) Makefile
   ${LD} $(OBJ) ${LDFLAGS} $(DEBUG_OBJ) -o $@
 
 rosso.o: rosso.c endianness.h FAT_fs.h platform.h options.h \
@@ -79,12 +77,11 @@ mallocv.o: mallocv.c mallocv.h errors.h
 ver.h: Makefile
   ./ver.sed $< > $@
 
-install:
-  install $(INSTALL_FLAGS) rosso $(DESTDIR)$(SBINDIR)/rosso
-  
+release: rosso-$(MAJOR).$(MINOR).$(PATCH).zip
+  hub release create -a $< $(MAJOR).$(MINOR).$(PATCH)
+
+%.zip: rosso.exe
+  zip $@ $< readme.md
+
 clean:
-  rm -f rosso *.o ver.h
-
-.PHONY: all clean
-
-
+  rm -f *.exe *.o *.zip ver.h
