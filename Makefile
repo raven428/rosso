@@ -16,10 +16,6 @@ endif
 CFLAGS += -Wall -Wextra
 override CFLAGS+= -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 
-INSTALL_FLAGS=-m 0755 -p -D
-
-UNAME=$(shell uname -s)
-SBINDIR=/usr/local/sbin
 OBJ=rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o options.o \
   clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
 
