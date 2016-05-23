@@ -23,7 +23,7 @@
 #include "misc.h"
 #include "platform.h"
 #include "mallocv.h"
-#include "ver.h"
+#include "rosso.h"
 
 // program information
 #define INFO_PROGRAM    "rosso"

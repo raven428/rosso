@@ -1,4 +1,4 @@
-#include "ver.h"
+#include "rosso.h"
 0 ICON rosso.ico
 1 VERSIONINFO FILEVERSION MAJOR, MINOR, PATCH
 BEGIN
