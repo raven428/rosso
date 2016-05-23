@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
     printf(INFO_OPTION_HELP);
     return 0;
   } else if (OPT_VERSION) {
-    printf("%s %d.%d.%d\n", INFO_PROGRAM, MAJOR, MINOR, PATCH);
+    printf("%d.%d.%d\n", MAJOR, MINOR, PATCH);
     return 0;
   } else if (optind < argc -1) {
     myerror("Too many arguments!");
