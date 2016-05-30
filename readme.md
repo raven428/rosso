@@ -1,6 +1,6 @@
 Rosso
 =====
-![porco](http://rawgit.com/svnpenn/rosso/master/rosso.jpg)
+![porco](//rawgit.com/svnpenn/rosso/master/rosso.jpg)
 
 Rosso is a C utility that sorts FAT32 file systems. Many hardware players do not
 sort files automatically but play them in the order they were transferred to the
