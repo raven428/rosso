@@ -1,6 +1,7 @@
 CC = x86_64-w64-mingw32-gcc -fdiagnostics-color
 WINDRES = x86_64-w64-mingw32-windres
-LDFLAGS = -liconv -static
+LDFLAGS = -static
+LDLIBS = -liconv
 .RECIPEPREFIX +=
 
 ifdef DEBUG
@@ -18,8 +19,7 @@ OBJ = rosso.coff rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o \
 
 VR = $(shell ./rosso -v)
 
-rosso.exe: $(OBJ) $(DEBUG_OBJ)
-  $(CC) $(OBJ) $(LDFLAGS) $(DEBUG_OBJ) -o $@
+rosso: $(OBJ) $(DEBUG_OBJ)
 
 %.coff:
   $(WINDRES) rosso.rc $@
