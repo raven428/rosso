@@ -20,7 +20,7 @@ OBJ = rosso.coff rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o \
 VR = $(shell ./rosso -v)
 
 rosso.exe: $(OBJ) $(DEBUG_OBJ)
-  ${LD} $(OBJ) ${LDFLAGS} $(DEBUG_OBJ) -o $@
+  $(LD) $(OBJ) $(LDFLAGS) $(DEBUG_OBJ) -o $@
 
 %.coff:
   $(WINDRES) rosso.rc $@
