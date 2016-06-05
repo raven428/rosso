@@ -22,7 +22,8 @@ struct sStringList *OPT_INCL_DIRS_REC = NULL;
 struct sStringList *OPT_EXCL_DIRS_REC = NULL;
 struct sStringList *OPT_IGNORE_PREFIXES_LIST = NULL;
 
-int32_t addDirPathToStringList(struct sStringList *stringList, const char (*str)[MAX_PATH_LEN+1]) {
+int32_t addDirPathToStringList(struct sStringList *stringList,
+const char (*str)[MAX_PATH_LEN+1]) {
 /*
   insert new string into string list
 */
@@ -30,17 +31,17 @@ int32_t addDirPathToStringList(struct sStringList *stringList, const char (*str)
   assert(stringList->str == NULL);
   assert(str != NULL);
   assert(strlen((char *)str) <= MAX_PATH_LEN);
-  
+
   char *newStr;
-  
+
   int32_t ret, prefix=0, suffix=0, len;
-  
+
   len=strlen((char*)str);
-  
+
   // determine whether we have to add slashes
   if (((const char*) str)[0] != '/') prefix=1;
   if (((const char*) str)[len-1] != '/') suffix=1;
-  
+
   // allocate memory for string
   newStr=malloc(prefix+len+suffix+1);
   if (newStr == NULL) {
@@ -53,19 +54,19 @@ int32_t addDirPathToStringList(struct sStringList *stringList, const char (*str)
   strncat(newStr, "/", prefix);
   strncat(newStr, (const char*) str, len);
   strncat(newStr, "/", suffix);
-  
+
   if (prefix+len+suffix > MAX_PATH_LEN) {
     newStr[MAX_PATH_LEN] = '\0';
   } else {
     newStr[prefix+len+suffix] = '\0';
   }
-  
+
   ret = addStringToStringList(stringList, newStr);
 
   free(newStr);
 
   return ret;
-  
+
 }
 
 int32_t matchesDirPathLists(struct sStringList *includes,
@@ -83,26 +84,25 @@ int32_t matchesDirPathLists(struct sStringList *includes,
   incl_rec=matchesStringList(includes_recursion, (const char*) str);
   excl=matchesStringList(excludes, (const char*) str);
   excl_rec=matchesStringList(excludes_recursion, (const char*) str);
-  
-  // debug("str=%s,incl=%d,inclrec=%d,excl=%d,exclrec=%d", str, incl, incl_rec, excl, excl_rec);
 
   // if no options -d and -D are used
   if ((includes->next==NULL) && (includes_recursion->next==NULL)) {
     // match all directories except those are supplied via -x
-    // and those and subdirs that are supplied via -X 
+    // and those and subdirs that are supplied via -X
     if ((excl != RETURN_EXACT_MATCH) && (excl_rec == RETURN_NO_MATCH)) {
       return 1; // match
     }
   // if options -d and -D are used
   } else {
-    // match all dirs that are supplied via -d, and all dirs and subdirs that are supplied via -D,
-    // except those that excplicitly excluded via -x, or those and their subdirs that are supplied via -X
-    if (((incl == RETURN_EXACT_MATCH) || (incl_rec != RETURN_NO_MATCH)) && 
+    /* match all dirs that are supplied via -d, and all dirs and subdirs that
+    are supplied via -D, except those that excplicitly excluded via -x, or those
+    and their subdirs that are supplied via -X */
+    if (((incl == RETURN_EXACT_MATCH) || (incl_rec != RETURN_NO_MATCH)) &&
           (excl != RETURN_EXACT_MATCH) && (excl_rec == RETURN_NO_MATCH)) {
       return 1; // match
     }
   }
-  
+
   return 0; // no match
 }
 
@@ -124,12 +124,12 @@ int32_t parse_options(int argc, char *argv[]) {
   OPT_INFO = 0;
   OPT_MORE_INFO = 0;
 
-  /* Default (1) is normal order, use -1 for reverse order. */  
+  /* Default (1) is normal order, use -1 for reverse order. */
   OPT_REVERSE = 1;
 
   // natural sort
   OPT_NATURAL_SORT = 0;
-  
+
   // random sort order
   OPT_RANDOM = 0;
 
@@ -141,7 +141,7 @@ int32_t parse_options(int argc, char *argv[]) {
 
   // be noisy by default
   OPT_QUIET = 0;
-  
+
   // no version information by default
   OPT_VERSION = 0;
 
@@ -171,7 +171,7 @@ int32_t parse_options(int argc, char *argv[]) {
     freeOptions();
     return -1;
   }
-  
+
   // empty string list for to be ignored prefixes
   if ((OPT_IGNORE_PREFIXES_LIST=newStringList()) == NULL) {
     myerror("Could not create stringList!");
@@ -180,7 +180,8 @@ int32_t parse_options(int argc, char *argv[]) {
   }
 
   opterr=0;
-  while ((c=getopt_long(argc, argv, "imvhqcfo:lrRnd:D:x:X:I:ta", longOpts, NULL)) != -1) {
+  while((c = getopt_long(argc, argv, "imvhqcfo:lrRnd:D:x:X:I:ta",
+  longOpts, NULL)) != -1) {
     switch(c) {
       case 'a' : OPT_ASCII = 1; break;
       case 'c' : OPT_IGNORE_CASE = 1; break;
@@ -202,28 +203,32 @@ int32_t parse_options(int argc, char *argv[]) {
         }
         break;
       case 'd' :
-        if (addDirPathToStringList(OPT_INCL_DIRS, (const char(*)[MAX_PATH_LEN+1]) optarg)) {
+        if(addDirPathToStringList(OPT_INCL_DIRS,
+        (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to dirPathList");
           freeOptions();
           return -1;
         }
         break;
       case 'D' :
-        if (addDirPathToStringList(OPT_INCL_DIRS_REC, (const char(*)[MAX_PATH_LEN+1]) optarg)) {
+        if(addDirPathToStringList(OPT_INCL_DIRS_REC,
+        (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to string list");
           freeOptions();
           return -1;
         }
-        break;            
+        break;
       case 'x' :
-        if (addDirPathToStringList(OPT_EXCL_DIRS, (const char(*)[MAX_PATH_LEN+1]) optarg)) {
+        if(addDirPathToStringList(OPT_EXCL_DIRS,
+        (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to string list");
           freeOptions();
           return -1;
         }
         break;
       case 'X' :
-        if (addDirPathToStringList(OPT_EXCL_DIRS_REC, (const char(*)[MAX_PATH_LEN+1]) optarg)) {
+        if(addDirPathToStringList(OPT_EXCL_DIRS_REC,
+        (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to string list");
           freeOptions();
           return -1;
@@ -235,7 +240,7 @@ int32_t parse_options(int argc, char *argv[]) {
           freeOptions();
           return -1;
         }
-        break;        
+        break;
       case 'n' : OPT_NATURAL_SORT = 1; break;
       case 'q' : OPT_QUIET = 1; break;
       case 'r' : OPT_REVERSE = -1; break;
