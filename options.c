@@ -111,7 +111,7 @@ int32_t parse_options(int argc, char *argv[]) {
   parses command line options
 */
 
-  int8_t c;
+  int8_t j;
 
   static struct option longOpts[] = {
     // name, has_arg, flag, val
@@ -180,9 +180,9 @@ int32_t parse_options(int argc, char *argv[]) {
   }
 
   opterr = 0;
-  while((c = getopt_long(argc, argv, "imvhqcfo:lrRnd:D:x:X:I:ta",
+  while ((j = getopt_long(argc, argv, "imvhqcfo:lrRnd:D:x:X:I:ta",
   longOpts, NULL)) != -1) {
-    switch(c) {
+    switch (j) {
       case 'a': OPT_ASCII = 1; break;
       case 'c': OPT_IGNORE_CASE = 1; break;
       case 'f': OPT_FORCE = 1; break;
