@@ -12,9 +12,9 @@
 #if DEBUG >= 1
 #define DEBUGMSG(msg...) errormsg("DEBUG", msg);
 #else 
-#define DEBUGMSG(msg...)
+#define DEBUGMSG(...)
 #endif
-#define myerror(msg...) errormsg(__func__, msg);
+#define myerror(...) errormsg(__func__, __VA_ARGS__);
 #define stderror() errormsg(__func__, "%s!", strerror(errno));
 
 // error messages with function name and argument list

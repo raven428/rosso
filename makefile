@@ -4,7 +4,7 @@ LDFLAGS = -static
 LDLIBS = -liconv
 .RECIPEPREFIX +=
 
-CFLAGS = -Wall -Wextra -fdiagnostics-color \
+CFLAGS = -Wall -Wextra -pedantic -std=c11 -fdiagnostics-color \
   -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 
 ifdef DEBUG
