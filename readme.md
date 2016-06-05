@@ -10,6 +10,12 @@ Supported platforms
 -------------------
 Windows 64-bit
 
+Package requirements
+--------------------
+- make
+- mingw64-x86_64-gcc-core
+- mingw64-x86_64-win-iconv
+
 Website
 -------
 http://svnpenn.github.io/rosso
