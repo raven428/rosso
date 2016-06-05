@@ -152,28 +152,28 @@ int32_t parse_options(int argc, char *argv[]) {
   OPT_ASCII = 0;
 
   // empty string lists for inclusion and exclusion of dirs
-  if ((OPT_INCL_DIRS=newStringList()) == NULL) {
+  if ((OPT_INCL_DIRS = newStringList()) == NULL) {
     myerror("Could not create stringList!");
     return -1;
   }
-  if ((OPT_INCL_DIRS_REC=newStringList()) == NULL) {
-    myerror("Could not create stringList!");
-    freeOptions();
-    return -1;
-  }
-  if ((OPT_EXCL_DIRS=newStringList()) == NULL) {
+  if ((OPT_INCL_DIRS_REC = newStringList()) == NULL) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
   }
-  if ((OPT_EXCL_DIRS_REC=newStringList()) == NULL) {
+  if ((OPT_EXCL_DIRS = newStringList()) == NULL) {
+    myerror("Could not create stringList!");
+    freeOptions();
+    return -1;
+  }
+  if ((OPT_EXCL_DIRS_REC = newStringList()) == NULL) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
   }
 
   // empty string list for to be ignored prefixes
-  if ((OPT_IGNORE_PREFIXES_LIST=newStringList()) == NULL) {
+  if ((OPT_IGNORE_PREFIXES_LIST = newStringList()) == NULL) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
@@ -192,9 +192,9 @@ int32_t parse_options(int argc, char *argv[]) {
       case 'l': OPT_LIST = 1; break;
       case 'o':
         switch (optarg[0]) {
-          case 'd': OPT_ORDER=0; break;
-          case 'f': OPT_ORDER=1; break;
-          case 'a': OPT_ORDER=2; break;
+          case 'd': OPT_ORDER = 0; break;
+          case 'f': OPT_ORDER = 1; break;
+          case 'a': OPT_ORDER = 2; break;
           default:
             myerror("Unknown flag '%c' for option 'o'.", optarg[0]);
             myerror("Use -h for more help.");
