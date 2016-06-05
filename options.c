@@ -179,19 +179,19 @@ int32_t parse_options(int argc, char *argv[]) {
     return -1;
   }
 
-  opterr=0;
+  opterr = 0;
   while((c = getopt_long(argc, argv, "imvhqcfo:lrRnd:D:x:X:I:ta",
   longOpts, NULL)) != -1) {
     switch(c) {
-      case 'a' : OPT_ASCII = 1; break;
-      case 'c' : OPT_IGNORE_CASE = 1; break;
-      case 'f' : OPT_FORCE = 1; break;
-      case 'h' : OPT_HELP = 1; break;
-      case 'i' : OPT_INFO = 1; break;
-      case 'm' : OPT_MORE_INFO = 1; break;
-      case 'l' : OPT_LIST = 1; break;
-      case 'o' :
-        switch(optarg[0]) {
+      case 'a': OPT_ASCII = 1; break;
+      case 'c': OPT_IGNORE_CASE = 1; break;
+      case 'f': OPT_FORCE = 1; break;
+      case 'h': OPT_HELP = 1; break;
+      case 'i': OPT_INFO = 1; break;
+      case 'm': OPT_MORE_INFO = 1; break;
+      case 'l': OPT_LIST = 1; break;
+      case 'o':
+        switch (optarg[0]) {
           case 'd': OPT_ORDER=0; break;
           case 'f': OPT_ORDER=1; break;
           case 'a': OPT_ORDER=2; break;
@@ -202,51 +202,51 @@ int32_t parse_options(int argc, char *argv[]) {
             return -1;
         }
         break;
-      case 'd' :
-        if(addDirPathToStringList(OPT_INCL_DIRS,
+      case 'd':
+        if (addDirPathToStringList(OPT_INCL_DIRS,
         (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to dirPathList");
           freeOptions();
           return -1;
         }
         break;
-      case 'D' :
-        if(addDirPathToStringList(OPT_INCL_DIRS_REC,
+      case 'D':
+        if (addDirPathToStringList(OPT_INCL_DIRS_REC,
         (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to string list");
           freeOptions();
           return -1;
         }
         break;
-      case 'x' :
-        if(addDirPathToStringList(OPT_EXCL_DIRS,
+      case 'x':
+        if (addDirPathToStringList(OPT_EXCL_DIRS,
         (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to string list");
           freeOptions();
           return -1;
         }
         break;
-      case 'X' :
-        if(addDirPathToStringList(OPT_EXCL_DIRS_REC,
+      case 'X':
+        if (addDirPathToStringList(OPT_EXCL_DIRS_REC,
         (const char(*)[MAX_PATH_LEN+1]) optarg)) {
           myerror("Could not add directory path to string list");
           freeOptions();
           return -1;
         }
         break;
-      case 'I' :
+      case 'I':
         if (addStringToStringList(OPT_IGNORE_PREFIXES_LIST, optarg)) {
           myerror("Could not add directory path to string list");
           freeOptions();
           return -1;
         }
         break;
-      case 'n' : OPT_NATURAL_SORT = 1; break;
-      case 'q' : OPT_QUIET = 1; break;
-      case 'r' : OPT_REVERSE = -1; break;
-      case 'R' : OPT_RANDOM = 1; break;
-                        case 't' : OPT_MODIFICATION = 1; break;
-      case 'v' : OPT_VERSION = 1; break;
+      case 'n': OPT_NATURAL_SORT = 1; break;
+      case 'q': OPT_QUIET = 1; break;
+      case 'r': OPT_REVERSE = -1; break;
+      case 'R': OPT_RANDOM = 1; break;
+      case 't': OPT_MODIFICATION = 1; break;
+      case 'v': OPT_VERSION = 1; break;
       default :
         myerror("Unknown option '%c'.", optopt);
         myerror("Use -h for more help.");
