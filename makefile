@@ -1,4 +1,4 @@
-CC = x86_64-w64-mingw32-gcc -fdiagnostics-color
+CC = x86_64-w64-mingw32-gcc
 WINDRES = x86_64-w64-mingw32-windres
 LDFLAGS = -static
 LDLIBS = -liconv
@@ -11,7 +11,7 @@ else
 LDFLAGS += -s
 endif
 
-CFLAGS += -Wall -Wextra
+CFLAGS += -Wall -Wextra -fdiagnostics-color
 override CFLAGS+= -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 
 OBJ = rosso.coff rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o \
