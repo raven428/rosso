@@ -12,7 +12,7 @@ Windows 64-bit
 
 Website
 -------
-http://github.com/svnpenn/rosso
+http://svnpenn.github.io/rosso
 
 Download
 --------
