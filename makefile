@@ -4,15 +4,15 @@ LDFLAGS = -static
 LDLIBS = -liconv
 .RECIPEPREFIX +=
 
+CFLAGS = -Wall -Wextra -fdiagnostics-color \
+  -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+
 ifdef DEBUG
 CFLAGS += -g -DDEBUG=$(DEBUG) -fstack-protector-all
 DEBUG_OBJ = mallocv.o
 else
 LDFLAGS += -s
 endif
-
-CFLAGS += -Wall -Wextra -fdiagnostics-color
-override CFLAGS+= -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 
 OBJ = rosso.coff rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o \
   options.o clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
