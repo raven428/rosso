@@ -6,7 +6,7 @@ LDFLAGS = -liconv -static
 
 ifdef DEBUG
 CFLAGS += -g -DDEBUG=$(DEBUG) -fstack-protector-all
-DEBUG_OBJ=mallocv.o
+DEBUG_OBJ = mallocv.o
 else
 LDFLAGS += -s
 endif
