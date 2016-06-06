@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #include <stdint.h>
 #include <windows.h>
-#include "platform.h"
 
 FILE* fs_open(char* path, uint32_t mode);
 int fs_seek(FILE *stream, off_t offset, int whence);

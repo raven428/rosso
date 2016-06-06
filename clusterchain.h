@@ -11,8 +11,6 @@
 #include <sys/types.h>
 #include <stdint.h>
 
-#include "platform.h"
-
 struct sClusterChain {
 /*
   this structure contains cluster chains

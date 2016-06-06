@@ -3,7 +3,6 @@
 */
 
 #include "sort.h"
-#include "platform.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -20,7 +19,6 @@
 #include "signal.h"
 #include "misc.h"
 #include "fileio.h"
-#include "platform.h"
 #include "stringlist.h"
 #include "mallocv.h"
 

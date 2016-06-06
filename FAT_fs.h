@@ -48,7 +48,6 @@
 #include <iconv.h>
 
 #include <stdint.h>
-#include "platform.h"
 
 // Directory entry structures
 // Structure for long directory names
@@ -84,6 +83,7 @@ union sDirEntry {
   struct sLongDirEntry LongDirEntry;
 };
 
+#pragma pack(1)
 // Bootsector structures
 // FAT12 and FAT16
 struct sFAT12_16 {
@@ -138,6 +138,7 @@ struct sBootSector {
   union sFATxx FATxx;
   uint16_t BS_EndOfBS;    // marks end of bootsector
 };
+#pragma pack()
 
 // FAT32 FSInfo structure
 struct sFSInfo {

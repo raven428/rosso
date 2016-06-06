@@ -21,7 +21,6 @@
 #include "sort.h"
 #include "clusterchain.h"
 #include "misc.h"
-#include "platform.h"
 #include "mallocv.h"
 #include "rosso.h"
 

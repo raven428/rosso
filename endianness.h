@@ -15,7 +15,6 @@
 #else
 
 #include <sys/types.h>
-#include "platform.h"
 
 // swaps endianness of a 16 bit integer
 u_int16_t SwapInt16(u_int16_t value);

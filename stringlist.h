@@ -6,7 +6,6 @@
 #define __stringlist_h__
 
 #include <sys/types.h>
-#include "platform.h"
 #include "FAT_fs.h"
 
 struct sStringList {

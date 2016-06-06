@@ -6,7 +6,6 @@
 #define __options_h__
 
 #include <sys/types.h>
-#include "platform.h"
 #include "FAT_fs.h"
 #include "stringlist.h"
 
