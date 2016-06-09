@@ -599,15 +599,18 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   assert(path != NULL);
   assert(fs != NULL);
 
+  memcpy(fs->path, "\\\\.\\", 4);
+  memcpy(fs->path + 4, path, 2);
+
   switch(mode) {
     case FS_MODE_RO:
-      if ((fs->fd=fs_open(path, GENERIC_READ)) == NULL) {
+      if ((fs->fd=fs_open(fs->path, GENERIC_READ)) == NULL) {
         stderror();
         return -1;
       }      
       break;
     case FS_MODE_RW:
-      if ((fs->fd=fs_open(path, GENERIC_READ | GENERIC_WRITE)) == NULL) {
+      if ((fs->fd=fs_open(fs->path, GENERIC_READ | GENERIC_WRITE)) == NULL) {
         stderror();
         return -1;
       }
@@ -623,10 +626,6 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
     fs_close(fs->fd);
     return -1;
   }
-
-  strncpy(fs->path, path, MAX_PATH_LEN);
-  fs->path[MAX_PATH_LEN] = '\0';
-
 
   if (SwapInt16(fs->bs.BS_TotSec16) != 0) {
     fs->totalSectors = SwapInt16(fs->bs.BS_TotSec16);

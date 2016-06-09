@@ -25,52 +25,49 @@
 #include "rosso.h"
 
 // program information
-#define INFO_PROGRAM    "rosso"
-#define INFO_DESCRIPTION \
-"Rosso sorts directory structures of FAT file systems. Many hardware\n" \
-"players do not sort files automatically but play them in the order they\n" \
-"were transferred to the device. Rosso can help here.\n"
-
-#define INFO_USAGE    "Usage: rosso [OPTIONS] DEVICE\n" \
-        "\n" \
-        "Options:\n\n" \
-        "\t-a\t Use ASCIIbetical order for sorting\n\n" \
-        "\t-c\t Ignore case of file names\n\n" \
-        "\t-f\t Force sorting even if file system is mounted\n\n" \
-        "\t-h, --help\n\n" \
-        "\t\tPrint some help\n\n" \
-        "\t-i\t Print file system information only\n\n" \
-        "\t-I=PFX\t Ignore file name PFX\n\n" \
-        "\t-l\t Print current order of files only\n\n" \
-        "\t-o=FLAG\t Sort order of files where FLAG is one of\n\n" \
-        "\t\t\td : directories first (default)\n\n" \
-        "\t\t\tf : files first\n\n" \
-        "\t\t\ta : files and directories are not differentiated\n\n" \
-        "\t-n\t Natural order sorting\n\n" \
-        "\t-q\t Be quiet\n\n" \
-        "\t-r\t Sort in reverse order\n\n" \
-        "\t-R\t Sort in random order\n\n" \
-        "\t-t\t Sort by last modification date and time\n\n" \
-        "\t-v, --version\n\n" \
-        "\t\tPrint version information\n\n" \
-        "\tThe following options can be specified multiple times:\n\n" \
-        "\t-d=DIR\t Sort directory DIR only\n\n" \
-        "\t-D=DIR\t Sort directory DIR and all subdirectories\n\n" \
-        "\t-x=DIR\t Don't sort directory DIR\n\n" \
-        "\t-X=DIR\t Don't sort directory DIR and its subdirectories\n\n" \
-        "DEVICE must be a FAT12, FAT16 or FAT32 file system.\n\n" \
-        "WARNING: THE FILESYSTEM MUST BE CONSISTENT, OTHERWISE YOU MAY DAMAGE IT!\n" \
-        "IF SOMEONE ELSE HAS ACCESS TO THE DEVICE HE MIGHT EXPLOIT ROSSO WITH\n" \
-        "A FORGED CORRUPT FILESYSTEM! USE THIS PROGRAM AT YOUR OWN RISK!\n" \
-        "\n" \
-        "Examples:\n" \
-        "\trosso /dev/sda\t\tSort /dev/sda.\n" \
-        "\trosso -n /dev/sdb1\t\tSort /dev/sdb1 with natural order.\n"
-
-#define INFO_OPTION_HELP  INFO_DESCRIPTION \
-        "\n" \
-        INFO_USAGE
-
+#define INFO_OPTION_HELP \
+"SYNOPSIS\n" \
+"  rosso [OPTIONS] DEVICE\n" \
+"\n" \
+"DESCRIPTION\n" \
+"  Rosso sorts directory structures of FAT file systems. Many hardware\n" \
+"  players do not sort files automatically but play them in the order they\n" \
+"  were transferred to the device. Rosso can help here.\n" \
+"\n" \
+"OPTIONS\n" \
+"  -a    Use ASCIIbetical order for sorting\n" \
+"  -c    Ignore case of file names\n" \
+"  -i    Print file system information only\n" \
+"  -l    Print current order of files only\n" \
+"  -n    Natural order sorting\n" \
+"  -q    Be quiet\n" \
+"  -r    Sort in reverse order\n" \
+"  -R    Sort in random order\n" \
+"  -t    Sort by last modification date and time\n" \
+"  -h, --help    Print some help\n" \
+"  -v, --version    Print version information\n" \
+"  -I=PFX    Ignore file name PFX\n" \
+"  -o=FLAG    Sort order of files where FLAG is one of:\n" \
+"    d    Directories first (default)\n" \
+"    f    Files first\n" \
+"    a    Files and directories are not differentiated\n" \
+"\n" \
+"  The following options can be specified multiple times:\n" \
+"\n" \
+"  -d=DIR    Sort directory DIR only\n" \
+"  -D=DIR    Sort directory DIR and all subdirectories\n" \
+"  -x=DIR    Do not sort directory DIR\n" \
+"  -X=DIR    Do not sort directory DIR and its subdirectories\n" \
+"\n" \
+"EXAMPLES\n" \
+"  rosso -l F:\n" \
+"  rosso F:\n" \
+"\n" \
+"NOTES\n" \
+"  DEVICE must be a FAT12, FAT16 or FAT32 file system.\n" \
+"  WARNING: THE FILESYSTEM MUST BE CONSISTENT, OTHERWISE YOU MAY DAMAGE IT!\n" \
+"  IF SOMEONE ELSE HAS ACCESS TO THE DEVICE HE MIGHT EXPLOIT ROSSO WITH A\n" \
+"  FORGED CORRUPT FILESYSTEM! USE THIS PROGRAM AT YOUR OWN RISK!\n"
 
 int32_t printFSInfo(char *filename) {
 /*
