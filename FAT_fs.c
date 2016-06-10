@@ -15,7 +15,6 @@
 
 #include "errors.h"
 #include "fileio.h"
-#include "mallocv.h"
 
 // used to check if device is mounted
 #if defined(__LINUX__)

@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <errno.h>
 #include "errors.h"
-#include "mallocv.h"
 
 struct sStringList *newStringList() {
 /*

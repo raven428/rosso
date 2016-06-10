@@ -12,7 +12,6 @@
 #include "options.h"
 #include "errors.h"
 #include "natstrcmp.h"
-#include "mallocv.h"
 #include "stringlist.h"
 
 // random number

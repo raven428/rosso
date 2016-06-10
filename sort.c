@@ -19,7 +19,6 @@
 #include "misc.h"
 #include "fileio.h"
 #include "stringlist.h"
-#include "mallocv.h"
 
 int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
 iconv_t cd) {

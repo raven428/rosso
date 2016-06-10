@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "errors.h"
-#include "mallocv.h"
 
 void errormsg(const char *func, const char *str, ...) {
 /*

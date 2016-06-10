@@ -9,17 +9,14 @@ CFLAGS = -Wall -Wextra -pedantic -std=c11 -fdiagnostics-color \
 
 ifdef DEBUG
 CFLAGS += -g -DDEBUG=$(DEBUG) -fstack-protector-all
-DEBUG_OBJ = mallocv.o
 else
 LDFLAGS += -s
 endif
 
-OBJ = rosso.coff rosso.o FAT_fs.o fileio.o entrylist.o errors.o options.o \
-  clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
-
 VR = $(shell ./rosso -v)
 
-rosso: $(OBJ) $(DEBUG_OBJ)
+rosso: rosso.coff rosso.o FAT_fs.o fileio.o entrylist.o errors.o options.o \
+  clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
 
 %.coff:
   $(WINDRES) rosso.rc $@

@@ -7,7 +7,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "options.h"
-#include "mallocv.h"
 
 void infomsg(char *str, ...) {
 /*

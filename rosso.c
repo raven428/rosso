@@ -20,7 +20,6 @@
 #include "sort.h"
 #include "clusterchain.h"
 #include "misc.h"
-#include "mallocv.h"
 #include "rosso.h"
 
 // program information
@@ -215,9 +214,6 @@ int main(int argc, char *argv[]) {
   }
   
   freeOptions();
-  
-  // report mallocv debugging information
-  REPORT_MEMORY_LEAKS
 
   return 0;
 }

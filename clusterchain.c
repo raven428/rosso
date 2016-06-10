@@ -11,7 +11,6 @@
 #include <errno.h>
 #include <assert.h>
 #include "errors.h"
-#include "mallocv.h"
 
 // const struct sClusterChain __INITCLUSTERCHAIN__ = {0, NULL};
 

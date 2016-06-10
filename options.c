@@ -7,9 +7,9 @@
 #include <getopt.h>
 #include <assert.h>
 #include <errno.h>
+#include <stdlib.h>
 #include "errors.h"
 #include "stringlist.h"
-#include "mallocv.h"
 
 uint32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_QUIET, OPT_IGNORE_CASE,
   OPT_ORDER, OPT_LIST, OPT_REVERSE, OPT_FORCE, OPT_NATURAL_SORT,

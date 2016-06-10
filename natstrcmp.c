@@ -8,7 +8,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "mallocv.h"
 
 int32_t isDigit(const char c) {
 /*
