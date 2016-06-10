@@ -107,25 +107,34 @@ int32_t printFSInfo(char *filename) {
   printf("Device:\t\t\t\t\t%s\n", fs.path);
   printf("Type:\t\t\t\t\tFAT%d\n", (int) fs.FATType);
   printf("Sector size:\t\t\t\t%d bytes\n", (int) fs.sectorSize);
-  printf("FAT size:\t\t\t\t%d sectors (%d bytes)\n", (int) fs.FATSize, (int) (fs.FATSize * fs.sectorSize));
-  printf("Number of FATs:\t\t\t\t%d %s\n", fs.bs.BS_NumFATs, (checkFATs(&fs) ? "- WARNING: FATs are different!" : ""));
+  printf("FAT size:\t\t\t\t%d sectors (%d bytes)\n", (int) fs.FATSize,
+    (int) (fs.FATSize * fs.sectorSize));
+  printf("Number of FATs:\t\t\t\t%d %s\n", fs.bs.BS_NumFATs,
+    (checkFATs(&fs) ? "- WARNING: FATs are different!" : ""));
   printf("Cluster size:\t\t\t\t%d bytes\n", (int) fs.clusterSize);
-  printf("Max. cluster chain length:\t\t%d clusters\n", (int) fs.maxClusterChainLength);
-  printf("Data clusters (total / used / bad):\t%d / %d / %d\n", (int) fs.clusters, (int) usedClusters, (int) badClusters);
+  printf("Max. cluster chain length:\t\t%d clusters\n",
+    (int) fs.maxClusterChainLength);
+  printf("Data clusters (total / used / bad):\t%d / %d / %d\n",
+    (int) fs.clusters, (int) usedClusters, (int) badClusters);
   printf("FS size:\t\t\t\t%.2f MiBytes\n", (float) fs.FSSize / (1024.0*1024));
   if (fs.FATType == FATTYPE_FAT32) {
-    if (getFATEntry(&fs, SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus), &value) == -1) {
+    if (getFATEntry(&fs, SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus),
+    &value) == -1) {
       myerror("Failed to get FAT entry!");
       closeFileSystem(&fs);
       return -1;
     }
-    printf("FAT32 root first cluster:\t\t0x%x\nFirst cluster data offset:\t\t0x%lx\nFirst cluster FAT entry:\t\t0x%x\n",
-      (unsigned int) SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus),
-      (unsigned long) getClusterOffset(&fs, SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus)), (unsigned int) value);
+    printf("FAT32 root first cluster:\t\t0x%x\n"
+    "First cluster data offset:\t\t0x%lx\nFirst cluster FAT entry:\t\t0x%x\n",
+    (unsigned int) SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus),
+    (unsigned long) getClusterOffset(&fs,
+    SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus)), (unsigned int) value);
   } else if (fs.FATType == FATTYPE_FAT12) {
-    printf("FAT12 root directory Entries:\t\t%u\n", SwapInt16(fs.bs.BS_RootEntCnt));
+    printf("FAT12 root directory Entries:\t\t%u\n",
+      SwapInt16(fs.bs.BS_RootEntCnt));
   } else if (fs.FATType == FATTYPE_FAT16) {
-    printf("FAT16 root directory Entries:\t\t%u\n", SwapInt16(fs.bs.BS_RootEntCnt));
+    printf("FAT16 root directory Entries:\t\t%u\n",
+      SwapInt16(fs.bs.BS_RootEntCnt));
   }
 
   if (OPT_MORE_INFO) {
