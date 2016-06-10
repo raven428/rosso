@@ -14,7 +14,6 @@
 #include <iconv.h>
 
 #include "errors.h"
-#include "endianness.h"
 #include "fileio.h"
 #include "mallocv.h"
 
@@ -39,34 +38,31 @@ int32_t check_bootsector(struct sBootSector *bs) {
     // boot sector does not begin with specific instruction
      myerror("Boot sector does not begin with jump instruction!");
     return -1;
-  } else if (SwapInt16(bs->BS_EndOfBS) != 0xaa55) {
+  } else if (bs->BS_EndOfBS != 0xaa55) {
     // end of bootsector marker is missing
     myerror("End of boot sector marker is missing!");
     return -1;
-  } else if (SwapInt16(bs->BS_BytesPerSec) == 0) {
+  } else if (bs->BS_BytesPerSec == 0) {
     myerror("Sectors have a size of zero!");
     return -1;
-  } else if (SwapInt16(bs->BS_BytesPerSec) % 512 != 0) {
-    myerror("Sector size is not a multiple of 512 (%u)!",
-      SwapInt16(bs->BS_BytesPerSec));
+  } else if (bs->BS_BytesPerSec % 512 != 0) {
+    myerror("Sector size is not a multiple of 512 (%u)!", bs->BS_BytesPerSec);
     return -1;
   } else if (bs->BS_SecPerClus == 0) {
     myerror("Cluster size is zero!");
     return -1;
-  } else if (bs->BS_SecPerClus * SwapInt16(bs->BS_BytesPerSec) > 32768) {
+  } else if (bs->BS_SecPerClus * bs->BS_BytesPerSec > 32768) {
     myerror("Cluster size is larger than 32k!");
     return -1;
-  } else if (SwapInt16(bs->BS_RsvdSecCnt) == 0) {
+  } else if (bs->BS_RsvdSecCnt == 0) {
     myerror("Reserved sector count is zero!");
     return -1;
   } else if (bs->BS_NumFATs == 0) {
     myerror("Number of FATs is zero!");
     return -1;
-  } else if (SwapInt16(bs->BS_RootEntCnt) % DIR_ENTRY_SIZE != 0) {
-    myerror(
-      "Count of root directory entries must be zero or a multiple or 32! (%u)",
-      SwapInt16(bs->BS_RootEntCnt)
-    );
+  } else if (bs->BS_RootEntCnt % DIR_ENTRY_SIZE != 0) {
+    myerror("Count of root directory entries must be zero or "
+      "a multiple or 32! (%u)", bs->BS_RootEntCnt);
     return -1;
   }
 
@@ -124,8 +120,8 @@ int32_t writeBootSector(struct sFileSystem *fs) {
   //  update backup boot sector for FAT32 file systems
   if (fs->FATType == FATTYPE_FAT32) {
     // seek to beginning of backup boot sector
-    if (fs_seek(fs->fd, SwapInt16(fs->bs.FATxx.FAT32.BS_BkBootSec) *
-    fs->sectorSize, SEEK_SET) == -1) {
+    if (fs_seek(fs->fd, fs->bs.FATxx.FAT32.BS_BkBootSec * fs->sectorSize,
+    SEEK_SET) == -1) {
       stderror();
       return -1;
     }
@@ -149,7 +145,7 @@ int32_t readFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   assert(fsInfo != NULL);
 
   // seek to beginning of FSInfo structure
-  if (fs_seek(fs->fd, SwapInt16(fs->bs.FATxx.FAT32.BS_FSInfo) * fs->sectorSize,
+  if (fs_seek(fs->fd, fs->bs.FATxx.FAT32.BS_FSInfo * fs->sectorSize,
   SEEK_SET) == -1) {
     stderror();
     return -1;
@@ -171,7 +167,7 @@ int32_t writeFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   assert(fsInfo != NULL);
 
   // seek to beginning of FSInfo structure
-  if (fs_seek(fs->fd, SwapInt16(fs->bs.FATxx.FAT32.BS_FSInfo) * fs->sectorSize,
+  if (fs_seek(fs->fd, fs->bs.FATxx.FAT32.BS_FSInfo * fs->sectorSize,
   SEEK_SET) == -1) {
     stderror();
     return -1;
@@ -196,22 +192,22 @@ int32_t getCountOfClusters(struct sBootSector *bs) {
   uint32_t RootDirSectors, FATSz, TotSec, DataSec;
   int32_t retvalue;
 
-  RootDirSectors = ((SwapInt16(bs->BS_RootEntCnt) * DIR_ENTRY_SIZE) +
-    (SwapInt16(bs->BS_BytesPerSec) - 1));
-  RootDirSectors = RootDirSectors / SwapInt16(bs->BS_BytesPerSec);
+  RootDirSectors = ((bs->BS_RootEntCnt * DIR_ENTRY_SIZE) +
+    (bs->BS_BytesPerSec - 1));
+  RootDirSectors = RootDirSectors / bs->BS_BytesPerSec;
 
   if (bs->BS_FATSz16 != 0) {
-    FATSz = SwapInt16(bs->BS_FATSz16);
+    FATSz = bs->BS_FATSz16;
   } else {
-    FATSz = SwapInt32(bs->FATxx.FAT32.BS_FATSz32);
+    FATSz = bs->FATxx.FAT32.BS_FATSz32;
   }
-  if (SwapInt16(bs->BS_TotSec16) != 0) {
-    TotSec = SwapInt16(bs->BS_TotSec16);
+  if (bs->BS_TotSec16 != 0) {
+    TotSec = bs->BS_TotSec16;
   } else {
-    TotSec = SwapInt32(bs->BS_TotSec32);
+    TotSec = bs->BS_TotSec32;
   }
-  DataSec = TotSec - (SwapInt16(bs->BS_RsvdSecCnt) + (bs->BS_NumFATs * FATSz) +
-    RootDirSectors);
+  DataSec = TotSec -
+    (bs->BS_RsvdSecCnt + (bs->BS_NumFATs * FATSz) + RootDirSectors);
 
   retvalue = DataSec / bs->BS_SecPerClus;
   if (retvalue <= 0) {
@@ -312,8 +308,7 @@ void *readFAT(struct sFileSystem *fs, uint16_t nr) {
     stderror();
     return NULL;
   }
-  BSOffset = (off_t)SwapInt16(fs->bs.BS_RsvdSecCnt) *
-    SwapInt16(fs->bs.BS_BytesPerSec);
+  BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
   if (fs_seek(fs->fd, BSOffset + nr * FATSizeInBytes, SEEK_SET) == -1) {
     myerror("Seek error!");
     free(FAT);
@@ -342,8 +337,7 @@ int32_t writeFAT(struct sFileSystem *fs, void *fat) {
 
   FATSizeInBytes = fs->FATSize * fs->sectorSize;
 
-  BSOffset = (off_t)SwapInt16(fs->bs.BS_RsvdSecCnt) *
-    SwapInt16(fs->bs.BS_BytesPerSec);
+  BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
 
   // write all FATs!
   for(nr=0; nr< fs->bs.BS_NumFATs; nr++) {
@@ -391,8 +385,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
     free(FAT1);
     return -1;
   }
-  BSOffset = (off_t)SwapInt16(fs->bs.BS_RsvdSecCnt) *
-    SwapInt16(fs->bs.BS_BytesPerSec);
+  BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
   if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
     myerror("Seek error!");
     free(FAT1);
@@ -448,8 +441,7 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
   switch(fs->FATType) {
   case FATTYPE_FAT32:
     FATOffset = (off_t)cluster * 4;
-    BSOffset = (off_t)SwapInt16(fs->bs.BS_RsvdSecCnt) *
-      SwapInt16(fs->bs.BS_BytesPerSec);
+    BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
     if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
       myerror("Seek error!");
       return -1;
@@ -460,13 +452,11 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
       return -1;
     }
     memcpy(data, q + FATOffset, sizeof *data);
-    *data=SwapInt32(*data);
     *data = *data & 0x0fffffff;
     break;
   case FATTYPE_FAT16:
     FATOffset = (off_t)cluster * 2;
-    BSOffset = (off_t) SwapInt16(fs->bs.BS_RsvdSecCnt) *
-      SwapInt16(fs->bs.BS_BytesPerSec) + FATOffset;
+    BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec + FATOffset;
     if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
       myerror("Seek error!");
       return -1;
@@ -475,12 +465,10 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
       myerror("Failed to read from file!");
       return -1;
     }
-    *data=SwapInt32(*data);
     break;
   case FATTYPE_FAT12:
     FATOffset = (off_t) cluster + (cluster / 2);
-    BSOffset = (off_t) SwapInt16(fs->bs.BS_RsvdSecCnt) *
-      SwapInt16(fs->bs.BS_BytesPerSec) + FATOffset;
+    BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec + FATOffset;
     if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
       myerror("Seek error!");
       return -1;
@@ -489,8 +477,6 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
       myerror("Failed to read from file!");
       return -1;
     }
-
-    *data=SwapInt32(*data);
 
     if (cluster & 1)  {
       *data = *data >> 4;  /* cluster number is odd */
@@ -627,10 +613,10 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
     return -1;
   }
 
-  if (SwapInt16(fs->bs.BS_TotSec16) != 0) {
-    fs->totalSectors = SwapInt16(fs->bs.BS_TotSec16);
+  if (fs->bs.BS_TotSec16 != 0) {
+    fs->totalSectors = fs->bs.BS_TotSec16;
   } else {
-    fs->totalSectors = SwapInt32(fs->bs.BS_TotSec32);
+    fs->totalSectors = fs->bs.BS_TotSec32;
   }
 
   if (fs->totalSectors == 0) {
@@ -658,21 +644,20 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   }  
 
   if (fs->bs.BS_FATSz16 != 0) {
-    fs->FATSize = SwapInt16(fs->bs.BS_FATSz16);
+    fs->FATSize = fs->bs.BS_FATSz16;
   } else {
-    fs->FATSize = SwapInt32(fs->bs.FATxx.FAT32.BS_FATSz32);
+    fs->FATSize = fs->bs.FATxx.FAT32.BS_FATSz32;
   }
 
   // check whether count of root dir entries is ok for given FAT type
   if (((fs->FATType == FATTYPE_FAT16) || (fs->FATType == FATTYPE_FAT12)) &&
-  (SwapInt16(fs->bs.BS_RootEntCnt) == 0)) {
+  (fs->bs.BS_RootEntCnt == 0)) {
     myerror("Count of root directory entries must not be zero for FAT1x!");
     fs_close(fs->fd);
     return -1;  
-  } else if ((fs->FATType == FATTYPE_FAT32) &&
-  (SwapInt16(fs->bs.BS_RootEntCnt) != 0)) {
+  } else if ((fs->FATType == FATTYPE_FAT32) && (fs->bs.BS_RootEntCnt != 0)) {
     myerror("Count of root directory entries must be zero for FAT32 (%u)!",
-      SwapInt16(fs->bs.BS_RootEntCnt));
+      fs->bs.BS_RootEntCnt);
     fs_close(fs->fd);
     return -1;  
   }
@@ -691,9 +676,9 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
     return -1;
   }
 
-  fs->sectorSize=SwapInt16(fs->bs.BS_BytesPerSec);
+  fs->sectorSize = fs->bs.BS_BytesPerSec;
 
-  fs->clusterSize=fs->bs.BS_SecPerClus * SwapInt16(fs->bs.BS_BytesPerSec);
+  fs->clusterSize=fs->bs.BS_SecPerClus * fs->bs.BS_BytesPerSec;
 
   fs->FSSize = (uint64_t) fs->clusters * fs->clusterSize;
 
@@ -703,10 +688,10 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 
   uint32_t rootDirSectors;
 
-  rootDirSectors = ((SwapInt16(fs->bs.BS_RootEntCnt) * DIR_ENTRY_SIZE) +
-    (SwapInt16(fs->bs.BS_BytesPerSec) - 1)) / SwapInt16(fs->bs.BS_BytesPerSec);
-  fs->firstDataSector = (SwapInt16(fs->bs.BS_RsvdSecCnt) +
-            (fs->bs.BS_NumFATs * fs->FATSize) + rootDirSectors);
+  rootDirSectors = ((fs->bs.BS_RootEntCnt * DIR_ENTRY_SIZE) +
+    (fs->bs.BS_BytesPerSec - 1)) / fs->bs.BS_BytesPerSec;
+  fs->firstDataSector = fs->bs.BS_RsvdSecCnt + (fs->bs.BS_NumFATs * fs->FATSize)
+    + rootDirSectors;
 
   // convert utf 16 le to local charset
         fs->cd = iconv_open("", "UTF-16LE");

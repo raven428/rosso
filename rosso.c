@@ -14,7 +14,6 @@
 #include <time.h>
 
 // project includes
-#include "endianness.h"
 #include "FAT_fs.h"
 #include "options.h"
 #include "errors.h"
@@ -118,23 +117,20 @@ int32_t printFSInfo(char *filename) {
     (int) fs.clusters, (int) usedClusters, (int) badClusters);
   printf("FS size:\t\t\t\t%.2f MiBytes\n", (float) fs.FSSize / (1024.0*1024));
   if (fs.FATType == FATTYPE_FAT32) {
-    if (getFATEntry(&fs, SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus),
-    &value) == -1) {
+    if (getFATEntry(&fs, fs.bs.FATxx.FAT32.BS_RootClus, &value) == -1) {
       myerror("Failed to get FAT entry!");
       closeFileSystem(&fs);
       return -1;
     }
     printf("FAT32 root first cluster:\t\t0x%x\n"
     "First cluster data offset:\t\t0x%lx\nFirst cluster FAT entry:\t\t0x%x\n",
-    (unsigned int) SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus),
-    (unsigned long) getClusterOffset(&fs,
-    SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus)), (unsigned int) value);
+    (unsigned int) fs.bs.FATxx.FAT32.BS_RootClus,
+    (unsigned long) getClusterOffset(&fs, fs.bs.FATxx.FAT32.BS_RootClus),
+    (unsigned int) value);
   } else if (fs.FATType == FATTYPE_FAT12) {
-    printf("FAT12 root directory Entries:\t\t%u\n",
-      SwapInt16(fs.bs.BS_RootEntCnt));
+    printf("FAT12 root directory Entries:\t\t%u\n", fs.bs.BS_RootEntCnt);
   } else if (fs.FATType == FATTYPE_FAT16) {
-    printf("FAT16 root directory Entries:\t\t%u\n",
-      SwapInt16(fs.bs.BS_RootEntCnt));
+    printf("FAT16 root directory Entries:\t\t%u\n", fs.bs.BS_RootEntCnt);
   }
 
   if (OPT_MORE_INFO) {

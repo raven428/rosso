@@ -14,8 +14,8 @@ else
 LDFLAGS += -s
 endif
 
-OBJ = rosso.coff rosso.o FAT_fs.o fileio.o endianness.o entrylist.o errors.o \
-  options.o clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
+OBJ = rosso.coff rosso.o FAT_fs.o fileio.o entrylist.o errors.o options.o \
+  clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
 
 VR = $(shell ./rosso -v)
 

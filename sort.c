@@ -14,7 +14,6 @@
 #include "entrylist.h"
 #include "errors.h"
 #include "options.h"
-#include "endianness.h"
 #include "clusterchain.h"
 #include "signal.h"
 #include "misc.h"
@@ -279,12 +278,12 @@ struct sDirEntryList *list, uint32_t *direntries) {
   llist = NULL;
   lname[0]='\0';
 
-  BSOffset = ((off_t)SwapInt16(fs->bs.BS_RsvdSecCnt) +
-    fs->bs.BS_NumFATs * fs->FATSize) * fs->sectorSize;
+  BSOffset = ((off_t) fs->bs.BS_RsvdSecCnt + fs->bs.BS_NumFATs * fs->FATSize) *
+    fs->sectorSize;
 
   fs_seek(fs->fd, BSOffset, SEEK_SET);
 
-  for (j=0;j<SwapInt16(fs->bs.BS_RootEntCnt);j++) {
+  for (j = 0; j < fs->bs.BS_RootEntCnt; j++) {
     entries++;
     ret=parseEntry(fs, &de);
 
@@ -597,8 +596,7 @@ const char (*path)[MAX_PATH_LEN+1]) {
       !(p->sde->DIR_Atrr & ATTR_VOLUME_ID) &&
       (strcmp(p->sname, ".")) && strcmp(p->sname, "..")) {
 
-      c=(SwapInt16(p->sde->DIR_FstClusHI) * 65536 +
-        SwapInt16(p->sde->DIR_FstClusLO));
+      c=(p->sde->DIR_FstClusHI * 65536 + p->sde->DIR_FstClusLO);
       if (getFATEntry(fs, c, &value) == -1) {
         myerror("Failed to get FAT entry!");
         return -1;
@@ -765,8 +763,8 @@ int32_t sortFAT1xRootDirectory(struct sFileSystem *fs) {
       
       if (OPT_RANDOM) randomizeDirEntryList(list, direntries);
 
-      BSOffset = ((off_t)SwapInt16(fs->bs.BS_RsvdSecCnt) +
-        fs->bs.BS_NumFATs * fs->FATSize) * fs->sectorSize;  
+      BSOffset = ((off_t) fs->bs.BS_RsvdSecCnt + fs->bs.BS_NumFATs *
+        fs->FATSize) * fs->sectorSize;
       fs_seek(fs->fd, BSOffset, SEEK_SET);
 
       // write the sorted entries back to the fs
@@ -848,7 +846,7 @@ int32_t sortFileSystem(char *filename) {
     // root directory lies in cluster chain,
     // so sort it like all other directories
     infomsg("File system: FAT32.\n\n");
-    if (sortClusterChain(&fs, SwapInt32(fs.bs.FATxx.FAT32.BS_RootClus),
+    if (sortClusterChain(&fs, fs.bs.FATxx.FAT32.BS_RootClus,
     (const char(*)[MAX_PATH_LEN+1]) "/") == -1) {
       myerror("Failed to sort first cluster chain!");
       closeFileSystem(&fs);
