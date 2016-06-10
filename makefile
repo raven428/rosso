@@ -27,8 +27,11 @@ rosso: $(OBJ) $(DEBUG_OBJ)
 release: zip
   hub release create -a rosso-$(VR).zip $(VR)
 
-zip: rosso
-  zip rosso-$(VR).zip $<.exe readme.md
+zip: rosso readme.txt
+  zip rosso-$(VR).zip $<.exe readme.txt
+
+%.txt:
+  ln -f $*.md $@
 
 clean:
-  rm -f *.exe *.o *.zip *.coff
+  rm -fv *.exe *.o *.zip *.coff *.txt
