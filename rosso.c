@@ -37,6 +37,7 @@
 "  -c    Ignore case of file names\n" \
 "  -i    Print file system information only\n" \
 "  -l    Print current order of files only\n" \
+"  -m    Print more information\n" \
 "  -n    Natural order sorting\n" \
 "  -q    Be quiet\n" \
 "  -r    Sort in reverse order\n" \
