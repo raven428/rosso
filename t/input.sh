@@ -6,7 +6,7 @@ SYNOPSIS
   input.sh [drive]
 
 EXAMPLE
-  intput.sh F:
+  input.sh F:
 
 NOTES
   All files will be removed from drive
