@@ -16,7 +16,7 @@ endif
 VR = $(shell ./rosso -v)
 
 rosso: rosso.coff rosso.o FAT_fs.o fileio.o entrylist.o errors.o options.o \
-  clusterchain.o sort.o misc.o natstrcmp.o stringlist.o
+  clusterchain.o sort.o natstrcmp.o stringlist.o
 
 %.coff:
   $(WINDRES) rosso.rc $@

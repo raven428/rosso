@@ -16,7 +16,6 @@
 #include "options.h"
 #include "clusterchain.h"
 #include "signal.h"
-#include "misc.h"
 #include "fileio.h"
 #include "stringlist.h"
 
@@ -667,15 +666,15 @@ const char (*path)[MAX_PATH_LEN+1]) {
 
   if (!OPT_LIST) {
     if (match) {
-      infomsg("Sorting directory %s\n", path);
+      printf("Sorting directory %s\n", (char*) path);
       if (OPT_MORE_INFO)
-        infomsg("Start cluster: %08lx, length: %d (%d bytes)\n",
+        printf("Start cluster: %08d, length: %d (%d bytes)\n",
           cluster, clen, clen*fs->clusterSize);
     }
   } else {
     printf("%s\n", (char*) path);
     if (OPT_MORE_INFO)
-      infomsg("Start cluster: %08lx, length: %d (%d bytes)\n",
+      printf("Start cluster: %08d, length: %d (%d bytes)\n",
         cluster, clen, clen*fs->clusterSize);
   }
 
@@ -739,7 +738,7 @@ int32_t sortFAT1xRootDirectory(struct sFileSystem *fs) {
 
   if (!OPT_LIST) {
     if (match) {
-      infomsg("Sorting directory /\n");
+      printf("Sorting directory /\n");
     }
   } else {
     printf("/\n");
@@ -823,7 +822,7 @@ int32_t sortFileSystem(char *filename) {
   case FATTYPE_FAT12:
     // FAT12
     // root directory has fixed size and position
-    infomsg("File system: FAT12.\n\n");
+    printf("File system: FAT12.\n\n");
     if (sortFAT1xRootDirectory(&fs) == -1) {
       myerror("Failed to sort FAT12 root directory!");
       closeFileSystem(&fs);
@@ -833,7 +832,7 @@ int32_t sortFileSystem(char *filename) {
   case FATTYPE_FAT16:
     // FAT16
     // root directory has fixed size and position
-    infomsg("File system: FAT16.\n\n");
+    printf("File system: FAT16.\n\n");
     if (sortFAT1xRootDirectory(&fs) == -1) {
       myerror("Failed to sort FAT16 root directory!");
       closeFileSystem(&fs);
@@ -844,7 +843,7 @@ int32_t sortFileSystem(char *filename) {
     // FAT32
     // root directory lies in cluster chain,
     // so sort it like all other directories
-    infomsg("File system: FAT32.\n\n");
+    printf("File system: FAT32.\n\n");
     if (sortClusterChain(&fs, fs.bs.FATxx.FAT32.BS_RootClus,
     (const char(*)[MAX_PATH_LEN+1]) "/") == -1) {
       myerror("Failed to sort first cluster chain!");
