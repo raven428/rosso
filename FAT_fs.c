@@ -16,14 +16,6 @@
 #include "errors.h"
 #include "fileio.h"
 
-// used to check if device is mounted
-#if defined(__LINUX__)
-#include <mntent.h>
-#elif defined (__BSD__)
-#include <sys/ucred.h>
-#include <sys/mount.h>
-#endif
-
 int32_t check_bootsector(struct sBootSector *bs) {
 /*
   lazy check if this is really a FAT bootsector

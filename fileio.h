@@ -1,5 +1,5 @@
 /*
-  This file contains file io functions for UNIX/Linux
+  This file contains file io functions
 */
 
 #ifndef __fileio_h__
