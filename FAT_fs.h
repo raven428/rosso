@@ -13,8 +13,6 @@
 #define FS_MODE_RW_EXCL 4
 
 // FAT types
-#define FATTYPE_FAT12 12
-#define FATTYPE_FAT16 16
 #define FATTYPE_FAT32 32
 
 // file attributes
@@ -85,41 +83,6 @@ union sDirEntry {
 };
 
 #pragma pack(1)
-// Bootsector structures
-// FAT12 and FAT16
-struct sFAT12_16 {
-  uint8_t BS_DrvNum;    // Physical drive number
-  uint8_t BS_Reserved;    // Current head
-  uint8_t BS_BootSig;    // Signature
-  uint32_t BS_VolID;    // Volume ID
-  char BS_VolLab[11];    // Volume Label
-  char BS_FilSysType[8]; // FAT file system type (e.g. FAT, FAT12, FAT16, FAT32)
-  uint8_t unused[448];    // unused space in bootsector
-};
-
-// FAT32
-struct sFAT32 {
-  uint32_t BS_FATSz32;    // Sectors per FAT
-  uint16_t BS_ExtFlags;    // Flags
-  uint16_t BS_FSVer;    // Version
-  uint32_t BS_RootClus;    // Root Directory Cluster
-  uint16_t BS_FSInfo;    // Sector of FSInfo structure
-  uint16_t BS_BkBootSec; // Sector number of the BS copy in reserved sectors
-  char BS_Reserved[12];    // for future expansion
-  char BS_DrvNum;      // see fat12/16
-  char BS_Reserved1;    // see fat12/16
-  char BS_BootSig;    // ...
-  uint32_t BS_VolID;
-  char BS_VolLab[11];
-  char BS_FilSysType[8];
-  uint8_t unused[420];    // unused space in bootsector
-};
-
-union sFATxx {
-  struct sFAT12_16 FAT12_16;
-  struct sFAT32 FAT32;
-};
-
 // First sector = boot sector
 struct sBootSector {
   uint8_t BS_JmpBoot[3];    // Jump instruction (to skip over header on boot)
@@ -136,7 +99,20 @@ struct sBootSector {
   uint16_t BS_NumHeads;    // Number of heads
   uint32_t BS_HiddSec;    // Hidden sectors
   uint32_t BS_TotSec32;    // Total sectors (bits 16-47)
-  union sFATxx FATxx;
+  uint32_t BS_FATSz32;    // Sectors per FAT
+  uint16_t BS_ExtFlags;    // Flags
+  uint16_t BS_FSVer;    // Version
+  uint32_t BS_RootClus;    // Root Directory Cluster
+  uint16_t BS_FSInfo;    // Sector of FSInfo structure
+  uint16_t BS_BkBootSec; // Sector number of the BS copy in reserved sectors
+  char BS_Reserved[12];    // for future expansion
+  char BS_DrvNum; // Physical drive number
+  char BS_Reserved1; // Current head
+  char BS_BootSig;    // ...
+  uint32_t BS_VolID;
+  char BS_VolLab[11];
+  char BS_FilSysType[8];
+  uint8_t unused[420];    // unused space in bootsector
   uint16_t BS_EndOfBS;    // marks end of bootsector
 };
 #pragma pack()

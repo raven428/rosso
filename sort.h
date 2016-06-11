@@ -13,9 +13,6 @@
 // sorts FAT file system
 int32_t sortFileSystem(char *filename);
 
-// sorts the root directory of a FAT12 or FAT16 file system
-int32_t sortFAT1xRootDirectory(struct sFileSystem *fs);
-
 // sorts directory entries in a cluster
 int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster, const char (*path)[MAX_PATH_LEN+1]);
 

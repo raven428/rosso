@@ -61,7 +61,7 @@
 "  rosso F:\n" \
 "\n" \
 "NOTES\n" \
-"  DEVICE must be a FAT12, FAT16 or FAT32 file system.\n" \
+"  DEVICE must be a FAT32 file system.\n" \
 "  WARNING: THE FILESYSTEM MUST BE CONSISTENT, OTHERWISE YOU MAY DAMAGE IT!\n" \
 "  IF SOMEONE ELSE HAS ACCESS TO THE DEVICE HE MIGHT EXPLOIT ROSSO WITH A\n" \
 "  FORGED CORRUPT FILESYSTEM! USE THIS PROGRAM AT YOUR OWN RISK!\n"
@@ -94,10 +94,6 @@ int32_t printFSInfo(char *filename) {
     if ((value & 0x0FFFFFFF) != 0) usedClusters++;
     if (fs.FATType == FATTYPE_FAT32) {
       if ((value & 0x0FFFFFFF) == 0x0FFFFFF7) badClusters++;
-    } else if (fs.FATType == FATTYPE_FAT16) {
-      if (value == 0x0000FFF7) badClusters++;
-    } else if (fs.FATType == FATTYPE_FAT12) {
-      if (value == 0x00000FF7) badClusters++;
     }
   }
 
@@ -115,20 +111,16 @@ int32_t printFSInfo(char *filename) {
     (int) fs.clusters, (int) usedClusters, (int) badClusters);
   printf("FS size:\t\t\t\t%.2f MiBytes\n", (float) fs.FSSize / (1024.0*1024));
   if (fs.FATType == FATTYPE_FAT32) {
-    if (getFATEntry(&fs, fs.bs.FATxx.FAT32.BS_RootClus, &value) == -1) {
+    if (getFATEntry(&fs, fs.bs.BS_RootClus, &value) == -1) {
       myerror("Failed to get FAT entry!");
       closeFileSystem(&fs);
       return -1;
     }
     printf("FAT32 root first cluster:\t\t0x%x\n"
     "First cluster data offset:\t\t0x%lx\nFirst cluster FAT entry:\t\t0x%x\n",
-    (unsigned int) fs.bs.FATxx.FAT32.BS_RootClus,
-    (unsigned long) getClusterOffset(&fs, fs.bs.FATxx.FAT32.BS_RootClus),
+    (unsigned int) fs.bs.BS_RootClus,
+    (unsigned long) getClusterOffset(&fs, fs.bs.BS_RootClus),
     (unsigned int) value);
-  } else if (fs.FATType == FATTYPE_FAT12) {
-    printf("FAT12 root directory Entries:\t\t%u\n", fs.bs.BS_RootEntCnt);
-  } else if (fs.FATType == FATTYPE_FAT16) {
-    printf("FAT16 root directory Entries:\t\t%u\n", fs.bs.BS_RootEntCnt);
   }
 
   if (OPT_MORE_INFO) {

@@ -252,122 +252,6 @@ struct sDirEntryList *list, uint32_t *direntries) {
   return 0;
 }
 
-int32_t parseFAT1xRootDirEntries(struct sFileSystem *fs,
-struct sDirEntryList *list, uint32_t *direntries) {
-/*
-  parses FAT1x root directory entries to list
-*/
-
-  assert(fs != NULL);
-  assert(list != NULL);
-  assert(direntries != NULL);
-
-  off_t BSOffset;
-  int32_t j, ret;
-  uint32_t entries=0;
-  union sDirEntry de;
-  struct sDirEntryList *lnde;
-  struct sLongDirEntryList *llist;
-  char tmp[MAX_PATH_LEN+1], dummy[MAX_PATH_LEN+1], sname[MAX_PATH_LEN+1],
-    lname[MAX_PATH_LEN+1];
-
-  *direntries=0;
-  
-  llist = NULL;
-  lname[0]='\0';
-
-  BSOffset = ((off_t) fs->bs.BS_RsvdSecCnt + fs->bs.BS_NumFATs * fs->FATSize) *
-    fs->sectorSize;
-
-  fs_seek(fs->fd, BSOffset, SEEK_SET);
-
-  for (j = 0; j < fs->bs.BS_RootEntCnt; j++) {
-    entries++;
-    ret=parseEntry(fs, &de);
-
-    switch(ret) {
-    case -1:
-      myerror("Failed to parse directory entry!");
-      return -1;
-    case 0: // current dir entry and following dir entries are free
-      if (llist != NULL) {
-        // short dir entry is still missing!
-        myerror("ShortDirEntry is missing after LongDirEntries "
-          "(root directory entry %u)!", j);
-        return -1;
-      } else {
-        return 0;
-      }
-    case 1: // short dir entry
-      parseShortFilename(&de.ShortDirEntry, sname);
-
-      if (OPT_LIST &&
-         strcmp(sname, ".") &&
-         strcmp(sname, "..") &&
-         (((uint8_t) sname[0]) != DE_FREE) &&
-        !(de.ShortDirEntry.DIR_Atrr & ATTR_VOLUME_ID)) {
-        
-        if (!OPT_MORE_INFO) {
-          printf("%s\n", (lname[0] != '\0') ? lname : sname);
-        } else {
-          printf("%s (%s)\n", (lname[0] != '\0') ? lname : "n/a", sname);
-        }
-      }
-
-      lnde=newDirEntry(sname, lname, &de.ShortDirEntry, llist, entries);
-      if (lnde == NULL) {
-        myerror("Failed to create DirEntry!");
-        return -1;
-      }
-
-      if (checkLongDirEntries(lnde)) {
-        myerror("checkDirEntry failed at root directory entry %u!", j);
-        return -1;
-      }
-
-      insertDirEntryList(lnde, list);
-      (*direntries)++;
-      entries=0;
-      llist = NULL;
-      lname[0]='\0';
-      break;
-    case 2: // long dir entry
-      if (parseLongFilenamePart(&de.LongDirEntry, tmp, fs->cd)) {
-        myerror("Failed to parse long filename part!");
-        return -1;
-      }
-    
-      // insert long dir entry in list
-      llist=insertLongDirEntryList(&de.LongDirEntry, llist);
-      if (llist == NULL) {
-        myerror("Failed to insert LongDirEntry!");
-        return -1;
-      }
-
-      strncpy(dummy, tmp, MAX_PATH_LEN);
-      dummy[MAX_PATH_LEN]='\0';
-      strncat(dummy, lname, MAX_PATH_LEN - strlen(dummy));
-      dummy[MAX_PATH_LEN]='\0';
-      strncpy(lname, dummy, MAX_PATH_LEN);
-      dummy[MAX_PATH_LEN]='\0';
-      break;
-    default: 
-      myerror("Unhandled return code!");
-      return -1;
-    }
-
-  }
-  
-  if (llist != NULL) {
-    // short dir entry is still missing!
-    myerror("ShortDirEntry is missing after LongDirEntries "
-      "(root dir entry %d)!", j);
-    return -1;
-  }
-
-  return 0;
-}
-
 int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
 /*
   writes directory entries to file
@@ -413,58 +297,6 @@ struct sClusterChain *chain) {
   cluster=startCluster;
 
   switch(fs->FATType) {
-  case FATTYPE_FAT12:
-    do {
-      if (i == fs->maxClusterChainLength) {
-        myerror("Cluster chain is too long!");
-        return -1;
-      }
-      if (cluster >= fs->clusters+2) {
-        myerror("Cluster %08x does not exist!", data);
-        return -1;
-      }
-      if (insertCluster(chain, cluster) == -1) {
-        myerror("Failed to insert cluster!");
-        return -1;
-      }
-      i++;
-      if (getFATEntry(fs, cluster, &data)) {
-        myerror("Failed to get FAT entry!");
-        return -1;
-      }
-      if (data == 0) {
-        myerror("Cluster %08x is marked as unused!", cluster);
-        return -1;
-      }
-      cluster=data;
-    } while (cluster < 0x0ff8);  // end of cluster
-    break;
-  case FATTYPE_FAT16:
-    do {
-      if (i == fs->maxClusterChainLength) {
-        myerror("Cluster chain is too long!");
-        return -1;
-      }
-      if (cluster >= fs->clusters+2) {
-        myerror("Cluster %08x does not exist!", data);
-        return -1;
-      }
-      if (insertCluster(chain, cluster) == -1) {
-        myerror("Failed to insert cluster!");
-        return -1;
-      }
-      i++;
-      if (getFATEntry(fs, cluster, &data)) {
-        myerror("Failed to get FAT entry!");
-        return -1;
-      }
-      if (data == 0) {
-        myerror("Cluster %08x is marked as unused!", cluster);
-        return -1;
-      }
-      cluster=data;
-    } while (cluster < 0xfff8);  // end of cluster
-    break;
   case FATTYPE_FAT32:
     do {
       if (i == fs->maxClusterChainLength) {
@@ -715,81 +547,6 @@ const char (*path)[MAX_PATH_LEN+1]) {
   return 0;
 }
 
-int32_t sortFAT1xRootDirectory(struct sFileSystem *fs) {
-/*
-  sorts the root directory of a FAT12 or FAT16 file system
-*/
-
-  assert(fs != NULL);
-
-  off_t BSOffset;
-
-  uint32_t direntries=0;
-
-  struct sDirEntryList *list;
-
-  uint32_t match;
-
-  match=matchesDirPathLists(OPT_INCL_DIRS,
-        OPT_INCL_DIRS_REC,
-        OPT_EXCL_DIRS,
-        OPT_EXCL_DIRS_REC,
-        (const char(*)[MAX_PATH_LEN+1]) "/");
-
-  if (!OPT_LIST) {
-    if (match) {
-      printf("Sorting directory /\n");
-    }
-  } else {
-    printf("/\n");
-  }
-
-  if ((list = newDirEntryList()) == NULL) {
-    myerror("Failed to generate new dirEntryList!");
-    return -1;
-  }
-
-  if (parseFAT1xRootDirEntries(fs, list, &direntries) == -1) {
-    myerror("Failed to parse root directory entries!");
-    return -1;
-  }
-
-  if (!OPT_LIST) {
-    
-    // sort matching directories
-    if (match) {
-      
-      if (OPT_RANDOM) randomizeDirEntryList(list, direntries);
-
-      BSOffset = ((off_t) fs->bs.BS_RsvdSecCnt + fs->bs.BS_NumFATs *
-        fs->FATSize) * fs->sectorSize;
-      fs_seek(fs->fd, BSOffset, SEEK_SET);
-
-      // write the sorted entries back to the fs
-      if (writeList(fs, list) == -1) {
-        freeDirEntryList(list);
-          myerror("Failed to write root directory entries!");
-        return -1;
-      }
-    }
-    
-  } else {
-    printf("\n");
-  }
-
-  // sort subdirectories
-  if (sortSubdirectories(fs, list,
-  (const char (*)[MAX_PATH_LEN+1]) "/") == -1) {
-    myerror("Failed to sort subdirectories!");
-    freeDirEntryList(list);
-    return -1;
-  }
-
-  freeDirEntryList(list);
-
-  return 0;
-}
-
 int32_t sortFileSystem(char *filename) {
 /*
   sort FAT file system
@@ -819,32 +576,12 @@ int32_t sortFileSystem(char *filename) {
   }
 
   switch(fs.FATType) {
-  case FATTYPE_FAT12:
-    // FAT12
-    // root directory has fixed size and position
-    printf("File system: FAT12.\n\n");
-    if (sortFAT1xRootDirectory(&fs) == -1) {
-      myerror("Failed to sort FAT12 root directory!");
-      closeFileSystem(&fs);
-      return -1;
-    }
-    break;
-  case FATTYPE_FAT16:
-    // FAT16
-    // root directory has fixed size and position
-    printf("File system: FAT16.\n\n");
-    if (sortFAT1xRootDirectory(&fs) == -1) {
-      myerror("Failed to sort FAT16 root directory!");
-      closeFileSystem(&fs);
-      return -1;
-    }
-    break;
   case FATTYPE_FAT32:
     // FAT32
     // root directory lies in cluster chain,
     // so sort it like all other directories
     printf("File system: FAT32.\n\n");
-    if (sortClusterChain(&fs, fs.bs.FATxx.FAT32.BS_RootClus,
+    if (sortClusterChain(&fs, fs.bs.BS_RootClus,
     (const char(*)[MAX_PATH_LEN+1]) "/") == -1) {
       myerror("Failed to sort first cluster chain!");
       closeFileSystem(&fs);
