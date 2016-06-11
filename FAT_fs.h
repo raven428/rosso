@@ -24,9 +24,10 @@
 #define ATTR_VOLUME_ID 0x08
 #define ATTR_DIRECTORY 0x10
 #define ATTR_ARCHIVE 0x20
-#define ATTR_LONG_NAME (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID)
-#define ATTR_LONG_NAME_MASK (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID | ATTR_DIRECTORY | ATTR_ARCHIVE)
-
+#define ATTR_LONG_NAME (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM \
+  | ATTR_VOLUME_ID)
+#define ATTR_LONG_NAME_MASK (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM \
+  | ATTR_VOLUME_ID | ATTR_DIRECTORY | ATTR_ARCHIVE)
 // constants for the LDIR structure
 #define DE_FREE 0xe5
 #define DE_FOLLOWING_FREE 0x00
@@ -92,7 +93,7 @@ struct sFAT12_16 {
   uint8_t BS_BootSig;    // Signature
   uint32_t BS_VolID;    // Volume ID
   char BS_VolLab[11];    // Volume Label
-  char BS_FilSysType[8];    // FAT file system type (e.g. FAT, FAT12, FAT16, FAT32)
+  char BS_FilSysType[8]; // FAT file system type (e.g. FAT, FAT12, FAT16, FAT32)
   uint8_t unused[448];    // unused space in bootsector
 };
 
@@ -103,7 +104,7 @@ struct sFAT32 {
   uint16_t BS_FSVer;    // Version
   uint32_t BS_RootClus;    // Root Directory Cluster
   uint16_t BS_FSInfo;    // Sector of FSInfo structure
-  uint16_t BS_BkBootSec;    // Sector number of the boot sector copy in reserved sectors
+  uint16_t BS_BkBootSec; // Sector number of the BS copy in reserved sectors
   char BS_Reserved[12];    // for future expansion
   char BS_DrvNum;      // see fat12/16
   char BS_Reserved1;    // see fat12/16
@@ -212,7 +213,7 @@ uint16_t isEOC(struct sFileSystem *fs, const uint32_t data);
 // checks whether data marks a bad cluster
 uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data);
 
-// returns the offset of a specific cluster in the data region of the file system
+// returns the offset of a specific cluster in the data region of the FS
 off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
 
 // parses one directory entry
