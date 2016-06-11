@@ -38,7 +38,6 @@
 "  -l    Print current order of files only\n" \
 "  -m    Print more information\n" \
 "  -n    Natural order sorting\n" \
-"  -q    Be quiet\n" \
 "  -r    Sort in reverse order\n" \
 "  -R    Sort in random order\n" \
 "  -t    Sort by last modification date and time\n" \

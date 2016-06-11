@@ -11,10 +11,9 @@
 #include "errors.h"
 #include "stringlist.h"
 
-uint32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_QUIET, OPT_IGNORE_CASE,
-  OPT_ORDER, OPT_LIST, OPT_REVERSE, OPT_FORCE, OPT_NATURAL_SORT,
-  OPT_RECURSIVE, OPT_RANDOM, OPT_MORE_INFO, OPT_MODIFICATION,
-  OPT_ASCII;
+uint32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER, OPT_LIST,
+  OPT_REVERSE, OPT_NATURAL_SORT, OPT_RECURSIVE, OPT_RANDOM, OPT_MORE_INFO,
+  OPT_MODIFICATION, OPT_ASCII;
 
 struct sStringList *OPT_INCL_DIRS = NULL;
 struct sStringList *OPT_EXCL_DIRS = NULL;
@@ -139,9 +138,6 @@ int32_t parse_options(int argc, char *argv[]) {
   // default is case sensitive
   OPT_IGNORE_CASE = 0;
 
-  // be noisy by default
-  OPT_QUIET = 0;
-
   // no version information by default
   OPT_VERSION = 0;
 
@@ -180,12 +176,11 @@ int32_t parse_options(int argc, char *argv[]) {
   }
 
   opterr = 0;
-  while ((j = getopt_long(argc, argv, "imvhqcfo:lrRnd:D:x:X:I:ta",
+  while ((j = getopt_long(argc, argv, "imvhco:lrRnd:D:x:X:I:ta",
   longOpts, NULL)) != -1) {
     switch (j) {
       case 'a': OPT_ASCII = 1; break;
       case 'c': OPT_IGNORE_CASE = 1; break;
-      case 'f': OPT_FORCE = 1; break;
       case 'h': OPT_HELP = 1; break;
       case 'i': OPT_INFO = 1; break;
       case 'm': OPT_MORE_INFO = 1; break;
@@ -242,7 +237,6 @@ int32_t parse_options(int argc, char *argv[]) {
         }
         break;
       case 'n': OPT_NATURAL_SORT = 1; break;
-      case 'q': OPT_QUIET = 1; break;
       case 'r': OPT_REVERSE = -1; break;
       case 'R': OPT_RANDOM = 1; break;
       case 't': OPT_MODIFICATION = 1; break;
