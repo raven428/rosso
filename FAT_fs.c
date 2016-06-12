@@ -395,24 +395,26 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
   assert(fs != NULL);
   assert(data != NULL);
 
-  off_t FATOffset, BSOffset;
+  off_t FATOffset;
+  div_t BSOffset;
 
   *data=0;
 
   switch(fs->FATType) {
   case FATTYPE_FAT32:
     FATOffset = (off_t)cluster * 4;
-    BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
-    if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
+    BSOffset = div(fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec + FATOffset,
+      fs->sectorSize);
+    if (fs_seek(fs->fd, BSOffset.quot * fs->sectorSize, SEEK_SET) == -1) {
       myerror("Seek error!");
       return -1;
     }
-    char* q = alloca(fs->sectorSize);
-    if (fs_read(q, fs->sectorSize, 1, fs->fd) < 1) {
+    char* go = alloca(fs->sectorSize);
+    if (fs_read(go, fs->sectorSize, 1, fs->fd) < 1) {
       myerror("Failed to read from file!");
       return -1;
     }
-    memcpy(data, q + FATOffset, sizeof *data);
+    memcpy(data, go + BSOffset.rem, sizeof *data);
     *data = *data & 0x0fffffff;
     break;
   default:
@@ -516,8 +518,8 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   assert(path != NULL);
   assert(fs != NULL);
 
-  memcpy(fs->path, "\\\\.\\", 4);
-  memcpy(fs->path + 4, path, 2);
+  strcpy(fs->path, "\\\\.\\");
+  strcpy(fs->path + 4, path);
 
   switch(mode) {
     case FS_MODE_RO:

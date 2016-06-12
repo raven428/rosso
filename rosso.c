@@ -73,76 +73,42 @@ int32_t printFSInfo(char *filename) {
 
   assert(filename != NULL);
 
-  uint32_t value, clen;
-  int32_t usedClusters, badClusters;
-  int32_t i;
-  struct sClusterChain *chain;
+  uint32_t value;
 
   struct sFileSystem fs;
-
-  printf("\t- File system information -\n");
 
   if (openFileSystem(filename, FS_MODE_RO, &fs)) {
     myerror("Failed to open file system!");
     return -1;
   }
 
-  usedClusters=0;
-  badClusters=0;
-  for (i=2; i<fs.clusters+2; i++) {
-    getFATEntry(&fs, i, &value);
-    if ((value & 0x0FFFFFFF) != 0) usedClusters++;
-    if (fs.FATType == FATTYPE_FAT32) {
-      if ((value & 0x0FFFFFFF) == 0x0FFFFFF7) badClusters++;
-    }
-  }
-
-  printf("Device:\t\t\t\t\t%s\n", fs.path);
-  printf("Type:\t\t\t\t\tFAT%d\n", (int) fs.FATType);
-  printf("Sector size:\t\t\t\t%d bytes\n", (int) fs.sectorSize);
-  printf("FAT size:\t\t\t\t%d sectors (%d bytes)\n", (int) fs.FATSize,
-    (int) (fs.FATSize * fs.sectorSize));
-  printf("Number of FATs:\t\t\t\t%d %s\n", fs.bs.BS_NumFATs,
-    (checkFATs(&fs) ? "- WARNING: FATs are different!" : ""));
-  printf("Cluster size:\t\t\t\t%d bytes\n", (int) fs.clusterSize);
-  printf("Max. cluster chain length:\t\t%d clusters\n",
-    (int) fs.maxClusterChainLength);
-  printf("Data clusters (total / used / bad):\t%d / %d / %d\n",
-    (int) fs.clusters, (int) usedClusters, (int) badClusters);
-  printf("FS size:\t\t\t\t%.2f MiBytes\n", (float) fs.FSSize / (1024.0*1024));
+  printf(
+    "Device: %s\n"
+    "Type: FAT%d\n"
+    "Sector size: %d bytes\n"
+    "FAT size: %d sectors (%d bytes)\n"
+    "Number of FATs: %d %s\n"
+    "Cluster size: %d bytes\n"
+    "Max. cluster chain length: %d clusters\n"
+    "Data clusters: %d\n"
+    "FS size: %d MiBytes\n",
+    fs.path, fs.FATType, fs.sectorSize, fs.FATSize, fs.FATSize * fs.sectorSize,
+    fs.bs.BS_NumFATs, checkFATs(&fs) ? "different" : "same", fs.clusterSize,
+    fs.maxClusterChainLength, fs.clusters, (int) (fs.FSSize >> 20)
+  );
   if (fs.FATType == FATTYPE_FAT32) {
     if (getFATEntry(&fs, fs.bs.BS_RootClus, &value) == -1) {
       myerror("Failed to get FAT entry!");
       closeFileSystem(&fs);
       return -1;
     }
-    printf("FAT32 root first cluster:\t\t0x%x\n"
-    "First cluster data offset:\t\t0x%lx\nFirst cluster FAT entry:\t\t0x%x\n",
-    (unsigned int) fs.bs.BS_RootClus,
-    (unsigned long) getClusterOffset(&fs, fs.bs.BS_RootClus),
-    (unsigned int) value);
-  }
 
-  if (OPT_MORE_INFO) {
-    printf("\n\t- FAT -\n");
-    printf("Cluster \tFAT entry\tChain length\n");
-    for (i=0; i<fs.clusters+2; i++) {
-      getFATEntry(&fs, i, &value);
-
-      clen=0;
-      if ((value & 0x0FFFFFFF ) != 0) {
-        if ((chain=newClusterChain()) == NULL) {
-          myerror("Failed to generate new ClusterChain!");
-          return -1;
-        }
-        clen=getClusterChain(&fs, i, chain);
-        freeClusterChain(chain);
-      }
-
-      printf("%08x\t%08x\t%u\n", i, value, clen);
-
-    }
-
+    printf(
+      "FAT32 root first cluster: 0x%x\n"
+      "First cluster data offset: 0x%x\n"
+      "First cluster FAT entry: 0x%x\n",
+      fs.bs.BS_RootClus, (int) getClusterOffset(&fs, fs.bs.BS_RootClus), value
+    );
   }
 
   closeFileSystem(&fs);

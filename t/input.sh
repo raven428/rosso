@@ -15,7 +15,7 @@ NOTES
 fi
 
 j=$1
-rm -f "$j"/*
+find "$j"/ -mindepth 1 -exec rm {} +
 
 for k in 1 2 3 4 5
 do
