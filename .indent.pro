@@ -36,7 +36,11 @@
 -sc
 
 // tell indent the name of typenames
+-T FILE
+-T sBootSector
 -T sClusterChain
+-T sDirEntry
 -T sDirEntryList
 -T sFileSystem
+-T sFSInfo
 -T uint32_t
