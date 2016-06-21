@@ -1,3 +1,4 @@
+// -*- c -*-
 // put braces on line with if, etc
 -br
 
