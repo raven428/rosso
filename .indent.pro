@@ -45,4 +45,5 @@
 -T sFileSystem
 -T sFSInfo
 -T size_t
+-T sStringList
 -T uint32_t
