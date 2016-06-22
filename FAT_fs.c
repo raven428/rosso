@@ -428,7 +428,7 @@ getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
 
   switch (fs->FATType) {
   case FATTYPE_FAT32:
-    FATOffset = (off_t) cluster *4;
+    FATOffset = cluster * 4;
     BSOffset =
       div(fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec + FATOffset,
       fs->sectorSize);
