@@ -644,7 +644,7 @@ openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 
   // convert utf 16 le to local charset
   fs->cd = iconv_open("", "UTF-16LE");
-  if (fs->cd == (iconv_t) - 1) {
+  if (fs->cd == (iconv_t) -1) {
     myerror("iconv_open failed!");
     return -1;
   }

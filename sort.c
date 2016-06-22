@@ -56,7 +56,7 @@ parseLongFilenamePart(struct sLongDirEntry *lde, char *str, iconv_t cd) {
 
   while (incount != 0) {
     if ((ret =
-        iconv(cd, &inptr, &incount, &outptr, &outcount)) == (size_t) - 1) {
+        iconv(cd, &inptr, &incount, &outptr, &outcount)) == (size_t) -1) {
       stderror();
       myerror("iconv failed! %d", ret);
       return -1;
