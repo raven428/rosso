@@ -1,6 +1,6 @@
 /*
-  This file contains the main function of rosso.
-*/
+ * This file contains the main function of rosso.
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -66,10 +66,11 @@
 "  IF SOMEONE ELSE HAS ACCESS TO THE DEVICE HE MIGHT EXPLOIT ROSSO WITH A\n" \
 "  FORGED CORRUPT FILESYSTEM! USE THIS PROGRAM AT YOUR OWN RISK!\n"
 
-int32_t printFSInfo(char *filename) {
-/*
-  print file system information
-*/
+int32_t
+printFSInfo(char *filename) {
+  /*
+   * print file system information
+   */
 
   assert(filename != NULL);
 
@@ -82,20 +83,14 @@ int32_t printFSInfo(char *filename) {
     return -1;
   }
 
-  printf(
-    "Device: %s\n"
-    "Type: FAT%d\n"
-    "Sector size: %d bytes\n"
-    "FAT size: %d sectors (%d bytes)\n"
-    "Number of FATs: %d %s\n"
-    "Cluster size: %d bytes\n"
-    "Max. cluster chain length: %d clusters\n"
-    "Data clusters: %d\n"
-    "FS size: %d MiBytes\n",
-    fs.path, fs.FATType, fs.sectorSize, fs.FATSize, fs.FATSize * fs.sectorSize,
-    fs.bs.BS_NumFATs, checkFATs(&fs) ? "different" : "same", fs.clusterSize,
-    fs.maxClusterChainLength, fs.clusters, (int) (fs.FSSize >> 20)
-  );
+  printf("Device: %s\nType: FAT%d\nSector size: %d bytes\n"
+    "FAT size: %d sectors (%d bytes)\nNumber of FATs: %d %s\n"
+    "Cluster size: %d bytes\nMax. cluster chain length: %d clusters\n"
+    "Data clusters: %d\nFS size: %d MiBytes\n", fs.path, fs.FATType,
+    fs.sectorSize, fs.FATSize, fs.FATSize * fs.sectorSize, fs.bs.BS_NumFATs,
+    checkFATs(&fs) ? "different" : "same", fs.clusterSize,
+    fs.maxClusterChainLength, fs.clusters, (int) (fs.FSSize >> 20));
+
   if (fs.FATType == FATTYPE_FAT32) {
     if (getFATEntry(&fs, fs.bs.BS_RootClus, &value) == -1) {
       myerror("Failed to get FAT entry!");
@@ -103,12 +98,9 @@ int32_t printFSInfo(char *filename) {
       return -1;
     }
 
-    printf(
-      "FAT32 root first cluster: 0x%x\n"
-      "First cluster data offset: 0x%x\n"
-      "First cluster FAT entry: 0x%x\n",
-      fs.bs.BS_RootClus, (int) getClusterOffset(&fs, fs.bs.BS_RootClus), value
-    );
+    printf("FAT32 root first cluster: 0x%x\nFirst cluster data offset: 0x%x\n"
+      "First cluster FAT entry: 0x%x\n", fs.bs.BS_RootClus,
+      (int) getClusterOffset(&fs, fs.bs.BS_RootClus), value);
   }
 
   closeFileSystem(&fs);
@@ -117,10 +109,11 @@ int32_t printFSInfo(char *filename) {
 
 }
 
-int main(int argc, char *argv[]) {
-/*
-  parse arguments and options and start sorting
-*/
+int
+main(int argc, char *argv[]) {
+  /*
+   * parse arguments and options and start sorting
+   */
 
   // initialize rng
   srand(time(0));
@@ -141,35 +134,39 @@ int main(int argc, char *argv[]) {
   if (OPT_HELP) {
     printf(INFO_OPTION_HELP);
     return 0;
-  } else if (OPT_VERSION) {
+  }
+  else if (OPT_VERSION) {
     printf("%d.%d.%d\n", MAJOR, MINOR, PATCH);
     return 0;
-  } else if (optind < argc -1) {
+  }
+  else if (optind < argc - 1) {
     myerror("Too many arguments!");
     myerror("Use -h for more help.");
     return -1;
-  } else if (optind == argc) {
+  }
+  else if (optind == argc) {
     myerror("Device must be given!");
     myerror("Use -h for more help.");
     return -1;
   }
 
-  filename=argv[optind];
+  filename = argv[optind];
 
   if (OPT_INFO) {
-    //infomsg(INFO_HEADER "\n\n");
+    // infomsg(INFO_HEADER "\n\n");
     if (printFSInfo(filename) == -1) {
       myerror("Failed to print file system information");
       return -1;
     }
-  } else {
-    //infomsg(INFO_HEADER "\n\n");
+  }
+  else {
+    // infomsg(INFO_HEADER "\n\n");
     if (sortFileSystem(filename) == -1) {
       myerror("Failed to sort file system!");
       return -1;
     }
   }
-  
+
   freeOptions();
 
   return 0;
