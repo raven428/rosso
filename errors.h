@@ -1,6 +1,6 @@
 /*
-  This file contains/describes functions for error handling and messaging.
-*/
+ * This file contains/describes functions for error handling and messaging.
+ */
 
 #ifndef __errors_h__
 #define __errors_h__
@@ -11,7 +11,7 @@
 // macros
 #if DEBUG >= 1
 #define DEBUGMSG(msg...) errormsg("DEBUG", msg);
-#else 
+#else
 #define DEBUGMSG(...)
 #endif
 #define myerror(...) errormsg(__func__, __VA_ARGS__);
