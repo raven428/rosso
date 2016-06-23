@@ -1,6 +1,6 @@
 /*
-  This file contains/describes functions for natural order sorting.
-*/
+ * This file contains/describes functions for natural order sorting.
+ */
 
 #ifndef __natstrcmp_h__
 #define __natstrcmp_h__
