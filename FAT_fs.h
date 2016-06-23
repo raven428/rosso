@@ -1,7 +1,7 @@
 /*
-  This file contains/describes functions that are used to read, write, check,
-  and use FAT filesystems.
-*/
+ * This file contains/describes functions that are used to read, write,
+ * check, and use FAT filesystems.
+ */
 
 #ifndef __FAT_fs_h__
 #define __FAT_fs_h__
@@ -37,7 +37,7 @@
 #define MAX_PATH_LEN 512
 
 // maximum file len
-// (specification: file < 4GB which is 
+// (specification: file < 4GB which is
 // maximum clusters in chain * cluster size)
 #define MAX_FILE_LEN 0xFFFFFFFF
 #define MAX_DIR_ENTRIES 65536
@@ -51,30 +51,30 @@
 // Directory entry structures
 // Structure for long directory names
 struct sLongDirEntry {
-  uint8_t LDIR_Ord;    // Order of entry in sequence
-  char LDIR_Name1[10];    // Chars 1-5 of long name
-  uint8_t LDIR_Attr;    // Attributes (ATTR_LONG_NAME must be set)
-  uint8_t LDIR_Type;    // Type
-  uint8_t LDIR_Checksum;    // Short name checksum
-  char LDIR_Name2[12];    // Chars 6-11 of long name
-  uint16_t LDIR_FstClusLO;  // Zero
-  char LDIR_Name3[4];    // Chars 12-13 of long name
+  uint8_t LDIR_Ord; // Order of entry in sequence
+  char LDIR_Name1[10]; // Chars 1-5 of long name
+  uint8_t LDIR_Attr; // Attributes (ATTR_LONG_NAME must be set)
+  uint8_t LDIR_Type; // Type
+  uint8_t LDIR_Checksum; // Short name checksum
+  char LDIR_Name2[12]; // Chars 6-11 of long name
+  uint16_t LDIR_FstClusLO; // Zero
+  char LDIR_Name3[4]; // Chars 12-13 of long name
 };
 
 // Structure for old short directory names
 struct sShortDirEntry {
-  char DIR_Name[11];    // Short name
-  uint8_t DIR_Atrr;    // File attributes
-  uint8_t DIR_NTRes;    // Reserved for NT
-  uint8_t DIR_CrtTimeTenth;  // Time of creation in ms
-  uint16_t DIR_CrtTime;    // Time of creation
-  uint16_t DIR_CrtDate;    // Date of creation
-  uint16_t DIR_LstAccDate;  // Last access date
-  uint16_t DIR_FstClusHI;  // Hiword of first cluster
-  uint16_t DIR_WrtTime;    // Time of last write
-  uint16_t DIR_WrtDate;    // Date of last write
-  uint16_t DIR_FstClusLO;  // Loword of first cluster
-  uint32_t DIR_FileSize;    // file size in bytes
+  char DIR_Name[11]; // Short name
+  uint8_t DIR_Atrr; // File attributes
+  uint8_t DIR_NTRes; // Reserved for NT
+  uint8_t DIR_CrtTimeTenth; // Time of creation in ms
+  uint16_t DIR_CrtTime; // Time of creation
+  uint16_t DIR_CrtDate; // Date of creation
+  uint16_t DIR_LstAccDate; // Last access date
+  uint16_t DIR_FstClusHI; // Hiword of first cluster
+  uint16_t DIR_WrtTime; // Time of last write
+  uint16_t DIR_WrtDate; // Date of last write
+  uint16_t DIR_FstClusLO; // Loword of first cluster
+  uint32_t DIR_FileSize; // file size in bytes
 };
 
 union sDirEntry {
@@ -85,35 +85,38 @@ union sDirEntry {
 #pragma pack(1)
 // First sector = boot sector
 struct sBootSector {
-  uint8_t BS_JmpBoot[3];    // Jump instruction (to skip over header on boot)
-  char BS_OEMName[8];    // OEM Name (padded with spaces)
-  uint16_t BS_BytesPerSec;  // Bytes per sector
-  uint8_t BS_SecPerClus;    // Sectors per cluster
-  uint16_t BS_RsvdSecCnt;  // Reserved sector count (including boot sector)
-  uint8_t BS_NumFATs;    // Number of file allocation tables
-  uint16_t BS_RootEntCnt;  // Number of root directory entries
-  uint16_t BS_TotSec16;    // Total sectors (bits 0-15)
-  uint8_t BS_Media;    // Media descriptor
-  uint16_t BS_FATSz16;    // Sectors per file allocation table
-  uint16_t BS_SecPerTrk;    // Sectors per track
-  uint16_t BS_NumHeads;    // Number of heads
-  uint32_t BS_HiddSec;    // Hidden sectors
-  uint32_t BS_TotSec32;    // Total sectors (bits 16-47)
-  uint32_t BS_FATSz32;    // Sectors per FAT
-  uint16_t BS_ExtFlags;    // Flags
-  uint16_t BS_FSVer;    // Version
-  uint32_t BS_RootClus;    // Root Directory Cluster
-  uint16_t BS_FSInfo;    // Sector of FSInfo structure
-  uint16_t BS_BkBootSec; // Sector number of the BS copy in reserved sectors
-  char BS_Reserved[12];    // for future expansion
+  uint8_t BS_JmpBoot[3]; // Jump instruction (to skip over header on
+                                // boot)
+  char BS_OEMName[8]; // OEM Name (padded with spaces)
+  uint16_t BS_BytesPerSec; // Bytes per sector
+  uint8_t BS_SecPerClus; // Sectors per cluster
+  uint16_t BS_RsvdSecCnt; // Reserved sector count (including boot
+                                // sector)
+  uint8_t BS_NumFATs; // Number of file allocation tables
+  uint16_t BS_RootEntCnt; // Number of root directory entries
+  uint16_t BS_TotSec16; // Total sectors (bits 0-15)
+  uint8_t BS_Media; // Media descriptor
+  uint16_t BS_FATSz16; // Sectors per file allocation table
+  uint16_t BS_SecPerTrk; // Sectors per track
+  uint16_t BS_NumHeads; // Number of heads
+  uint32_t BS_HiddSec; // Hidden sectors
+  uint32_t BS_TotSec32; // Total sectors (bits 16-47)
+  uint32_t BS_FATSz32; // Sectors per FAT
+  uint16_t BS_ExtFlags; // Flags
+  uint16_t BS_FSVer; // Version
+  uint32_t BS_RootClus; // Root Directory Cluster
+  uint16_t BS_FSInfo; // Sector of FSInfo structure
+  uint16_t BS_BkBootSec; // Sector number of the BS copy in reserved
+                                // sectors
+  char BS_Reserved[12]; // for future expansion
   char BS_DrvNum; // Physical drive number
   char BS_Reserved1; // Current head
-  char BS_BootSig;    // ...
+  char BS_BootSig; // ...
   uint32_t BS_VolID;
   char BS_VolLab[11];
   char BS_FilSysType[8];
-  uint8_t unused[420];    // unused space in bootsector
-  uint16_t BS_EndOfBS;    // marks end of bootsector
+  uint8_t unused[420]; // unused space in bootsector
+  uint16_t BS_EndOfBS; // marks end of bootsector
 };
 #pragma pack()
 
@@ -132,7 +135,7 @@ struct sFSInfo {
 struct sFileSystem {
   FILE *fd;
   uint32_t mode;
-  char path[MAX_PATH_LEN+1];
+  char path[MAX_PATH_LEN + 1];
   struct sBootSector bs;
   int32_t FATType;
   uint32_t clusterCount;
@@ -196,7 +199,7 @@ off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
 int32_t parseEntry(struct sFileSystem *fs, union sDirEntry *de);
 
 // calculate checksum for short dir entry name
-uint8_t calculateChecksum (char *sname);
+uint8_t calculateChecksum(char *sname);
 
 // checks whether all FATs have the same content
 int32_t checkFATs(struct sFileSystem *fs);
