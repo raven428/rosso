@@ -1,6 +1,6 @@
 /*
-  This file contains/describes functions that parse command line options.
-*/
+ * This file contains/describes functions that parse command line options.
+ */
 
 #ifndef __options_h__
 #define __options_h__
@@ -20,13 +20,11 @@ int32_t parse_options(int argc, char *argv[]);
 
 // evaluate whether str matches the include an exclude dir path lists or not
 int32_t matchesDirPathLists(struct sStringList *includes,
-        struct sStringList *includes_recursion,
-        struct sStringList *excludes,
-        struct sStringList *excludes_recursion,
-        const char (*str)[MAX_PATH_LEN+1]);
+  struct sStringList *includes_recursion, struct sStringList *excludes,
+  struct sStringList *excludes_recursion,
+  const char (*str)[MAX_PATH_LEN + 1]);
 
 // free options
 void freeOptions();
 
 #endif // __options_h__
-
