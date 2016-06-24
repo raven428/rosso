@@ -14,8 +14,7 @@
 
 // const struct sClusterChain __INITCLUSTERCHAIN__ = {0, NULL};
 
-struct sClusterChain *
-newClusterChain(void) {
+struct sClusterChain *newClusterChain(void) {
   /*
    * create new cluster chain
    */
@@ -30,8 +29,7 @@ newClusterChain(void) {
   return tmp;
 }
 
-int32_t
-insertCluster(struct sClusterChain *chain, uint32_t cluster) {
+int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster) {
   /*
    * allocate memory and insert cluster into cluster chain
    */
@@ -55,8 +53,7 @@ insertCluster(struct sClusterChain *chain, uint32_t cluster) {
   return 0;
 }
 
-void
-freeClusterChain(struct sClusterChain *chain) {
+void freeClusterChain(struct sClusterChain *chain) {
   /*
    * free cluster chain
    */

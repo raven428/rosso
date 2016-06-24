@@ -9,8 +9,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-int32_t
-isDigit(const char c) {
+int32_t isDigit(const char c) {
   /*
    * return true if c is a digit, otherwise false
    */
@@ -20,8 +19,7 @@ isDigit(const char c) {
   return 0;
 }
 
-int32_t
-parseNumber(char **s) {
+int32_t parseNumber(char **s) {
   /*
    * parse integer in string s
    */
@@ -38,8 +36,8 @@ parseNumber(char **s) {
   return value;
 }
 
-int32_t
-natstrcompare(const char *str1, const char *str2, const uint32_t respectCase) {
+int32_t natstrcompare(const char *str1, const char *str2,
+  const uint32_t respectCase) {
   /*
    * natural order string compare
    */
@@ -96,12 +94,10 @@ natstrcompare(const char *str1, const char *str2, const uint32_t respectCase) {
   }
 }
 
-int32_t
-natstrcmp(const char *str1, const char *str2) {
+int32_t natstrcmp(const char *str1, const char *str2) {
   return natstrcompare(str1, str2, 0);
 }
 
-int32_t
-natstrcasecmp(const char *str1, const char *str2) {
+int32_t natstrcasecmp(const char *str1, const char *str2) {
   return natstrcompare(str1, str2, 1);
 }

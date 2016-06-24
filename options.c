@@ -21,8 +21,7 @@ struct sStringList *OPT_INCL_DIRS_REC = NULL;
 struct sStringList *OPT_EXCL_DIRS_REC = NULL;
 struct sStringList *OPT_IGNORE_PREFIXES_LIST = NULL;
 
-int32_t
-addDirPathToStringList(struct sStringList *stringList,
+int32_t addDirPathToStringList(struct sStringList *stringList,
   const char (*str)[MAX_PATH_LEN + 1]) {
   /*
    * insert new string into string list
@@ -72,8 +71,7 @@ addDirPathToStringList(struct sStringList *stringList,
 
 }
 
-int32_t
-matchesDirPathLists(struct sStringList *includes,
+int32_t matchesDirPathLists(struct sStringList *includes,
   struct sStringList *includes_recursion, struct sStringList *excludes,
   struct sStringList *excludes_recursion,
   const char (*str)[MAX_PATH_LEN + 1]) {
@@ -113,8 +111,7 @@ matchesDirPathLists(struct sStringList *includes,
   return 0; // no match
 }
 
-int32_t
-parse_options(int argc, char *argv[]) {
+int32_t parse_options(int argc, char *argv[]) {
   /*
    * parses command line options
    */
@@ -292,8 +289,7 @@ parse_options(int argc, char *argv[]) {
   return 0;
 }
 
-void
-freeOptions() {
+void freeOptions() {
   freeStringList(OPT_INCL_DIRS);
   freeStringList(OPT_INCL_DIRS_REC);
   freeStringList(OPT_EXCL_DIRS);

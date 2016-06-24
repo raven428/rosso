@@ -6,8 +6,7 @@
 #include <stdarg.h>
 #include "errors.h"
 
-void
-errormsg(const char *func, const char *str, ...) {
+void errormsg(const char *func, const char *str, ...) {
   /*
    * error messages with function name and argument list
    */

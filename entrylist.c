@@ -15,16 +15,14 @@
 #include "stringlist.h"
 
 // random number
-uint32_t
-irand(uint32_t b, uint32_t e) {
+uint32_t irand(uint32_t b, uint32_t e) {
   double r = e - b + 1;
   return b + (uint32_t) (r * rand() / (RAND_MAX + 1.0));
 }
 
 // List functions
 
-struct sDirEntryList *
-newDirEntryList(void) {
+struct sDirEntryList *newDirEntryList(void) {
   /*
    * create new dir entry list
    */
@@ -38,9 +36,9 @@ newDirEntryList(void) {
   return tmp;
 }
 
-struct sDirEntryList *
-newDirEntry(char *sname, char *lname, struct sShortDirEntry *sde,
-  struct sLongDirEntryList *ldel, uint32_t entries) {
+struct sDirEntryList *newDirEntry(char *sname, char *lname,
+  struct sShortDirEntry *sde, struct sLongDirEntryList *ldel,
+  uint32_t entries) {
   /*
    * create a new directory entry holder
    */
@@ -82,8 +80,7 @@ newDirEntry(char *sname, char *lname, struct sShortDirEntry *sde,
   return tmp;
 }
 
-struct sLongDirEntryList *
-insertLongDirEntryList(struct sLongDirEntry *lde,
+struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
   struct sLongDirEntryList *list) {
   /*
    * insert a long directory entry to list
@@ -118,8 +115,7 @@ insertLongDirEntryList(struct sLongDirEntry *lde,
   }
 }
 
-int32_t
-stripSpecialPrefixes(char *old, char *new) {
+int32_t stripSpecialPrefixes(char *old, char *new) {
   /*
    * strip special prefixes "a" and "the"
    */
@@ -146,8 +142,7 @@ stripSpecialPrefixes(char *old, char *new) {
   return 0;
 }
 
-int32_t
-cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
+int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   /*
    * compare two directory entries
    */
@@ -299,8 +294,7 @@ cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   }
 }
 
-void
-insertDirEntryList(struct sDirEntryList *new, struct sDirEntryList *list) {
+void insertDirEntryList(struct sDirEntryList *new, struct sDirEntryList *list) {
   /*
    * insert a directory entry into list
    */
@@ -321,8 +315,7 @@ insertDirEntryList(struct sDirEntryList *new, struct sDirEntryList *list) {
   new->next = dummy;
 }
 
-void
-freeDirEntryList(struct sDirEntryList *list) {
+void freeDirEntryList(struct sDirEntryList *list) {
   /*
    * free dir entry list
    */
@@ -353,8 +346,7 @@ freeDirEntryList(struct sDirEntryList *list) {
   }
 }
 
-void
-randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
+void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
   /*
    * randomize entry list
    */

@@ -8,8 +8,7 @@
 #include <errno.h>
 #include "errors.h"
 
-struct sStringList *
-newStringList() {
+struct sStringList *newStringList() {
   /*
    * create a new string list
    */
@@ -27,8 +26,7 @@ newStringList() {
   return stringList;
 }
 
-int32_t
-addStringToStringList(struct sStringList *stringList, const char *str) {
+int32_t addStringToStringList(struct sStringList *stringList, const char *str) {
   /*
    * insert new string into string list
    */
@@ -67,8 +65,7 @@ addStringToStringList(struct sStringList *stringList, const char *str) {
 
 }
 
-int32_t
-matchesStringList(struct sStringList *stringList, const char *str) {
+int32_t matchesStringList(struct sStringList *stringList, const char *str) {
   /*
    * evaluates whether str is contained in stringList
    */
@@ -95,8 +92,7 @@ matchesStringList(struct sStringList *stringList, const char *str) {
   return ret;
 }
 
-void
-freeStringList(struct sStringList *stringList) {
+void freeStringList(struct sStringList *stringList) {
   /*
    * free directory list
    */

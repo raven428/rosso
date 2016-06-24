@@ -19,8 +19,8 @@
 #include "fileio.h"
 #include "stringlist.h"
 
-int32_t
-parseLongFilenamePart(struct sLongDirEntry *lde, char *str, iconv_t cd) {
+int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
+  iconv_t cd) {
   /*
    * retrieves a part of a long filename from a directory entry (thanks to M$
    * for this ugly hack...)
@@ -67,8 +67,7 @@ parseLongFilenamePart(struct sLongDirEntry *lde, char *str, iconv_t cd) {
   return 0;
 }
 
-void
-parseShortFilename(struct sShortDirEntry *sde, char *str) {
+void parseShortFilename(struct sShortDirEntry *sde, char *str) {
   /*
    * parses short name of a file
    */
@@ -89,8 +88,7 @@ parseShortFilename(struct sShortDirEntry *sde, char *str) {
   }
 }
 
-int32_t
-checkLongDirEntries(struct sDirEntryList *list) {
+int32_t checkLongDirEntries(struct sDirEntryList *list) {
   /*
    * does some integrity checks on LongDirEntries
    */
@@ -133,8 +131,7 @@ checkLongDirEntries(struct sDirEntryList *list) {
   return 0;
 }
 
-int32_t
-parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
+int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
   struct sDirEntryList *list, uint32_t *direntries) {
   /*
    * parses a cluster chain and puts found directory entries to list
@@ -256,8 +253,7 @@ parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
   return 0;
 }
 
-int32_t
-writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
+int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
   /*
    * writes directory entries to file
    */
@@ -286,8 +282,7 @@ writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
   return 0;
 }
 
-int32_t
-getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
+int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
   struct sClusterChain *chain) {
   /*
    * retrieves an array of all clusters in a cluster chain starting with
@@ -339,8 +334,7 @@ getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
   return i;
 }
 
-int32_t
-writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
+int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
   struct sClusterChain *chain) {
   /*
    * writes all entries from list to the cluster chain
@@ -414,8 +408,7 @@ writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
 
 }
 
-int32_t
-sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
+int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   const char (*path)[MAX_PATH_LEN + 1]) {
   /*
    * sorts sub directories in a FAT file system
@@ -470,8 +463,7 @@ sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   return 0;
 }
 
-int32_t
-sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
+int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
   const char (*path)[MAX_PATH_LEN + 1]) {
   /*
    * sorts directory entries in a cluster
@@ -563,8 +555,7 @@ sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
   return 0;
 }
 
-int32_t
-sortFileSystem(char *filename) {
+int32_t sortFileSystem(char *filename) {
   /*
    * sort FAT file system
    */

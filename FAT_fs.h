@@ -85,13 +85,13 @@ union sDirEntry {
 #pragma pack(1)
 // First sector = boot sector
 struct sBootSector {
-  uint8_t BS_JmpBoot[3]; // Jump instruction (to skip over header on
-                                // boot)
+  // Jump instruction (to skip over header on boot)
+  uint8_t BS_JmpBoot[3];
   char BS_OEMName[8]; // OEM Name (padded with spaces)
   uint16_t BS_BytesPerSec; // Bytes per sector
   uint8_t BS_SecPerClus; // Sectors per cluster
-  uint16_t BS_RsvdSecCnt; // Reserved sector count (including boot
-                                // sector)
+  // Reserved sector count (including boot sector)
+  uint16_t BS_RsvdSecCnt;
   uint8_t BS_NumFATs; // Number of file allocation tables
   uint16_t BS_RootEntCnt; // Number of root directory entries
   uint16_t BS_TotSec16; // Total sectors (bits 0-15)
@@ -106,8 +106,8 @@ struct sBootSector {
   uint16_t BS_FSVer; // Version
   uint32_t BS_RootClus; // Root Directory Cluster
   uint16_t BS_FSInfo; // Sector of FSInfo structure
-  uint16_t BS_BkBootSec; // Sector number of the BS copy in reserved
-                                // sectors
+  // Sector number of the BS copy in reserved sectors
+  uint16_t BS_BkBootSec;
   char BS_Reserved[12]; // for future expansion
   char BS_DrvNum; // Physical drive number
   char BS_Reserved1; // Current head

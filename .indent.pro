@@ -29,6 +29,9 @@
 // do not put space after the function in function calls
 -npcs
 
+// put the type of a procedure on the same line as its name
+-npsl
+
 // use spaces instead of tabs
 -nut
 

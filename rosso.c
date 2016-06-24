@@ -66,8 +66,7 @@
 "  IF SOMEONE ELSE HAS ACCESS TO THE DEVICE HE MIGHT EXPLOIT ROSSO WITH A\n" \
 "  FORGED CORRUPT FILESYSTEM! USE THIS PROGRAM AT YOUR OWN RISK!\n"
 
-int32_t
-printFSInfo(char *filename) {
+int32_t printFSInfo(char *filename) {
   /*
    * print file system information
    */
@@ -109,8 +108,7 @@ printFSInfo(char *filename) {
 
 }
 
-int
-main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
   /*
    * parse arguments and options and start sorting
    */

@@ -16,8 +16,7 @@
 #include "errors.h"
 #include "fileio.h"
 
-int32_t
-check_bootsector(struct sBootSector *bs) {
+int32_t check_bootsector(struct sBootSector *bs) {
   /*
    * lazy check if this is really a FAT bootsector
    */
@@ -68,8 +67,7 @@ check_bootsector(struct sBootSector *bs) {
   return 0;
 }
 
-int32_t
-read_bootsector(FILE *fd, struct sBootSector *bs) {
+int32_t read_bootsector(FILE *fd, struct sBootSector *bs) {
   /*
    * reads bootsector
    */
@@ -101,8 +99,7 @@ read_bootsector(FILE *fd, struct sBootSector *bs) {
   return 0;
 }
 
-int32_t
-writeBootSector(struct sFileSystem *fs) {
+int32_t writeBootSector(struct sFileSystem *fs) {
   /*
    * write boot sector
    */
@@ -137,8 +134,7 @@ writeBootSector(struct sFileSystem *fs) {
   return 0;
 }
 
-int32_t
-readFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
+int32_t readFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   /*
    * reads FSInfo structure
    */
@@ -160,8 +156,7 @@ readFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   return 0;
 }
 
-int32_t
-writeFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
+int32_t writeFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   /*
    * write FSInfo structure
    */
@@ -183,8 +178,7 @@ writeFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   return 0;
 }
 
-int32_t
-getCountOfClusters(struct sBootSector *bs) {
+int32_t getCountOfClusters(struct sBootSector *bs) {
   /*
    * calculates count of clusters
    */
@@ -210,8 +204,7 @@ getCountOfClusters(struct sBootSector *bs) {
   return retvalue;
 }
 
-int32_t
-getFATType(struct sBootSector *bs) {
+int32_t getFATType(struct sBootSector *bs) {
   /*
    * retrieves FAT type from bootsector
    */
@@ -230,8 +223,7 @@ getFATType(struct sBootSector *bs) {
   }
 }
 
-uint16_t
-isFreeCluster(const uint32_t data) {
+uint16_t isFreeCluster(const uint32_t data) {
   /*
    * checks whether data marks a free cluster
    */
@@ -239,8 +231,7 @@ isFreeCluster(const uint32_t data) {
   return (data & 0x0FFFFFFF) == 0;
 }
 
-uint16_t
-isEOC(struct sFileSystem *fs, const uint32_t data) {
+uint16_t isEOC(struct sFileSystem *fs, const uint32_t data) {
   /*
    * checks whether data marks the end of a cluster chain
    */
@@ -255,8 +246,7 @@ isEOC(struct sFileSystem *fs, const uint32_t data) {
   return 0;
 }
 
-uint16_t
-isBadCluster(struct sFileSystem *fs, const uint32_t data) {
+uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data) {
   /*
    * checks whether data marks a bad cluster
    */
@@ -271,8 +261,7 @@ isBadCluster(struct sFileSystem *fs, const uint32_t data) {
 }
 
 
-void *
-readFAT(struct sFileSystem *fs, uint16_t nr) {
+void *readFAT(struct sFileSystem *fs, uint16_t nr) {
   /*
    * reads a FAT from file system fs
    */
@@ -307,8 +296,7 @@ readFAT(struct sFileSystem *fs, uint16_t nr) {
 
 }
 
-int32_t
-writeFAT(struct sFileSystem *fs, void *fat) {
+int32_t writeFAT(struct sFileSystem *fs, void *fat) {
   /*
    * write FAT to file system
    */
@@ -338,8 +326,7 @@ writeFAT(struct sFileSystem *fs, void *fat) {
   return 0;
 }
 
-int32_t
-checkFATs(struct sFileSystem *fs) {
+int32_t checkFATs(struct sFileSystem *fs) {
   /*
    * checks whether all FATs have the same content
    */
@@ -412,8 +399,7 @@ checkFATs(struct sFileSystem *fs) {
   return result;
 }
 
-int32_t
-getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
+int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
   /*
    * retrieves FAT entry for a cluster number
    */
@@ -453,8 +439,7 @@ getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
 
 }
 
-off_t
-getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
+off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
   /*
    * returns the offset of a specific cluster in the data region of the file
    * system
@@ -468,8 +453,7 @@ getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
 
 }
 
-void *
-readCluster(struct sFileSystem *fs, uint32_t cluster) {
+void *readCluster(struct sFileSystem *fs, uint32_t cluster) {
   /*
    * read cluster from file system
    */
@@ -493,8 +477,7 @@ readCluster(struct sFileSystem *fs, uint32_t cluster) {
   return dummy;
 }
 
-int32_t
-writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data) {
+int32_t writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data) {
   /*
    * write cluster to file systen
    */
@@ -511,8 +494,7 @@ writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data) {
   return 0;
 }
 
-int32_t
-parseEntry(struct sFileSystem *fs, union sDirEntry *de) {
+int32_t parseEntry(struct sFileSystem *fs, union sDirEntry *de) {
   /*
    * parses one directory entry
    */
@@ -530,8 +512,7 @@ parseEntry(struct sFileSystem *fs, union sDirEntry *de) {
   return 1; // short dir entry
 }
 
-uint8_t
-calculateChecksum(char *sname) {
+uint8_t calculateChecksum(char *sname) {
   uint8_t len;
   uint8_t sum;
 
@@ -543,8 +524,7 @@ calculateChecksum(char *sname) {
 }
 
 
-int32_t
-openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
+int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   /*
    * opens file system and assemlbes file system information into data
    * structure
@@ -652,8 +632,7 @@ openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   return 0;
 }
 
-int32_t
-closeFileSystem(struct sFileSystem *fs) {
+int32_t closeFileSystem(struct sFileSystem *fs) {
   /*
    * closes file system
    */
