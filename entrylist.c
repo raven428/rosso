@@ -88,39 +88,39 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
 
   assert(lde != NULL);
 
-  struct sLongDirEntryList *tmp, *new;
+  struct sLongDirEntryList *tmp, *q;
 
-  if ((new = malloc(sizeof(struct sLongDirEntryList))) == NULL) {
+  if ((q = malloc(sizeof(struct sLongDirEntryList))) == NULL) {
     stderror();
     return NULL;
   }
-  if ((new->lde = malloc(sizeof(struct sLongDirEntry))) == NULL) {
+  if ((q->lde = malloc(sizeof(struct sLongDirEntry))) == NULL) {
     stderror();
-    free(new);
+    free(q);
     return NULL;
   }
-  memcpy(new->lde, lde, DIR_ENTRY_SIZE);
-  new->next = NULL;
+  memcpy(q->lde, lde, DIR_ENTRY_SIZE);
+  q->next = NULL;
 
   if (list != NULL) {
     tmp = list;
     while (tmp->next != NULL) {
       tmp = tmp->next;
     }
-    tmp->next = new;
+    tmp->next = q;
     return list;
   }
   else {
-    return new;
+    return q;
   }
 }
 
-int32_t stripSpecialPrefixes(char *old, char *new) {
+int32_t stripSpecialPrefixes(char *old, char *q) {
   /*
    * strip special prefixes "a" and "the"
    */
   assert(old != NULL);
-  assert(new != NULL);
+  assert(q != NULL);
 
   struct sStringList *prefix = OPT_IGNORE_PREFIXES_LIST;
 
@@ -132,8 +132,8 @@ int32_t stripSpecialPrefixes(char *old, char *new) {
     len = strlen(prefix->next->str);
     DEBUGMSG("prefix: %s", prefix->next->str);
     if (strncasecmp(old, prefix->next->str, len) == 0) {
-      strncpy(new, old + len, len_old - len);
-      new[len_old - len] = '\0';
+      strncpy(q, old + len, len_old - len);
+      q[len_old - len] = '\0';
       return 1;
     }
     prefix = prefix->next;
@@ -294,25 +294,25 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   }
 }
 
-void insertDirEntryList(struct sDirEntryList *new, struct sDirEntryList *list) {
+void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list) {
   /*
    * insert a directory entry into list
    */
 
-  assert(new != NULL);
+  assert(q != NULL);
   assert(list != NULL);
 
   struct sDirEntryList *tmp, *dummy;
 
   tmp = list;
 
-  while ((tmp->next != NULL) && (cmpEntries(new, tmp->next) >= 0)) {
+  while ((tmp->next != NULL) && (cmpEntries(q, tmp->next) >= 0)) {
     tmp = tmp->next;
   }
 
   dummy = tmp->next;
-  tmp->next = new;
-  new->next = dummy;
+  tmp->next = q;
+  q->next = dummy;
 }
 
 void freeDirEntryList(struct sDirEntryList *list) {

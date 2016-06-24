@@ -49,8 +49,7 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
 int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2);
 
 // insert a directory entry into list
-void insertDirEntryList(struct sDirEntryList *new,
-  struct sDirEntryList *list);
+void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list);
 
 // free dir entry list
 void freeDirEntryList(struct sDirEntryList *list);
