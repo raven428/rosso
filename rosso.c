@@ -151,14 +151,12 @@ int main(int argc, char *argv[]) {
   filename = argv[optind];
 
   if (OPT_INFO) {
-    // infomsg(INFO_HEADER "\n\n");
     if (printFSInfo(filename) == -1) {
       myerror("Failed to print file system information");
       return -1;
     }
   }
   else {
-    // infomsg(INFO_HEADER "\n\n");
     if (sortFileSystem(filename) == -1) {
       myerror("Failed to sort file system!");
       return -1;
