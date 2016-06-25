@@ -185,8 +185,8 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
         parseShortFilename(&de.ShortDirEntry, sname);
 
         if (OPT_LIST && strcmp(sname, ".") && strcmp(sname, "..") &&
-          (((uint8_t) sname[0]) != DE_FREE) &&
-          !(de.ShortDirEntry.DIR_Atrr & ATTR_VOLUME_ID)) {
+          (((uint8_t) sname[0]) != DE_FREE) && !(de.ShortDirEntry.DIR_Atrr &
+            ATTR_VOLUME_ID)) {
 
           if (!OPT_MORE_INFO) {
             printf("%s\n", (lname[0] != '\0') ? lname : sname);
@@ -322,8 +322,8 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
         return -1;
       }
       cluster = data;
-    } while (((cluster & 0x0fffffff) != 0x0ff8fff8) &&
-      ((cluster & 0x0fffffff) < 0x0ffffff8)); // end of cluster
+    } while (((cluster & 0x0fffffff) != 0x0ff8fff8) && ((cluster &
+          0x0fffffff) < 0x0ffffff8)); // end of cluster
     break;
   case -1:
   default:
@@ -425,8 +425,8 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   p = list->next;
   while (p != NULL) {
     if ((p->sde->DIR_Atrr & ATTR_DIRECTORY) &&
-      ((uint8_t) p->sde->DIR_Name[0] != DE_FREE) &&
-      !(p->sde->DIR_Atrr & ATTR_VOLUME_ID) && (strcmp(p->sname, ".")) &&
+      ((uint8_t) p->sde->DIR_Name[0] != DE_FREE) && !(p->sde->DIR_Atrr &
+        ATTR_VOLUME_ID) && (strcmp(p->sname, ".")) &&
       strcmp(p->sname, "..")) {
 
       c = (p->sde->DIR_FstClusHI * 65536 + p->sde->DIR_FstClusLO);

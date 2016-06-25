@@ -157,14 +157,14 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   // the volume label must always remain at the beginning of the (root)
   // directory
-  if ((de1->sde->
-      DIR_Atrr & (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID
-        | ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
+  if ((de1->sde->DIR_Atrr &
+      (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
+        ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
     return (-1);
   }
-  else if ((de2->sde->
-      DIR_Atrr & (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID
-        | ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
+  else if ((de2->sde->DIR_Atrr &
+      (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
+        ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
     return (1);
     // the special "." and ".." directories must always remain at the
     // beginning of directories, in this order
@@ -211,8 +211,8 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   // directories will be put above normal files
   if (OPT_ORDER == 0) {
-    if ((de1->sde->DIR_Atrr & ATTR_DIRECTORY) &&
-      !(de2->sde->DIR_Atrr & ATTR_DIRECTORY)) {
+    if ((de1->sde->DIR_Atrr & ATTR_DIRECTORY) && !(de2->sde->DIR_Atrr &
+        ATTR_DIRECTORY)) {
       return -1;
     }
     else if (!(de1->sde->DIR_Atrr & ATTR_DIRECTORY) &&
@@ -221,8 +221,8 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
     }
   }
   else if (OPT_ORDER == 1) {
-    if ((de1->sde->DIR_Atrr & ATTR_DIRECTORY) &&
-      !(de2->sde->DIR_Atrr & ATTR_DIRECTORY)) {
+    if ((de1->sde->DIR_Atrr & ATTR_DIRECTORY) && !(de2->sde->DIR_Atrr &
+        ATTR_DIRECTORY)) {
       return 1;
     }
     else if (!(de1->sde->DIR_Atrr & ATTR_DIRECTORY) &&
@@ -362,10 +362,9 @@ void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
   // directory
   // the special "." and ".." directories must always remain at the beginning
   // of directories, so skip them
-  while (randlist->next &&
-    (((randlist->next->sde->
-          DIR_Atrr & (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM |
-            ATTR_VOLUME_ID | ATTR_DIRECTORY)) == ATTR_VOLUME_ID) ||
+  while (randlist->next && (((randlist->next->sde->DIR_Atrr &
+          (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
+            ATTR_DIRECTORY)) == ATTR_VOLUME_ID) ||
       (strcmp(randlist->next->sname, ".") == 0) ||
       (strcmp(randlist->next->sname, "..") == 0))) {
 
