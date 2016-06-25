@@ -589,7 +589,6 @@ int32_t sortFileSystem(char *filename) {
     // FAT32
     // root directory lies in cluster chain,
     // so sort it like all other directories
-    printf("File system: FAT32.\n\n");
     if (sortClusterChain(&fs, fs.bs.BS_RootClus,
         (const char (*)[MAX_PATH_LEN + 1]) "/") == -1) {
       myerror("Failed to sort first cluster chain!");
