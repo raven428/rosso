@@ -160,33 +160,33 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   if ((de1->sde->DIR_Atrr &
       (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
         ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
-    return (-1);
+    return -1;
   }
   else if ((de2->sde->DIR_Atrr &
       (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
         ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
-    return (1);
+    return 1;
     // the special "." and ".." directories must always remain at the
     // beginning of directories, in this order
   }
   else if (strcmp(de1->sname, ".") == 0) {
-    return (-1);
+    return -1;
   }
   else if (strcmp(de2->sname, ".") == 0) {
-    return (1);
+    return 1;
   }
   else if (strcmp(de1->sname, "..") == 0) {
-    return (-1);
+    return -1;
   }
   else if (strcmp(de2->sname, "..") == 0) {
-    return (1);
+    return 1;
     // deleted entries should be moved to the end of the directory
   }
   else if ((uint8_t) de1->sname[0] == DE_FREE) {
-    return (1);
+    return 1;
   }
   else if ((uint8_t) de2->sname[0] == DE_FREE) {
-    return (-1);
+    return -1;
   }
 
   char *ss1, *ss2;
