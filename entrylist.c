@@ -369,8 +369,8 @@ void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
       (strcmp(randlist->next->sname, ".") == 0) ||
       (strcmp(randlist->next->sname, "..") == 0))) {
 
-    DEBUGMSG("skipping randomization for %s", randlist->next->sname)
-      randlist = randlist->next;
+    DEBUGMSG("skipping randomization for %s", randlist->next->sname);
+    randlist = randlist->next;
     skip++;
   }
 
