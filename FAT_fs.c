@@ -217,7 +217,8 @@ int32_t getFATType(struct sBootSector *bs) {
   if (CountOfClusters == -1) {
     myerror("Failed to get count of clusters!");
     return -1;
-  } else if (CountOfClusters <= 65536) {
+  }
+  else if (CountOfClusters <= 65536) {
     myerror("Count of clusters not FAT32!");
     return -1;
   }
