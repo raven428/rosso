@@ -82,11 +82,16 @@ int32_t printFSInfo(char *filename) {
     return -1;
   }
 
-  printf("Device: %s\nType: FAT%d\nSector size: %d bytes\n"
-    "FAT size: %d sectors (%d bytes)\nNumber of FATs: %d %s\n"
-    "Cluster size: %d bytes\nMax. cluster chain length: %d clusters\n"
-    "Data clusters: %d\nFS size: %d MiBytes\n", fs.path, fs.FATType,
-    fs.sectorSize, fs.FATSize, fs.FATSize * fs.sectorSize, fs.bs.BS_NumFATs,
+  printf("Device: %s\n"
+    "Type: FAT%d\n"
+    "Sector size: %d bytes\n"
+    "FAT size: %d sectors (%d bytes)\n"
+    "Number of FATs: %d %s\n"
+    "Cluster size: %d bytes\n"
+    "Max. cluster chain length: %d clusters\n"
+    "Data clusters: %d\n"
+    "FS size: %d MiBytes\n", fs.path, fs.FATType, fs.sectorSize, fs.FATSize,
+    fs.FATSize * fs.sectorSize, fs.bs.BS_NumFATs,
     checkFATs(&fs) ? "different" : "same", fs.clusterSize,
     fs.maxClusterChainLength, fs.clusters, (int) (fs.FSSize >> 20));
 
@@ -97,7 +102,8 @@ int32_t printFSInfo(char *filename) {
       return -1;
     }
 
-    printf("FAT32 root first cluster: 0x%x\nFirst cluster data offset: 0x%x\n"
+    printf("FAT32 root first cluster: 0x%x\n"
+      "First cluster data offset: 0x%x\n"
       "First cluster FAT entry: 0x%x\n", fs.bs.BS_RootClus,
       (int) getClusterOffset(&fs, fs.bs.BS_RootClus), value);
   }
