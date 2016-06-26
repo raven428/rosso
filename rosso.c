@@ -83,14 +83,13 @@ int32_t printFSInfo(char *filename) {
   }
 
   printf("Device: %s\n"
-    "Type: FAT%d\n"
     "Sector size: %d bytes\n"
     "FAT size: %d sectors (%d bytes)\n"
     "Number of FATs: %d %s\n"
     "Cluster size: %d bytes\n"
     "Max. cluster chain length: %d clusters\n"
     "Data clusters: %d\n"
-    "FS size: %d MiBytes\n", fs.path, fs.FATType, fs.sectorSize, fs.FATSize,
+    "FS size: %d MiBytes\n", fs.path, fs.sectorSize, fs.FATSize,
     fs.FATSize * fs.sectorSize, fs.bs.BS_NumFATs,
     checkFATs(&fs) ? "different" : "same", fs.clusterSize,
     fs.maxClusterChainLength, fs.clusters, (int) (fs.FSSize >> 20));
