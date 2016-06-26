@@ -88,10 +88,10 @@ int32_t matchesDirPathLists(struct sStringList *includes,
   excl_rec = matchesStringList(excludes_recursion, (const char *) str);
 
   // if no options -d and -D are used
-  if ((includes->next == NULL) && (includes_recursion->next == NULL)) {
+  if (includes->next == NULL && includes_recursion->next == NULL) {
     // match all directories except those are supplied via -x
     // and those and subdirs that are supplied via -X
-    if ((excl != RETURN_EXACT_MATCH) && (excl_rec == RETURN_NO_MATCH)) {
+    if (excl != RETURN_EXACT_MATCH && excl_rec == RETURN_NO_MATCH) {
       return 1; // match
     }
     // if options -d and -D are used
@@ -102,8 +102,8 @@ int32_t matchesDirPathLists(struct sStringList *includes,
      * are supplied via -D, except those that excplicitly excluded via -x, or
      * those and their subdirs that are supplied via -X
      */
-    if (((incl == RETURN_EXACT_MATCH) || (incl_rec != RETURN_NO_MATCH)) &&
-      (excl != RETURN_EXACT_MATCH) && (excl_rec == RETURN_NO_MATCH)) {
+    if ((incl == RETURN_EXACT_MATCH || incl_rec != RETURN_NO_MATCH) &&
+      excl != RETURN_EXACT_MATCH && excl_rec == RETURN_NO_MATCH) {
       return 1; // match
     }
   }

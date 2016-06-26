@@ -190,13 +190,13 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   char *ss1, *ss2;
 
-  if ((de1->lname != NULL) && (de1->lname[0] != '\0')) {
+  if (de1->lname != NULL && de1->lname[0] != '\0') {
     ss1 = de1->lname;
   }
   else {
     ss1 = de1->sname;
   }
-  if ((de2->lname != NULL) && (de2->lname[0] != '\0')) {
+  if (de2->lname != NULL && de2->lname[0] != '\0') {
     ss2 = de2->lname;
   }
   else {
@@ -210,22 +210,22 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   // directories will be put above normal files
   if (OPT_ORDER == 0) {
-    if ((de1->sde->DIR_Atrr & ATTR_DIRECTORY) && !(de2->sde->DIR_Atrr &
-        ATTR_DIRECTORY)) {
+    if (de1->sde->DIR_Atrr & ATTR_DIRECTORY && de2->sde->DIR_Atrr &
+      ~ATTR_DIRECTORY) {
       return -1;
     }
-    else if (!(de1->sde->DIR_Atrr & ATTR_DIRECTORY) &&
-      (de2->sde->DIR_Atrr & ATTR_DIRECTORY)) {
+    else if (de1->sde->DIR_Atrr & ~ATTR_DIRECTORY && de2->sde->DIR_Atrr &
+      ATTR_DIRECTORY) {
       return 1;
     }
   }
   else if (OPT_ORDER == 1) {
-    if ((de1->sde->DIR_Atrr & ATTR_DIRECTORY) && !(de2->sde->DIR_Atrr &
-        ATTR_DIRECTORY)) {
+    if (de1->sde->DIR_Atrr & ATTR_DIRECTORY && de2->sde->DIR_Atrr &
+      ~ATTR_DIRECTORY) {
       return 1;
     }
-    else if (!(de1->sde->DIR_Atrr & ATTR_DIRECTORY) &&
-      (de2->sde->DIR_Atrr & ATTR_DIRECTORY)) {
+    else if (de1->sde->DIR_Atrr & ~ATTR_DIRECTORY && de2->sde->DIR_Atrr &
+      ATTR_DIRECTORY) {
       return -1;
     }
   }
@@ -255,8 +255,8 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   if (!OPT_ASCII) {
     // consider locale for comparison
-    if ((strxfrm(s1_col, ss1, MAX_PATH_LEN * 2) == MAX_PATH_LEN * 2) ||
-      (strxfrm(s2_col, ss2, MAX_PATH_LEN * 2) == MAX_PATH_LEN * 2)) {
+    if (strxfrm(s1_col, ss1, MAX_PATH_LEN * 2) == MAX_PATH_LEN * 2 ||
+      strxfrm(s2_col, ss2, MAX_PATH_LEN * 2) == MAX_PATH_LEN * 2) {
       myerror("String collation error!");
       exit(1);
     }
@@ -301,7 +301,7 @@ void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list) {
 
   tmp = list;
 
-  while ((tmp->next != NULL) && (cmpEntries(q, tmp->next) >= 0)) {
+  while (tmp->next != NULL && cmpEntries(q, tmp->next) >= 0) {
     tmp = tmp->next;
   }
 
@@ -357,11 +357,11 @@ void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
   // directory
   // the special "." and ".." directories must always remain at the beginning
   // of directories, so skip them
-  while (randlist->next && (((randlist->next->sde->DIR_Atrr &
-          (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
-            ATTR_DIRECTORY)) == ATTR_VOLUME_ID) ||
-      (strcmp(randlist->next->sname, ".") == 0) ||
-      (strcmp(randlist->next->sname, "..") == 0))) {
+  while (randlist->next && ((randlist->next->sde->DIR_Atrr &
+        (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
+          ATTR_DIRECTORY)) == ATTR_VOLUME_ID ||
+      strcmp(randlist->next->sname, ".") == 0 ||
+      strcmp(randlist->next->sname, "..") == 0)) {
 
     randlist = randlist->next;
     skip++;

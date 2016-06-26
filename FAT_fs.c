@@ -23,8 +23,8 @@ int32_t check_bootsector(struct sBootSector *bs) {
 
   assert(bs != NULL);
 
-  if (!((bs->BS_JmpBoot[0] == 0xeb) && (bs->BS_JmpBoot[2] == 0x90)) &&
-    !(bs->BS_JmpBoot[0] == 0xe9)) {
+  if (!(bs->BS_JmpBoot[0] == 0xeb && bs->BS_JmpBoot[2] == 0x90) &&
+    bs->BS_JmpBoot[0] != 0xe9) {
     // boot sector does not begin with specific instruction
     myerror("Boot sector does not begin with jump instruction!");
     return -1;
@@ -575,7 +575,7 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
     return -1;
   }
 
-  if ((fs->FATType == FATTYPE_FAT32) && (fs->bs.BS_FATSz32 == 0)) {
+  if (fs->FATType == FATTYPE_FAT32 && fs->bs.BS_FATSz32 == 0) {
     myerror("32-bit count of FAT sectors must not be zero for FAT32!");
     fs_close(fs->fd);
     return -1;
@@ -584,7 +584,7 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   fs->FATSize = fs->bs.BS_FATSz32;
 
   // check whether count of root dir entries is ok for given FAT type
-  if ((fs->FATType == FATTYPE_FAT32) && (fs->bs.BS_RootEntCnt != 0)) {
+  if (fs->FATType == FATTYPE_FAT32 && fs->bs.BS_RootEntCnt) {
     myerror("Count of root directory entries must be zero for FAT32 (%u)!",
       fs->bs.BS_RootEntCnt);
     fs_close(fs->fd);

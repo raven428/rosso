@@ -426,8 +426,7 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   while (p != NULL) {
     if (p->sde->DIR_Atrr & ATTR_DIRECTORY &&
       (uint8_t) p->sde->DIR_Name[0] != DE_FREE && p->sde->DIR_Atrr &
-      ~ATTR_VOLUME_ID && strcmp(p->sname, ".") && strcmp(p->sname, "..")
-      ) {
+      ~ATTR_VOLUME_ID && strcmp(p->sname, ".") && strcmp(p->sname, "..")) {
       c = (p->sde->DIR_FstClusHI * 65536 + p->sde->DIR_FstClusLO);
       if (getFATEntry(fs, c, &value) == -1) {
         myerror("Failed to get FAT entry!");
