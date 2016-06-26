@@ -31,4 +31,4 @@ zip: rosso readme.txt
   ln -f $*.md $@
 
 clean:
-  rm -fv *.exe *.o *.zip *.coff *.txt
+  $(RM) -v *.exe *.o *.zip *.coff *.txt
