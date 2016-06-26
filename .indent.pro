@@ -38,6 +38,9 @@
 // put the ‘*’ character at the left of comments
 -sc
 
+// Set tab size to n spaces
+-ts0
+
 // tell indent the name of typenames
 -T FILE
 -T iconv_t
