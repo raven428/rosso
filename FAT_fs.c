@@ -450,7 +450,7 @@ off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
   assert(fs != NULL);
   assert(cluster > 1);
 
-  return (((off_t) (cluster - 2) * fs->bs.BS_SecPerClus) +
+  return ((cluster - 2) * fs->bs.BS_SecPerClus +
     fs->firstDataSector) * fs->sectorSize;
 
 }

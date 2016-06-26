@@ -81,7 +81,7 @@ void parseShortFilename(struct sShortDirEntry *sde, char *str) {
   s = strchr(str, ' ');
   if (s != NULL)
     s[0] = '\0';
-  if ((char) (*(sde->DIR_Name + 8)) != ' ') {
+  if ((char) *(sde->DIR_Name + 8) != ' ') {
     strcat(str, ".");
     strncat(str, sde->DIR_Name + 8, 3);
     str[12] = '\0';
