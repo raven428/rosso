@@ -385,8 +385,6 @@ int32_t checkFATs(struct sFileSystem *fs) {
       return -1;
     }
 
-    // printf("FAT1: %08lx FATx: %08lx\n", FAT1[0], FATx[0]);
-
     result = memcmp(FAT1, FATx, FATSizeInBytes) != 0;
     if (result)
       break; // FATs don't match

@@ -49,8 +49,6 @@ int32_t natstrcompare(const char *str1, const char *str2,
   char *s2 = (char *) str2;
 
   while (1) {
-    // printf("Strings: %s %s\n", s1, s2);
-
     if ((*s1 == '\0') || (*s2 == '\0')) {
       return strcmp(s1, s2);
     }
@@ -74,8 +72,6 @@ int32_t natstrcompare(const char *str1, const char *str2,
     // at least one of the strings has a number in it
     n1 = parseNumber(&s1);
     n2 = parseNumber(&s2);
-
-    // printf("Numbers: %d %d\n", n1, n2);
 
     // one of the strings had no number
     if ((n1 == -1) || (n2 == -1)) {

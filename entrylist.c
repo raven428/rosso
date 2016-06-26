@@ -236,7 +236,6 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
     uint32_t md1, md2;
     md1 = de1->sde->DIR_WrtDate << 16 | de1->sde->DIR_WrtTime;
     md2 = de2->sde->DIR_WrtDate << 16 | de2->sde->DIR_WrtTime;
-    // printf("md1: %x, md2: %x\n", md1, md2);
     if (md1 < md2)
       return -OPT_REVERSE;
     else if (md1 > md2)
@@ -263,9 +262,6 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
       exit(1);
     }
   }
-
-  // printf("Orig S1: %s, Orig S2: %s, Locale S1: %s, Locale S2: %s\n", ss1,
-  // ss2, s1_col, s2_col);
 
   if (OPT_NATURAL_SORT) {
     if (OPT_IGNORE_CASE) {
