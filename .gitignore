@@ -1,5 +1,5 @@
 *.o
 *.exe
 *.coff
-*.txt
 *.zip
+/readme.txt
