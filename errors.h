@@ -9,11 +9,6 @@
 #include <string.h>
 
 // macros
-#if DEBUG >= 1
-#define DEBUGMSG(msg...) errormsg("DEBUG", msg);
-#else
-#define DEBUGMSG(...)
-#endif
 #define myerror(...) errormsg(__func__, __VA_ARGS__);
 #define stderror() errormsg(__func__, "%s!", strerror(errno));
 

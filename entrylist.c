@@ -130,7 +130,6 @@ int32_t stripSpecialPrefixes(char *old, char *q) {
 
   while (prefix->next != NULL) {
     len = strlen(prefix->next->str);
-    DEBUGMSG("prefix: %s", prefix->next->str);
     if (strncasecmp(old, prefix->next->str, len) == 0) {
       strncpy(q, old + len, len_old - len);
       q[len_old - len] = '\0';
@@ -364,7 +363,6 @@ void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
       (strcmp(randlist->next->sname, ".") == 0) ||
       (strcmp(randlist->next->sname, "..") == 0))) {
 
-    DEBUGMSG("skipping randomization for %s", randlist->next->sname);
     randlist = randlist->next;
     skip++;
   }
