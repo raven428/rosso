@@ -48,7 +48,7 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
 
   int i;
   for (i = 0; i < 12; i++) {
-    if ((utf16str[i * 2] == '\0') && (utf16str[i * 2 + 1] == '\0')) {
+    if (utf16str[i * 2] == '\0' && utf16str[i * 2 + 1] == '\0') {
       incount = i * 2;
       break;
     }
@@ -101,8 +101,8 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
 
   if (list->entries > 1) {
     calculatedChecksum = calculateChecksum(list->sde->DIR_Name);
-    if ((list->ldel->lde->LDIR_Ord != DE_FREE) && // ignore deleted entries
-      !(list->ldel->lde->LDIR_Ord & LAST_LONG_ENTRY)) {
+    if (list->ldel->lde->LDIR_Ord != DE_FREE && // ignore deleted entries
+      list->ldel->lde->LDIR_Ord & ~LAST_LONG_ENTRY) {
       myerror("LongDirEntry should be marked as last long dir entry but "
         "isn't!");
       return -1;
@@ -185,8 +185,8 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
         parseShortFilename(&de.ShortDirEntry, sname);
 
         if (OPT_LIST && strcmp(sname, ".") && strcmp(sname, "..") &&
-          (((uint8_t) sname[0]) != DE_FREE) && !(de.ShortDirEntry.DIR_Atrr &
-            ATTR_VOLUME_ID)) {
+          (uint8_t) sname[0] != DE_FREE && de.ShortDirEntry.DIR_Atrr &
+          ~ATTR_VOLUME_ID) {
 
           if (!OPT_MORE_INFO) {
             printf("%s\n", (lname[0] != '\0') ? lname : sname);
@@ -322,8 +322,8 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
         return -1;
       }
       cluster = data;
-    } while (((cluster & 0x0fffffff) != 0x0ff8fff8) && ((cluster &
-          0x0fffffff) < 0x0ffffff8)); // end of cluster
+    } while ((cluster & 0x0fffffff) != 0x0ff8fff8 && (cluster &
+        0x0fffffff) < 0x0ffffff8); // end of cluster
     break;
   case -1:
   default:
@@ -424,11 +424,10 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   // sort sub directories
   p = list->next;
   while (p != NULL) {
-    if ((p->sde->DIR_Atrr & ATTR_DIRECTORY) &&
-      ((uint8_t) p->sde->DIR_Name[0] != DE_FREE) && !(p->sde->DIR_Atrr &
-        ATTR_VOLUME_ID) && (strcmp(p->sname, ".")) &&
-      strcmp(p->sname, "..")) {
-
+    if (p->sde->DIR_Atrr & ATTR_DIRECTORY &&
+      (uint8_t) p->sde->DIR_Name[0] != DE_FREE && p->sde->DIR_Atrr &
+      ~ATTR_VOLUME_ID && strcmp(p->sname, ".") && strcmp(p->sname, "..")
+      ) {
       c = (p->sde->DIR_FstClusHI * 65536 + p->sde->DIR_FstClusLO);
       if (getFATEntry(fs, c, &value) == -1) {
         myerror("Failed to get FAT entry!");
@@ -437,7 +436,7 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
 
       strncpy(newpath, (char *) path, MAX_PATH_LEN - strlen(newpath));
       newpath[MAX_PATH_LEN] = '\0';
-      if ((p->lname != NULL) && (p->lname[0] != '\0')) {
+      if (p->lname != NULL && p->lname[0] != '\0') {
         strncat(newpath, p->lname, MAX_PATH_LEN - strlen(newpath));
         newpath[MAX_PATH_LEN] = '\0';
         strncat(newpath, "/", MAX_PATH_LEN - strlen(newpath));
