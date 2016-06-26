@@ -1,17 +1,11 @@
 CC = x86_64-w64-mingw32-gcc
 WINDRES = x86_64-w64-mingw32-windres
-LDFLAGS = -static
+LDFLAGS = -static -s
 LDLIBS = -liconv
 .RECIPEPREFIX +=
 
-CFLAGS = -Wall -Wextra -pedantic -std=c11 -fdiagnostics-color \
+CFLAGS = -O -Wall -Wextra -pedantic -std=c11 -fdiagnostics-color \
   -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
-
-ifdef DEBUG
-CFLAGS += -g -DDEBUG=$(DEBUG) -fstack-protector-all
-else
-LDFLAGS += -s
-endif
 
 VR = $(shell ./rosso -v)
 
