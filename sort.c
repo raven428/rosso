@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <assert.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -25,9 +24,6 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
    * retrieves a part of a long filename from a directory entry (thanks to M$
    * for this ugly hack...)
    */
-
-  assert(lde != NULL);
-  assert(str != NULL);
 
   size_t incount;
   size_t outcount;
@@ -72,9 +68,6 @@ void parseShortFilename(struct sShortDirEntry *sde, char *str) {
    * parses short name of a file
    */
 
-  assert(sde != NULL);
-  assert(str != NULL);
-
   char *s;
   strncpy(str, sde->DIR_Name, 8);
   str[8] = '\0';
@@ -92,8 +85,6 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
   /*
    * does some integrity checks on LongDirEntries
    */
-  assert(list != NULL);
-
   uint8_t calculatedChecksum;
   uint32_t i;
   uint32_t nr;
@@ -137,11 +128,6 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
    * parses a cluster chain and puts found directory entries to list
    */
 
-  assert(fs != NULL);
-  assert(chain != NULL);
-  assert(list != NULL);
-  assert(direntries != NULL);
-
   uint32_t j;
   int32_t ret;
   uint32_t entries = 0;
@@ -165,7 +151,7 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
       memcpy(&de, q, DIR_ENTRY_SIZE);
       q += DIR_ENTRY_SIZE;
       entries++;
-      ret = parseEntry(fs, &de);
+      ret = parseEntry(&de);
 
       switch (ret) {
       case -1:
@@ -258,9 +244,6 @@ int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
    * writes directory entries to file
    */
 
-  assert(fs != NULL);
-  assert(list != NULL);
-
   struct sLongDirEntryList *tmp;
 
   while (list->next != NULL) {
@@ -288,9 +271,6 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
    * retrieves an array of all clusters in a cluster chain starting with
    * startCluster
    */
-
-  assert(fs != NULL);
-  assert(chain != NULL);
 
   int32_t cluster;
   uint32_t data, i = 0;
@@ -339,10 +319,6 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
   /*
    * writes all entries from list to the cluster chain
    */
-
-  assert(fs != NULL);
-  assert(list != NULL);
-  assert(chain != NULL);
 
   uint32_t i = 0, entries = 0;
   struct sLongDirEntryList *tmp;
@@ -413,10 +389,6 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   /*
    * sorts sub directories in a FAT file system
    */
-  assert(fs != NULL);
-  assert(list != NULL);
-  assert(path != NULL);
-
   struct sDirEntryList *p;
   char newpath[MAX_PATH_LEN + 1] = { 0 };
   uint32_t c, value;
@@ -466,9 +438,6 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
   /*
    * sorts directory entries in a cluster
    */
-
-  assert(fs != NULL);
-  assert(path != NULL);
 
   uint32_t direntries;
   int32_t clen;
@@ -557,8 +526,6 @@ int32_t sortFileSystem(char *filename) {
   /*
    * sort FAT file system
    */
-
-  assert(filename != NULL);
 
   uint32_t mode;
 

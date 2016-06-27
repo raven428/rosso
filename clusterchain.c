@@ -9,7 +9,6 @@
 
 #include <stdlib.h>
 #include <errno.h>
-#include <assert.h>
 #include "errors.h"
 
 // const struct sClusterChain __INITCLUSTERCHAIN__ = {0, NULL};
@@ -33,8 +32,6 @@ int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster) {
   /*
    * allocate memory and insert cluster into cluster chain
    */
-  assert(chain != NULL);
-
   while (chain->next != NULL) {
     if (chain->cluster == cluster) {
       myerror("Loop in cluster chain detected (%08lx)!", cluster);
@@ -57,8 +54,6 @@ void freeClusterChain(struct sClusterChain *chain) {
   /*
    * free cluster chain
    */
-
-  assert(chain != NULL);
 
   struct sClusterChain *tmp;
 

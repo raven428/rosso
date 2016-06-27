@@ -4,7 +4,6 @@
 #include "stringlist.h"
 
 #include <stdlib.h>
-#include <assert.h>
 #include <errno.h>
 #include "errors.h"
 
@@ -30,10 +29,6 @@ int32_t addStringToStringList(struct sStringList *stringList, const char *str) {
   /*
    * insert new string into string list
    */
-  assert(stringList != NULL);
-  assert(stringList->str == NULL);
-  assert(str != NULL);
-
   int32_t len;
 
   // find end of list
@@ -70,10 +65,6 @@ int32_t matchesStringList(struct sStringList *stringList, const char *str) {
    * evaluates whether str is contained in stringList
    */
 
-  assert(stringList != NULL);
-  assert(stringList->str == NULL);
-  assert(str != NULL);
-
   int32_t ret = 0; // not in list
 
   stringList = stringList->next;
@@ -96,8 +87,6 @@ void freeStringList(struct sStringList *stringList) {
   /*
    * free directory list
    */
-
-  assert(stringList != NULL);
 
   struct sStringList *tmp;
 

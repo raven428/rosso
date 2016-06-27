@@ -5,7 +5,6 @@
 #include "options.h"
 
 #include <getopt.h>
-#include <assert.h>
 #include <errno.h>
 #include <stdlib.h>
 #include "errors.h"
@@ -26,10 +25,6 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
   /*
    * insert new string into string list
    */
-  assert(stringList != NULL);
-  assert(stringList->str == NULL);
-  assert(str != NULL);
-  assert(strlen((char *) str) <= MAX_PATH_LEN);
 
   char *newStr;
 

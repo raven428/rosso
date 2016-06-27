@@ -196,7 +196,7 @@ uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data);
 off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
 
 // parses one directory entry
-int32_t parseEntry(struct sFileSystem *fs, union sDirEntry *de);
+int32_t parseEntry(union sDirEntry *de);
 
 // calculate checksum for short dir entry name
 uint8_t calculateChecksum(char *sname);

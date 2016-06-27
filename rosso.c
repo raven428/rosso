@@ -8,7 +8,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdarg.h>
-#include <assert.h>
 #include <errno.h>
 #include <locale.h>
 #include <time.h>
@@ -70,8 +69,6 @@ int32_t printFSInfo(char *filename) {
   /*
    * print file system information
    */
-
-  assert(filename != NULL);
 
   uint32_t value;
 

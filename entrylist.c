@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <errno.h>
 
 #include "entrylist.h"
@@ -42,10 +41,6 @@ struct sDirEntryList *newDirEntry(char *sname, char *lname,
   /*
    * create a new directory entry holder
    */
-  assert(sname != NULL);
-  assert(lname != NULL);
-  assert(sde != NULL);
-
   struct sDirEntryList *tmp;
 
   if ((tmp = malloc(sizeof(struct sDirEntryList))) == NULL) {
@@ -86,8 +81,6 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
    * insert a long directory entry to list
    */
 
-  assert(lde != NULL);
-
   struct sLongDirEntryList *tmp, *q;
 
   if ((q = malloc(sizeof(struct sLongDirEntryList))) == NULL) {
@@ -119,9 +112,6 @@ int32_t stripSpecialPrefixes(char *old, char *q) {
   /*
    * strip special prefixes "a" and "the"
    */
-  assert(old != NULL);
-  assert(q != NULL);
-
   struct sStringList *prefix = OPT_IGNORE_PREFIXES_LIST;
 
   int32_t len, len_old;
@@ -145,9 +135,6 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   /*
    * compare two directory entries
    */
-
-  assert(de1 != NULL);
-  assert(de2 != NULL);
 
   char s1[MAX_PATH_LEN + 1];
   char s2[MAX_PATH_LEN + 1];
@@ -294,9 +281,6 @@ void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list) {
    * insert a directory entry into list
    */
 
-  assert(q != NULL);
-  assert(list != NULL);
-
   struct sDirEntryList *tmp, *dummy;
 
   tmp = list;
@@ -314,8 +298,6 @@ void freeDirEntryList(struct sDirEntryList *list) {
   /*
    * free dir entry list
    */
-  assert(list != NULL);
-
   struct sDirEntryList *tmp;
   struct sLongDirEntryList *ldelist, *tmp2;
 
@@ -345,8 +327,6 @@ void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
   /*
    * randomize entry list
    */
-  assert(list != NULL);
-
   struct sDirEntryList *randlist, *tmp, *dummy1, *dummy2;
   uint32_t i, j, pos;
   uint32_t skip = 0;

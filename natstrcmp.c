@@ -4,7 +4,6 @@
 
 #include "natstrcmp.h"
 
-#include <assert.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -41,8 +40,6 @@ int32_t natstrcompare(const char *str1, const char *str2,
   /*
    * natural order string compare
    */
-  assert(str1 != NULL);
-  assert(str2 != NULL);
 
   int32_t n1 = 0, n2 = 0;
   char *s1 = (char *) str1;

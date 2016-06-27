@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/param.h>
@@ -20,8 +19,6 @@ int32_t check_bootsector(struct sBootSector *bs) {
   /*
    * lazy check if this is really a FAT bootsector
    */
-
-  assert(bs != NULL);
 
   if (!(bs->BS_JmpBoot[0] == 0xeb && bs->BS_JmpBoot[2] == 0x90) &&
     bs->BS_JmpBoot[0] != 0xe9) {
@@ -71,9 +68,6 @@ int32_t read_bootsector(FILE *fd, struct sBootSector *bs) {
   /*
    * reads bootsector
    */
-
-  assert(fd != NULL);
-  assert(bs != NULL);
 
   // seek to beginning of fs
   if (fs_seek(fd, 0, SEEK_SET) == -1) {
@@ -139,9 +133,6 @@ int32_t readFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
    * reads FSInfo structure
    */
 
-  assert(fs != NULL);
-  assert(fsInfo != NULL);
-
   // seek to beginning of FSInfo structure
   if (fs_seek(fs->fd, fs->bs.BS_FSInfo * fs->sectorSize, SEEK_SET) == -1) {
     stderror();
@@ -160,9 +151,6 @@ int32_t writeFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   /*
    * write FSInfo structure
    */
-  assert(fs != NULL);
-  assert(fsInfo != NULL);
-
   // seek to beginning of FSInfo structure
   if (fs_seek(fs->fd, fs->bs.BS_FSInfo * fs->sectorSize, SEEK_SET) == -1) {
     stderror();
@@ -182,8 +170,6 @@ int32_t getCountOfClusters(struct sBootSector *bs) {
   /*
    * calculates count of clusters
    */
-
-  assert(bs != NULL);
 
   uint32_t RootDirSectors, DataSec;
   int32_t retvalue;
@@ -208,8 +194,6 @@ int32_t getFATType(struct sBootSector *bs) {
   /*
    * retrieves FAT type from bootsector
    */
-
-  assert(bs != NULL);
 
   int32_t CountOfClusters;
 
@@ -240,8 +224,6 @@ uint16_t isEOC(struct sFileSystem *fs, const uint32_t data) {
    * checks whether data marks the end of a cluster chain
    */
 
-  assert(fs != NULL);
-
   if (fs->FATType == FATTYPE_FAT32) {
     if ((data & 0x0FFFFFFF) >= 0x0FFFFFF8)
       return 1;
@@ -254,8 +236,6 @@ uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data) {
   /*
    * checks whether data marks a bad cluster
    */
-  assert(fs != NULL);
-
   if (fs->FATType == FATTYPE_FAT32) {
     if ((data & 0x0FFFFFFF) == 0x0FFFFFF7)
       return 1;
@@ -269,9 +249,6 @@ void *readFAT(struct sFileSystem *fs, uint16_t nr) {
   /*
    * reads a FAT from file system fs
    */
-
-  assert(fs != NULL);
-  assert(nr < fs->bs.BS_NumFATs);
 
   uint32_t FATSizeInBytes;
   off_t BSOffset;
@@ -305,9 +282,6 @@ int32_t writeFAT(struct sFileSystem *fs, void *fat) {
    * write FAT to file system
    */
 
-  assert(fs != NULL);
-  assert(fat != NULL);
-
   uint32_t FATSizeInBytes, nr;
   off_t BSOffset;
 
@@ -334,8 +308,6 @@ int32_t checkFATs(struct sFileSystem *fs) {
   /*
    * checks whether all FATs have the same content
    */
-
-  assert(fs != NULL);
 
   uint32_t FATSizeInBytes;
   int32_t result = 0;
@@ -406,9 +378,6 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
    * retrieves FAT entry for a cluster number
    */
 
-  assert(fs != NULL);
-  assert(data != NULL);
-
   off_t FATOffset;
   div_t BSOffset;
 
@@ -446,9 +415,6 @@ off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
    * returns the offset of a specific cluster in the data region of the file
    * system
    */
-
-  assert(fs != NULL);
-  assert(cluster > 1);
 
   return ((cluster - 2) * fs->bs.BS_SecPerClus +
     fs->firstDataSector) * fs->sectorSize;
@@ -496,13 +462,10 @@ int32_t writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data) {
   return 0;
 }
 
-int32_t parseEntry(struct sFileSystem *fs, union sDirEntry *de) {
+int32_t parseEntry(union sDirEntry *de) {
   /*
    * parses one directory entry
    */
-
-  assert(fs != NULL);
-  assert(de != NULL);
 
   if (de->ShortDirEntry.DIR_Name[0] == DE_FOLLOWING_FREE)
     return 0; // no more entries
@@ -531,8 +494,6 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
    * opens file system and assemlbes file system information into data
    * structure
    */
-  assert(path != NULL);
-  assert(fs != NULL);
 
   strcpy(fs->path, "\\\\.\\");
   strcpy(fs->path + 4, path);
@@ -638,7 +599,6 @@ int32_t closeFileSystem(struct sFileSystem *fs) {
   /*
    * closes file system
    */
-  assert(fs != NULL);
 
   fs_close(fs->fd);
   iconv_close(fs->cd);
