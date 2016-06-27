@@ -11,20 +11,18 @@
 #include <errno.h>
 #include "errors.h"
 
-// const struct sClusterChain __INITCLUSTERCHAIN__ = {0, NULL};
-
 struct sClusterChain *newClusterChain(void) {
   /*
    * create new cluster chain
    */
   struct sClusterChain *tmp;
 
-  if ((tmp = malloc(sizeof(struct sClusterChain))) == NULL) {
+  if (!(tmp = malloc(sizeof(struct sClusterChain)))) {
     stderror();
-    return NULL;
+    return 0;
   }
   tmp->cluster = 0;
-  tmp->next = NULL;
+  tmp->next = 0;
   return tmp;
 }
 
@@ -32,7 +30,7 @@ int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster) {
   /*
    * allocate memory and insert cluster into cluster chain
    */
-  while (chain->next != NULL) {
+  while (chain->next) {
     if (chain->cluster == cluster) {
       myerror("Loop in cluster chain detected (%08lx)!", cluster);
       return -1;
@@ -40,12 +38,12 @@ int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster) {
     chain = chain->next;
   }
 
-  if ((chain->next = malloc(sizeof(struct sClusterChain))) == NULL) {
+  if (!(chain->next = malloc(sizeof(struct sClusterChain)))) {
     stderror();
     return -1;
   }
   chain->next->cluster = cluster;
-  chain->next->next = NULL;
+  chain->next->next = 0;
 
   return 0;
 }
@@ -57,7 +55,7 @@ void freeClusterChain(struct sClusterChain *chain) {
 
   struct sClusterChain *tmp;
 
-  while (chain != NULL) {
+  while (chain) {
     tmp = chain;
     chain = chain->next;
     free(tmp);

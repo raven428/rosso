@@ -15,12 +15,12 @@ struct sStringList *newStringList() {
 
   // create the dummy head element
   stringList = malloc(sizeof(struct sStringList));
-  if (stringList == NULL) {
+  if (!stringList) {
     stderror();
-    return NULL;
+    return 0;
   }
-  stringList->str = NULL;
-  stringList->next = NULL;
+  stringList->str = 0;
+  stringList->next = 0;
 
   return stringList;
 }
@@ -32,29 +32,29 @@ int32_t addStringToStringList(struct sStringList *stringList, const char *str) {
   int32_t len;
 
   // find end of list
-  while (stringList->next != NULL) {
+  while (stringList->next) {
     stringList = stringList->next;
   }
 
   // allocate memory for new entry
   stringList->next = malloc(sizeof(struct sStringList));
-  if (stringList->next == NULL) {
+  if (!stringList->next) {
     stderror();
     return -1;
   }
-  stringList->next->next = NULL;
+  stringList->next->next = 0;
 
   len = strlen(str);
 
   // allocate memory for string
   stringList->next->str = malloc(len + 1);
-  if (stringList->next->str == NULL) {
+  if (!stringList->next->str) {
     stderror();
     return -1;
   }
 
   strncpy(stringList->next->str, str, len);
-  stringList->next->str[len] = '\0';
+  stringList->next->str[len] = 0;
 
   return 0;
 
@@ -68,12 +68,12 @@ int32_t matchesStringList(struct sStringList *stringList, const char *str) {
   int32_t ret = 0; // not in list
 
   stringList = stringList->next;
-  while (stringList != NULL) {
-    if (strncmp(stringList->str, str, strlen(stringList->str)) == 0) {
+  while (stringList) {
+    if (!strncmp(stringList->str, str, strlen(stringList->str))) {
       // contains a top level string of str
       ret = RETURN_SUB_MATCH;
     }
-    if (strcmp(stringList->str, str) == 0) {
+    if (!strcmp(stringList->str, str)) {
       // contains str exactly, so return immediately
       return RETURN_EXACT_MATCH;
     }
@@ -90,7 +90,7 @@ void freeStringList(struct sStringList *stringList) {
 
   struct sStringList *tmp;
 
-  while (stringList != NULL) {
+  while (stringList) {
     if (stringList->str)
       free(stringList->str);
     tmp = stringList;

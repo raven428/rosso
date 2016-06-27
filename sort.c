@@ -32,7 +32,7 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
   char *inptr = &(utf16str[0]);
   size_t ret;
 
-  str[0] = '\0';
+  str[0] = 0;
 
   memcpy(utf16str, (&lde->LDIR_Ord + 1), 10);
   memcpy(utf16str + 10, (&lde->LDIR_Ord + 14), 12);
@@ -44,13 +44,13 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
 
   int i;
   for (i = 0; i < 12; i++) {
-    if (utf16str[i * 2] == '\0' && utf16str[i * 2 + 1] == '\0') {
+    if (!utf16str[i * 2] && !utf16str[i * 2 + 1]) {
       incount = i * 2;
       break;
     }
   }
 
-  while (incount != 0) {
+  while (incount) {
     if ((ret =
         iconv(cd, &inptr, &incount, &outptr, &outcount)) == (size_t) -1) {
       stderror();
@@ -58,7 +58,7 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
       return -1;
     }
   }
-  outptr[0] = '\0';
+  outptr[0] = 0;
 
   return 0;
 }
@@ -70,14 +70,14 @@ void parseShortFilename(struct sShortDirEntry *sde, char *str) {
 
   char *s;
   strncpy(str, sde->DIR_Name, 8);
-  str[8] = '\0';
+  str[8] = 0;
   s = strchr(str, ' ');
-  if (s != NULL)
-    s[0] = '\0';
+  if (s)
+    s[0] = 0;
   if ((char) *(sde->DIR_Name + 8) != ' ') {
     strcat(str, ".");
     strncat(str, sde->DIR_Name + 8, 3);
-    str[12] = '\0';
+    str[12] = 0;
   }
 }
 
@@ -141,10 +141,10 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
 
   chain = chain->next; // head element
 
-  llist = NULL;
-  lname[0] = '\0';
+  llist = 0;
+  lname[0] = 0;
   char *q = alloca(fs->clusterSize);
-  while (chain != NULL) {
+  while (chain) {
     fs_seek(fs->fd, getClusterOffset(fs, chain->cluster), SEEK_SET);
     fs_read(q, 1, fs->clusterSize, fs->fd);
     for (j = 0; j < fs->maxDirEntriesPerCluster; j++) {
@@ -158,7 +158,7 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
         myerror("Failed to parse directory entry!");
         return -1;
       case 0: // current dir entry and following dir entries are free
-        if (llist != NULL) {
+        if (llist) {
           // short dir entry is still missing!
           myerror("ShortDirEntry is missing after LongDirEntries "
             "(cluster: %08lx, entry %u)!", chain->cluster, j);
@@ -175,15 +175,15 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
           ~ATTR_VOLUME_ID) {
 
           if (!OPT_MORE_INFO) {
-            printf("%s\n", (lname[0] != '\0') ? lname : sname);
+            printf("%s\n", lname[0] ? lname : sname);
           }
           else {
-            printf("%s (%s)\n", (lname[0] != '\0') ? lname : "n/a", sname);
+            printf("%s (%s)\n", lname[0] ? lname : "n/a", sname);
           }
         }
 
         lnde = newDirEntry(sname, lname, &de.ShortDirEntry, llist, entries);
-        if (lnde == NULL) {
+        if (!lnde) {
           myerror("Failed to create DirEntry!");
           return -1;
         }
@@ -197,8 +197,8 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
         insertDirEntryList(lnde, list);
         (*direntries)++;
         entries = 0;
-        llist = NULL;
-        lname[0] = '\0';
+        llist = 0;
+        lname[0] = 0;
         break;
       case 2: // long dir entry
         if (parseLongFilenamePart(&de.LongDirEntry, tmp, fs->cd)) {
@@ -208,17 +208,17 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
 
         // insert long dir entry in list
         llist = insertLongDirEntryList(&de.LongDirEntry, llist);
-        if (llist == NULL) {
+        if (!llist) {
           myerror("Failed to insert LongDirEntry!");
           return -1;
         }
 
         strncpy(dummy, tmp, MAX_PATH_LEN);
-        dummy[MAX_PATH_LEN] = '\0';
+        dummy[MAX_PATH_LEN] = 0;
         strncat(dummy, lname, MAX_PATH_LEN - strlen(dummy));
-        dummy[MAX_PATH_LEN] = '\0';
+        dummy[MAX_PATH_LEN] = 0;
         strncpy(lname, dummy, MAX_PATH_LEN);
-        dummy[MAX_PATH_LEN] = '\0';
+        dummy[MAX_PATH_LEN] = 0;
         break;
       default:
         myerror("Unhandled return code!");
@@ -229,7 +229,7 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
     chain = chain->next;
   }
 
-  if (llist != NULL) {
+  if (llist) {
     // short dir entry is still missing!
     myerror("ShortDirEntry is missing after LongDirEntries "
       "(root directory entry %d)!", j);
@@ -246,16 +246,16 @@ int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
 
   struct sLongDirEntryList *tmp;
 
-  while (list->next != NULL) {
+  while (list->next) {
     tmp = list->next->ldel;
-    while (tmp != NULL) {
-      if (fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd) < 1) {
+    while (tmp) {
+      if (!fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)) {
         stderror();
         return -1;
       }
       tmp = tmp->next;
     }
-    if (fs_write(list->next->sde, DIR_ENTRY_SIZE, 1, fs->fd) < 1) {
+    if (!fs_write(list->next->sde, DIR_ENTRY_SIZE, 1, fs->fd)) {
       stderror();
       return -1;
     }
@@ -297,7 +297,7 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
         myerror("Failed to get FAT entry");
         return -1;
       }
-      if ((data & 0x0fffffff) == 0) {
+      if (!(data & 0x0fffffff)) {
         myerror("Cluster %08x is marked as unused!", cluster);
         return -1;
       }
@@ -335,7 +335,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
   char *zu = ya;
   fs_read(ya, 1, fs->clusterSize, fs->fd);
   fs_seek(fs->fd, -fs->clusterSize, SEEK_CUR);
-  while (p != NULL) {
+  while (p) {
     if (entries + p->entries <= fs->maxDirEntriesPerCluster) {
       tmp = p->ldel;
       for (i = 1; i < p->entries; i++) {
@@ -362,7 +362,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
         myerror("Seek error!");
         return -1;
       }
-      while (tmp != NULL) {
+      while (tmp) {
         memcpy(zu, tmp->lde, DIR_ENTRY_SIZE);
         zu += DIR_ENTRY_SIZE;
         tmp = tmp->next;
@@ -374,7 +374,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
   }
   if (entries < fs->maxDirEntriesPerCluster) {
     memset(zu, 0, DIR_ENTRY_SIZE);
-    if (fs_write(ya, fs->clusterSize, 1, fs->fd) < 1) {
+    if (!fs_write(ya, fs->clusterSize, 1, fs->fd)) {
       stderror();
       return -1;
     }
@@ -395,7 +395,7 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
 
   // sort sub directories
   p = list->next;
-  while (p != NULL) {
+  while (p) {
     if (p->sde->DIR_Atrr & ATTR_DIRECTORY &&
       (uint8_t) p->sde->DIR_Name[0] != DE_FREE && p->sde->DIR_Atrr &
       ~ATTR_VOLUME_ID && strcmp(p->sname, ".") && strcmp(p->sname, "..")) {
@@ -406,18 +406,18 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
       }
 
       strncpy(newpath, (char *) path, MAX_PATH_LEN - strlen(newpath));
-      newpath[MAX_PATH_LEN] = '\0';
-      if (p->lname != NULL && p->lname[0] != '\0') {
+      newpath[MAX_PATH_LEN] = 0;
+      if (p->lname && p->lname[0]) {
         strncat(newpath, p->lname, MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = '\0';
+        newpath[MAX_PATH_LEN] = 0;
         strncat(newpath, "/", MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = '\0';
+        newpath[MAX_PATH_LEN] = 0;
       }
       else {
         strncat(newpath, p->sname, MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = '\0';
+        newpath[MAX_PATH_LEN] = 0;
         strncat(newpath, "/", MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = '\0';
+        newpath[MAX_PATH_LEN] = 0;
       }
 
       if (sortClusterChain(fs, c,
@@ -450,12 +450,12 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
     matchesDirPathLists(OPT_INCL_DIRS, OPT_INCL_DIRS_REC, OPT_EXCL_DIRS,
     OPT_EXCL_DIRS_REC, path);
 
-  if ((ClusterChain = newClusterChain()) == NULL) {
+  if (!(ClusterChain = newClusterChain())) {
     myerror("Failed to generate new ClusterChain!");
     return -1;
   }
 
-  if ((list = newDirEntryList()) == NULL) {
+  if (!(list = newDirEntryList())) {
     myerror("Failed to generate new dirEntryList!");
     freeClusterChain(ClusterChain);
     return -1;

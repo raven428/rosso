@@ -46,7 +46,7 @@ int32_t natstrcompare(const char *str1, const char *str2,
   char *s2 = (char *) str2;
 
   while (1) {
-    if (*s1 == '\0' || *s2 == '\0') {
+    if (!*s1 || !*s2) {
       return strcmp(s1, s2);
     }
 
@@ -54,13 +54,11 @@ int32_t natstrcompare(const char *str1, const char *str2,
     while (1) {
       if (isDigit(*s1) || isDigit(*s2))
         break;
-      else if (*s1 == '\0' && *s2 == '\0')
+      else if (!*s1 && !*s2)
         return 0;
-      else if (*s2 == '\0' ||
-        respectCase ? toupper(*s1) > toupper(*s2) : *s1 > *s2)
+      else if (!*s2 || respectCase ? toupper(*s1) > toupper(*s2) : *s1 > *s2)
         return 1;
-      else if (*s1 == '\0' ||
-        respectCase ? toupper(*s1) < toupper(*s2) : *s1 < *s2)
+      else if (!*s1 || respectCase ? toupper(*s1) < toupper(*s2) : *s1 < *s2)
         return -1;
       s1++;
       s2++;
@@ -72,13 +70,13 @@ int32_t natstrcompare(const char *str1, const char *str2,
 
     // one of the strings had no number
     if (n1 == -1 || n2 == -1) {
-      if (*s1 == '\0' && n1 == -1)
+      if (!*s1 && n1 == -1)
         return -1;
-      else if (*s1 == '\0' && n2 == -1)
+      else if (!*s1 && n2 == -1)
         return '0' < *s2 ? -1 : 1;
-      else if (*s2 == '\0' && n1 == -1)
+      else if (!*s2 && n1 == -1)
         return '0' < *s1 ? 1 : -1;
-      else if (*s2 == '\0' && n2 == -1)
+      else if (!*s2 && n2 == -1)
         return 1;
       // both strings had numbers in it
     }

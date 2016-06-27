@@ -31,15 +31,15 @@ int32_t check_bootsector(struct sBootSector *bs) {
     myerror("End of boot sector marker is missing!");
     return -1;
   }
-  else if (bs->BS_BytesPerSec == 0) {
+  else if (!bs->BS_BytesPerSec) {
     myerror("Sectors have a size of zero!");
     return -1;
   }
-  else if (bs->BS_BytesPerSec % 512 != 0) {
+  else if (bs->BS_BytesPerSec % 512) {
     myerror("Sector size is not a multiple of 512 (%u)!", bs->BS_BytesPerSec);
     return -1;
   }
-  else if (bs->BS_SecPerClus == 0) {
+  else if (!bs->BS_SecPerClus) {
     myerror("Cluster size is zero!");
     return -1;
   }
@@ -47,15 +47,15 @@ int32_t check_bootsector(struct sBootSector *bs) {
     myerror("Cluster size is larger than 32k!");
     return -1;
   }
-  else if (bs->BS_RsvdSecCnt == 0) {
+  else if (!bs->BS_RsvdSecCnt) {
     myerror("Reserved sector count is zero!");
     return -1;
   }
-  else if (bs->BS_NumFATs == 0) {
+  else if (!bs->BS_NumFATs) {
     myerror("Number of FATs is zero!");
     return -1;
   }
-  else if (bs->BS_RootEntCnt % DIR_ENTRY_SIZE != 0) {
+  else if (bs->BS_RootEntCnt % DIR_ENTRY_SIZE) {
     myerror("Count of root directory entries must be zero or "
       "a multiple or 32! (%u)", bs->BS_RootEntCnt);
     return -1;
@@ -75,7 +75,7 @@ int32_t read_bootsector(FILE *fd, struct sBootSector *bs) {
     return -1;
   }
 
-  if (fs_read(bs, sizeof(struct sBootSector), 1, fd) < 1) {
+  if (!fs_read(bs, sizeof(struct sBootSector), 1, fd)) {
     if (feof(fd)) {
       myerror("Boot sector is too short!");
     }
@@ -105,7 +105,7 @@ int32_t writeBootSector(struct sFileSystem *fs) {
   }
 
   // write boot sector
-  if (fs_write(&(fs->bs), sizeof(struct sBootSector), 1, fs->fd) < 1) {
+  if (!fs_write(&(fs->bs), sizeof(struct sBootSector), 1, fs->fd)) {
     stderror();
     return -1;
   }
@@ -119,7 +119,7 @@ int32_t writeBootSector(struct sFileSystem *fs) {
     }
 
     // write backup boot sector
-    if (fs_write(&(fs->bs), sizeof(struct sBootSector), 1, fs->fd) < 1) {
+    if (!fs_write(&(fs->bs), sizeof(struct sBootSector), 1, fs->fd)) {
       stderror();
       return -1;
     }
@@ -139,7 +139,7 @@ int32_t readFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
     return -1;
   }
 
-  if (fs_read(fsInfo, sizeof(struct sFSInfo), 1, fs->fd) < 1) {
+  if (!fs_read(fsInfo, sizeof(struct sFSInfo), 1, fs->fd)) {
     stderror();
     return -1;
   }
@@ -158,7 +158,7 @@ int32_t writeFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo) {
   }
 
   // write boot sector
-  if (fs_write(fsInfo, sizeof(struct sFSInfo), 1, fs->fd) < 1) {
+  if (!fs_write(fsInfo, sizeof(struct sFSInfo), 1, fs->fd)) {
     stderror();
     return -1;
   }
@@ -182,8 +182,7 @@ int32_t getCountOfClusters(struct sBootSector *bs) {
     bs->BS_TotSec32 - bs->BS_RsvdSecCnt - bs->BS_NumFATs * bs->BS_FATSz32 -
     RootDirSectors;
 
-  retvalue = DataSec / bs->BS_SecPerClus;
-  if (retvalue <= 0) {
+  if ((retvalue = DataSec / bs->BS_SecPerClus) <= 0) {
     myerror("Failed to calculate count of clusters!");
     return -1;
   }
@@ -216,7 +215,7 @@ uint16_t isFreeCluster(const uint32_t data) {
    * checks whether data marks a free cluster
    */
 
-  return (data & 0x0FFFFFFF) == 0;
+  return !(data & 0x0FFFFFFF);
 }
 
 uint16_t isEOC(struct sFileSystem *fs, const uint32_t data) {
@@ -257,20 +256,20 @@ void *readFAT(struct sFileSystem *fs, uint16_t nr) {
 
   FATSizeInBytes = fs->FATSize * fs->sectorSize;
 
-  if ((FAT = malloc(FATSizeInBytes)) == NULL) {
+  if (!(FAT = malloc(FATSizeInBytes))) {
     stderror();
-    return NULL;
+    return 0;
   }
   BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
   if (fs_seek(fs->fd, BSOffset + nr * FATSizeInBytes, SEEK_SET) == -1) {
     myerror("Seek error!");
     free(FAT);
-    return NULL;
+    return 0;
   }
-  if (fs_read(FAT, FATSizeInBytes, 1, fs->fd) < 1) {
+  if (!fs_read(FAT, FATSizeInBytes, 1, fs->fd)) {
     myerror("Failed to read from file!");
     free(FAT);
-    return NULL;
+    return 0;
   }
 
   return FAT;
@@ -295,7 +294,7 @@ int32_t writeFAT(struct sFileSystem *fs, void *fat) {
       myerror("Seek error!");
       return -1;
     }
-    if (fs_write(fat, FATSizeInBytes, 1, fs->fd) < 1) {
+    if (!fs_write(fat, FATSizeInBytes, 1, fs->fd)) {
       myerror("Failed to read from file!");
       return -1;
     }
@@ -324,11 +323,11 @@ int32_t checkFATs(struct sFileSystem *fs) {
 
   FATSizeInBytes = fs->FATSize * fs->sectorSize;
 
-  if ((FAT1 = malloc(FATSizeInBytes)) == NULL) {
+  if (!(FAT1 = malloc(FATSizeInBytes))) {
     stderror();
     return -1;
   }
-  if ((FATx = malloc(FATSizeInBytes)) == NULL) {
+  if (!(FATx = malloc(FATSizeInBytes))) {
     stderror();
     free(FAT1);
     return -1;
@@ -340,7 +339,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
     free(FATx);
     return -1;
   }
-  if (fs_read(FAT1, FATSizeInBytes, 1, fs->fd) < 1) {
+  if (!fs_read(FAT1, FATSizeInBytes, 1, fs->fd)) {
     myerror("Failed to read from file!");
     free(FAT1);
     free(FATx);
@@ -354,15 +353,14 @@ int32_t checkFATs(struct sFileSystem *fs) {
       free(FATx);
       return -1;
     }
-    if (fs_read(FATx, FATSizeInBytes, 1, fs->fd) < 1) {
+    if (!fs_read(FATx, FATSizeInBytes, 1, fs->fd)) {
       myerror("Failed to read from file!");
       free(FAT1);
       free(FATx);
       return -1;
     }
 
-    result = memcmp(FAT1, FATx, FATSizeInBytes) != 0;
-    if (result)
+    if ((result = memcmp(FAT1, FATx, FATSizeInBytes)))
       break; // FATs don't match
 
   }
@@ -394,7 +392,7 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
       return -1;
     }
     char *go = alloca(fs->sectorSize);
-    if (fs_read(go, fs->sectorSize, 1, fs->fd) < 1) {
+    if (!fs_read(go, fs->sectorSize, 1, fs->fd)) {
       myerror("Failed to read from file!");
       return -1;
     }
@@ -427,19 +425,19 @@ void *readCluster(struct sFileSystem *fs, uint32_t cluster) {
    */
   void *dummy;
 
-  if (fs_seek(fs->fd, getClusterOffset(fs, cluster), SEEK_SET) != 0) {
+  if (fs_seek(fs->fd, getClusterOffset(fs, cluster), SEEK_SET)) {
     stderror();
-    return NULL;
+    return 0;
   }
 
-  if ((dummy = malloc(fs->clusterSize)) == NULL) {
+  if (!(dummy = malloc(fs->clusterSize))) {
     stderror();
-    return NULL;
+    return 0;
   }
 
-  if ((fs_read(dummy, fs->clusterSize, 1, fs->fd) < 1)) {
+  if (!fs_read(dummy, fs->clusterSize, 1, fs->fd)) {
     myerror("Failed to read cluster!");
-    return NULL;
+    return 0;
   }
 
   return dummy;
@@ -449,12 +447,12 @@ int32_t writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data) {
   /*
    * write cluster to file systen
    */
-  if (fs_seek(fs->fd, getClusterOffset(fs, cluster), SEEK_SET) != 0) {
+  if (fs_seek(fs->fd, getClusterOffset(fs, cluster), SEEK_SET)) {
     stderror();
     return -1;
   }
 
-  if (fs_write(data, fs->clusterSize, 1, fs->fd) < 1) {
+  if (!fs_write(data, fs->clusterSize, 1, fs->fd)) {
     stderror();
     return -1;
   }
@@ -500,13 +498,13 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 
   switch (mode) {
   case FS_MODE_RO:
-    if ((fs->fd = fs_open(fs->path, GENERIC_READ)) == NULL) {
+    if (!(fs->fd = fs_open(fs->path, GENERIC_READ))) {
       stderror();
       return -1;
     }
     break;
   case FS_MODE_RW:
-    if ((fs->fd = fs_open(fs->path, GENERIC_READ | GENERIC_WRITE)) == NULL) {
+    if (!(fs->fd = fs_open(fs->path, GENERIC_READ | GENERIC_WRITE))) {
       stderror();
       return -1;
     }
@@ -523,7 +521,7 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
     return -1;
   }
 
-  if (fs->bs.BS_TotSec32 == 0) {
+  if (!fs->bs.BS_TotSec32) {
     myerror("Count of total sectors must not be zero!");
     fs_close(fs->fd);
     return -1;
@@ -536,7 +534,7 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
     return -1;
   }
 
-  if (fs->FATType == FATTYPE_FAT32 && fs->bs.BS_FATSz32 == 0) {
+  if (fs->FATType == FATTYPE_FAT32 && !fs->bs.BS_FATSz32) {
     myerror("32-bit count of FAT sectors must not be zero for FAT32!");
     fs_close(fs->fd);
     return -1;

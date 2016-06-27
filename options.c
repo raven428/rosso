@@ -14,11 +14,11 @@ uint32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER,
   OPT_LIST, OPT_REVERSE, OPT_NATURAL_SORT, OPT_RECURSIVE, OPT_RANDOM,
   OPT_MORE_INFO, OPT_MODIFICATION, OPT_ASCII;
 
-struct sStringList *OPT_INCL_DIRS = NULL;
-struct sStringList *OPT_EXCL_DIRS = NULL;
-struct sStringList *OPT_INCL_DIRS_REC = NULL;
-struct sStringList *OPT_EXCL_DIRS_REC = NULL;
-struct sStringList *OPT_IGNORE_PREFIXES_LIST = NULL;
+struct sStringList *OPT_INCL_DIRS = 0;
+struct sStringList *OPT_EXCL_DIRS = 0;
+struct sStringList *OPT_INCL_DIRS_REC = 0;
+struct sStringList *OPT_EXCL_DIRS_REC = 0;
+struct sStringList *OPT_IGNORE_PREFIXES_LIST = 0;
 
 int32_t addDirPathToStringList(struct sStringList *stringList,
   const char (*str)[MAX_PATH_LEN + 1]) {
@@ -40,22 +40,22 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
 
   // allocate memory for string
   newStr = malloc(prefix + len + suffix + 1);
-  if (newStr == NULL) {
+  if (!newStr) {
     stderror();
     return -1;
   }
 
   // copy string to new structure including missing slashes
-  newStr[0] = '\0';
+  newStr[0] = 0;
   strncat(newStr, "/", prefix);
   strncat(newStr, (const char *) str, len);
   strncat(newStr, "/", suffix);
 
   if (prefix + len + suffix > MAX_PATH_LEN) {
-    newStr[MAX_PATH_LEN] = '\0';
+    newStr[MAX_PATH_LEN] = 0;
   }
   else {
-    newStr[prefix + len + suffix] = '\0';
+    newStr[prefix + len + suffix] = 0;
   }
 
   ret = addStringToStringList(stringList, newStr);
@@ -83,7 +83,7 @@ int32_t matchesDirPathLists(struct sStringList *includes,
   excl_rec = matchesStringList(excludes_recursion, (const char *) str);
 
   // if no options -d and -D are used
-  if (includes->next == NULL && includes_recursion->next == NULL) {
+  if (!includes->next && !includes_recursion->next) {
     // match all directories except those are supplied via -x
     // and those and subdirs that are supplied via -X
     if (excl != RETURN_EXACT_MATCH && excl_rec == RETURN_NO_MATCH) {
@@ -151,28 +151,28 @@ int32_t parse_options(int argc, char *argv[]) {
   OPT_ASCII = 0;
 
   // empty string lists for inclusion and exclusion of dirs
-  if ((OPT_INCL_DIRS = newStringList()) == NULL) {
+  if (!(OPT_INCL_DIRS = newStringList())) {
     myerror("Could not create stringList!");
     return -1;
   }
-  if ((OPT_INCL_DIRS_REC = newStringList()) == NULL) {
-    myerror("Could not create stringList!");
-    freeOptions();
-    return -1;
-  }
-  if ((OPT_EXCL_DIRS = newStringList()) == NULL) {
+  if (!(OPT_INCL_DIRS_REC = newStringList())) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
   }
-  if ((OPT_EXCL_DIRS_REC = newStringList()) == NULL) {
+  if (!(OPT_EXCL_DIRS = newStringList())) {
+    myerror("Could not create stringList!");
+    freeOptions();
+    return -1;
+  }
+  if (!(OPT_EXCL_DIRS_REC = newStringList())) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
   }
 
   // empty string list for to be ignored prefixes
-  if ((OPT_IGNORE_PREFIXES_LIST = newStringList()) == NULL) {
+  if (!(OPT_IGNORE_PREFIXES_LIST = newStringList())) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
@@ -181,7 +181,7 @@ int32_t parse_options(int argc, char *argv[]) {
   opterr = 0;
   while ((j =
       getopt_long(argc, argv, "imvhco:lrRnd:D:x:X:I:ta", longOpts,
-        NULL)) != -1) {
+        0)) != -1) {
     switch (j) {
     case 'a':
       OPT_ASCII = 1;

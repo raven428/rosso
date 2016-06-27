@@ -27,9 +27,9 @@ struct sDirEntryList *newDirEntryList(void) {
    */
   struct sDirEntryList *tmp;
 
-  if ((tmp = malloc(sizeof(struct sDirEntryList))) == NULL) {
+  if (!(tmp = malloc(sizeof(struct sDirEntryList)))) {
     stderror();
-    return NULL;
+    return 0;
   }
   memset(tmp, 0, sizeof(struct sDirEntryList));
   return tmp;
@@ -43,35 +43,35 @@ struct sDirEntryList *newDirEntry(char *sname, char *lname,
    */
   struct sDirEntryList *tmp;
 
-  if ((tmp = malloc(sizeof(struct sDirEntryList))) == NULL) {
+  if (!(tmp = malloc(sizeof(struct sDirEntryList)))) {
     stderror();
-    return NULL;
+    return 0;
   }
-  if ((tmp->sname = malloc(strlen(sname) + 1)) == NULL) {
+  if (!(tmp->sname = malloc(strlen(sname) + 1))) {
     stderror();
     free(tmp);
-    return NULL;
+    return 0;
   }
   strcpy(tmp->sname, sname);
-  if ((tmp->lname = malloc(strlen(lname) + 1)) == NULL) {
+  if (!(tmp->lname = malloc(strlen(lname) + 1))) {
     stderror();
     free(tmp->sname);
     free(tmp);
-    return NULL;
+    return 0;
   }
   strcpy(tmp->lname, lname);
 
-  if ((tmp->sde = malloc(sizeof(struct sShortDirEntry))) == NULL) {
+  if (!(tmp->sde = malloc(sizeof(struct sShortDirEntry)))) {
     stderror();
     free(tmp->lname);
     free(tmp->sname);
     free(tmp);
-    return NULL;
+    return 0;
   }
   memcpy(tmp->sde, sde, DIR_ENTRY_SIZE);
   tmp->ldel = ldel;
   tmp->entries = entries;
-  tmp->next = NULL;
+  tmp->next = 0;
   return tmp;
 }
 
@@ -83,21 +83,21 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
 
   struct sLongDirEntryList *tmp, *q;
 
-  if ((q = malloc(sizeof(struct sLongDirEntryList))) == NULL) {
+  if (!(q = malloc(sizeof(struct sLongDirEntryList)))) {
     stderror();
-    return NULL;
+    return 0;
   }
-  if ((q->lde = malloc(sizeof(struct sLongDirEntry))) == NULL) {
+  if (!(q->lde = malloc(sizeof(struct sLongDirEntry)))) {
     stderror();
     free(q);
-    return NULL;
+    return 0;
   }
   memcpy(q->lde, lde, DIR_ENTRY_SIZE);
-  q->next = NULL;
+  q->next = 0;
 
-  if (list != NULL) {
+  if (list) {
     tmp = list;
-    while (tmp->next != NULL) {
+    while (tmp->next) {
       tmp = tmp->next;
     }
     tmp->next = q;
@@ -118,11 +118,11 @@ int32_t stripSpecialPrefixes(char *old, char *q) {
 
   len_old = strlen(old);
 
-  while (prefix->next != NULL) {
+  while (prefix->next) {
     len = strlen(prefix->next->str);
-    if (strncasecmp(old, prefix->next->str, len) == 0) {
+    if (!strncasecmp(old, prefix->next->str, len)) {
       strncpy(q, old + len, len_old - len);
-      q[len_old - len] = '\0';
+      q[len_old - len] = 0;
       return 1;
     }
     prefix = prefix->next;
@@ -155,16 +155,16 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
     // the special "." and ".." directories must always remain at the
     // beginning of directories, in this order
   }
-  else if (strcmp(de1->sname, ".") == 0) {
+  else if (!strcmp(de1->sname, ".")) {
     return -1;
   }
-  else if (strcmp(de2->sname, ".") == 0) {
+  else if (!strcmp(de2->sname, ".")) {
     return 1;
   }
-  else if (strcmp(de1->sname, "..") == 0) {
+  else if (!strcmp(de1->sname, "..")) {
     return -1;
   }
-  else if (strcmp(de2->sname, "..") == 0) {
+  else if (!strcmp(de2->sname, "..")) {
     return 1;
     // deleted entries should be moved to the end of the directory
   }
@@ -177,13 +177,13 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   char *ss1, *ss2;
 
-  if (de1->lname != NULL && de1->lname[0] != '\0') {
+  if (de1->lname && de1->lname[0]) {
     ss1 = de1->lname;
   }
   else {
     ss1 = de1->sname;
   }
-  if (de2->lname != NULL && de2->lname[0] != '\0') {
+  if (de2->lname && de2->lname[0]) {
     ss2 = de2->lname;
   }
   else {
@@ -196,7 +196,7 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
     return 1;
 
   // directories will be put above normal files
-  if (OPT_ORDER == 0) {
+  if (!OPT_ORDER) {
     if (de1->sde->DIR_Atrr & ATTR_DIRECTORY && de2->sde->DIR_Atrr &
       ~ATTR_DIRECTORY) {
       return -1;
@@ -231,7 +231,7 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   }
 
   // strip special prefixes
-  if (OPT_IGNORE_PREFIXES_LIST->next != NULL) {
+  if (OPT_IGNORE_PREFIXES_LIST->next) {
     if (stripSpecialPrefixes(ss1, s1)) {
       ss1 = s1;
     }
@@ -285,7 +285,7 @@ void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list) {
 
   tmp = list;
 
-  while (tmp->next != NULL && cmpEntries(q, tmp->next) >= 0) {
+  while (tmp->next && cmpEntries(q, tmp->next) >= 0) {
     tmp = tmp->next;
   }
 
@@ -301,7 +301,7 @@ void freeDirEntryList(struct sDirEntryList *list) {
   struct sDirEntryList *tmp;
   struct sLongDirEntryList *ldelist, *tmp2;
 
-  while (list != NULL) {
+  while (list) {
     if (list->sname)
       free(list->sname);
     if (list->lname)
@@ -310,7 +310,7 @@ void freeDirEntryList(struct sDirEntryList *list) {
       free(list->sde);
 
     ldelist = list->ldel;
-    while (ldelist != NULL) {
+    while (ldelist) {
       free(ldelist->lde);
       tmp2 = ldelist;
       ldelist = ldelist->next;
@@ -340,8 +340,8 @@ void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
   while (randlist->next && ((randlist->next->sde->DIR_Atrr &
         (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
           ATTR_DIRECTORY)) == ATTR_VOLUME_ID ||
-      strcmp(randlist->next->sname, ".") == 0 ||
-      strcmp(randlist->next->sname, "..") == 0)) {
+      !strcmp(randlist->next->sname, ".") ||
+      !strcmp(randlist->next->sname, ".."))) {
 
     randlist = randlist->next;
     skip++;

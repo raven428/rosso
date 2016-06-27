@@ -7,22 +7,22 @@
 #include <sys/types.h>
 
 FILE *fs_open(char *path, uint32_t mode) {
-  return CreateFile(path, mode, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
-    NULL);
+  return CreateFile(path, mode, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
+    0);
 }
 
 int fs_seek(FILE *stream, off_t offset, int whence) {
-  return SetFilePointer(stream, offset, NULL, whence);
+  return SetFilePointer(stream, offset, 0, whence);
 }
 
 off_t fs_read(void *ptr, uint32_t size, uint32_t n, FILE *stream) {
   DWORD q;
-  return ReadFile(stream, ptr, size * n, &q, NULL);
+  return ReadFile(stream, ptr, size * n, &q, 0);
 }
 
 off_t fs_write(const void *ptr, uint32_t size, uint32_t n, FILE *stream) {
   DWORD q;
-  return WriteFile(stream, ptr, size * n, &q, NULL);
+  return WriteFile(stream, ptr, size * n, &q, 0);
 }
 
 int fs_close(FILE *file) {

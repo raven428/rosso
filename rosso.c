@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
   srand(time(0));
 
   // use locale from environment
-  if (setlocale(LC_ALL, "") == NULL) {
+  if (!setlocale(LC_ALL, "")) {
     myerror("Could not set locale!");
     return -1;
   }
