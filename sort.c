@@ -105,12 +105,12 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
       if (tmp->lde->LDIR_Ord != DE_FREE) { // ignore deleted entries
         nr = tmp->lde->LDIR_Ord & ~LAST_LONG_ENTRY; // index of long dir entry
         if (nr != (list->entries - 1 - i)) {
-          myerror("LongDirEntry number is 0x%x (0x%x) but should be 0x%x!",
-            nr, tmp->lde->LDIR_Ord, list->entries - 1 - i);
+          myerror("LongDirEntry number is %#x (%#x) but should be %#x!", nr,
+            tmp->lde->LDIR_Ord, list->entries - 1 - i);
           return -1;
         }
         else if (tmp->lde->LDIR_Checksum != calculatedChecksum) {
-          myerror("Checksum for LongDirEntry is 0x%x but should be 0x%x!",
+          myerror("Checksum for LongDirEntry is %#x but should be %#x!",
             tmp->lde->LDIR_Checksum, calculatedChecksum);
           return -1;
         }
