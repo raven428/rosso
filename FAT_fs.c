@@ -79,9 +79,8 @@ int32_t read_bootsector(FILE *fd, struct sBootSector *bs) {
     if (feof(fd)) {
       myerror("Boot sector is too short!");
     }
-    else {
+    else
       myerror("Failed to read from file!");
-    }
     return -1;
   }
 
@@ -317,9 +316,8 @@ int32_t checkFATs(struct sFileSystem *fs) {
   char *FAT1, *FATx;
 
   // if there is just one FAT, we don't have to check anything
-  if (fs->bs.BS_NumFATs < 2) {
+  if (fs->bs.BS_NumFATs < 2)
     return 0;
-  }
 
   FATSizeInBytes = fs->FATSize * fs->sectorSize;
 
@@ -480,9 +478,8 @@ uint8_t calculateChecksum(char *sname) {
   uint8_t sum;
 
   sum = 0;
-  for (len = 11; len != 0; len--) {
+  for (len = 11; len != 0; len--)
     sum = ((sum & 1) ? 0x80 : 0) + (sum >> 1) + *sname++;
-  }
   return sum;
 }
 

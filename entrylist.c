@@ -97,9 +97,8 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
 
   if (list) {
     tmp = list;
-    while (tmp->next) {
+    while (tmp->next)
       tmp = tmp->next;
-    }
     tmp->next = nw;
     return list;
   }
@@ -155,40 +154,31 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
     // the special "." and ".." directories must always remain at the
     // beginning of directories, in this order
   }
-  else if (!strcmp(de1->sname, ".")) {
+  else if (!strcmp(de1->sname, "."))
     return -1;
-  }
-  else if (!strcmp(de2->sname, ".")) {
+  else if (!strcmp(de2->sname, "."))
     return 1;
-  }
-  else if (!strcmp(de1->sname, "..")) {
+  else if (!strcmp(de1->sname, ".."))
     return -1;
-  }
   else if (!strcmp(de2->sname, "..")) {
     return 1;
     // deleted entries should be moved to the end of the directory
   }
-  else if ((uint8_t) de1->sname[0] == DE_FREE) {
+  else if ((uint8_t) de1->sname[0] == DE_FREE)
     return 1;
-  }
-  else if ((uint8_t) de2->sname[0] == DE_FREE) {
+  else if ((uint8_t) de2->sname[0] == DE_FREE)
     return -1;
-  }
 
   char *ss1, *ss2;
 
-  if (de1->lname && de1->lname[0]) {
+  if (de1->lname && de1->lname[0])
     ss1 = de1->lname;
-  }
-  else {
+  else
     ss1 = de1->sname;
-  }
-  if (de2->lname && de2->lname[0]) {
+  if (de2->lname && de2->lname[0])
     ss2 = de2->lname;
-  }
-  else {
+  else
     ss2 = de2->sname;
-  }
 
   // it's not necessary to compare files for listing and randomization,
   // each entry will be put to the end of the list
@@ -232,9 +222,8 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   // strip special prefixes
   if (OPT_IGNORE_PREFIXES_LIST->next) {
-    if (stripSpecialPrefixes(ss1, s1)) {
+    if (stripSpecialPrefixes(ss1, s1))
       ss1 = s1;
-    }
     if (stripSpecialPrefixes(ss2, s2)) {
       ss2 = s2;
     }
@@ -250,26 +239,23 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   }
 
   if (OPT_NATURAL_SORT) {
-    if (OPT_IGNORE_CASE) {
+    if (OPT_IGNORE_CASE)
       return natstrcasecmp(ss1, ss2) * OPT_REVERSE;
-    }
     else {
       return natstrcmp(ss1, ss2) * OPT_REVERSE;
     }
   }
   else if (OPT_ASCII) {
     // use plain ASCII corder
-    if (OPT_IGNORE_CASE) {
+    if (OPT_IGNORE_CASE)
       return strcasecmp(ss1, ss2) * OPT_REVERSE;
-    }
     else {
       return strcmp(ss1, ss2) * OPT_REVERSE;
     }
   }
   else {
-    if (OPT_IGNORE_CASE) {
+    if (OPT_IGNORE_CASE)
       return strcasecmp(s1_col, s2_col) * OPT_REVERSE;
-    }
     else {
       return strcmp(s1_col, s2_col) * OPT_REVERSE;
     }
@@ -285,9 +271,8 @@ void insertDirEntryList(struct sDirEntryList *nw, struct sDirEntryList *list) {
 
   tmp = list;
 
-  while (tmp->next && cmpEntries(nw, tmp->next) >= 0) {
+  while (tmp->next && cmpEntries(nw, tmp->next) >= 0)
     tmp = tmp->next;
-  }
 
   dummy = tmp->next;
   tmp->next = nw;
@@ -352,9 +337,8 @@ void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
 
     tmp = randlist;
     // after the loop tmp->next is the selected item
-    for (j = 0; j < pos; j++) {
+    for (j = 0; j < pos; j++)
       tmp = tmp->next;
-    }
 
     // put selected entry to top of list
     dummy1 = tmp->next;

@@ -51,12 +51,10 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
   strncat(newStr, (const char *) str, len);
   strncat(newStr, "/", suffix);
 
-  if (prefix + len + suffix > MAX_PATH_LEN) {
+  if (prefix + len + suffix > MAX_PATH_LEN)
     newStr[MAX_PATH_LEN] = 0;
-  }
-  else {
+  else
     newStr[prefix + len + suffix] = 0;
-  }
 
   ret = addStringToStringList(stringList, newStr);
 

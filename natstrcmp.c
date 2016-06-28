@@ -46,9 +46,8 @@ int32_t natstrcompare(const char *str1, const char *str2,
   char *s2 = (char *) str2;
 
   while (1) {
-    if (!*s1 || !*s2) {
+    if (!*s1 || !*s2)
       return strcmp(s1, s2);
-    }
 
     // compare characters until the first digit occurs
     while (1) {

@@ -32,9 +32,8 @@ int32_t addStringToStringList(struct sStringList *stringList, const char *str) {
   int32_t len;
 
   // find end of list
-  while (stringList->next) {
+  while (stringList->next)
     stringList = stringList->next;
-  }
 
   // allocate memory for new entry
   stringList->next = malloc(sizeof(struct sStringList));

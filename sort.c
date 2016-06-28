@@ -173,9 +173,8 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
           (uint8_t) sname[0] != DE_FREE && de.ShortDirEntry.DIR_Atrr &
           ~ATTR_VOLUME_ID) {
 
-          if (!OPT_MORE_INFO) {
+          if (!OPT_MORE_INFO)
             printf("%s\n", lname[0] ? lname : sname);
-          }
           else {
             printf("%s (%s)\n", lname[0] ? lname : "n/a", sname);
           }
@@ -504,9 +503,8 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
       }
     }
   }
-  else {
+  else
     printf("\n");
-  }
 
   freeClusterChain(ClusterChain);
 
@@ -530,12 +528,10 @@ int32_t sortFileSystem(char *filename) {
 
   struct sFileSystem fs;
 
-  if (OPT_LIST) {
+  if (OPT_LIST)
     mode = FS_MODE_RO;
-  }
-  else {
+  else
     mode = FS_MODE_RW;
-  }
 
   if (openFileSystem(filename, mode, &fs)) {
     myerror("Failed to open file system!");
