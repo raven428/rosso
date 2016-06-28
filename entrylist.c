@@ -81,34 +81,34 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
    * insert a long directory entry to list
    */
 
-  struct sLongDirEntryList *tmp, *q;
+  struct sLongDirEntryList *tmp, *nw;
 
-  if (!(q = malloc(sizeof(struct sLongDirEntryList)))) {
+  if (!(nw = malloc(sizeof(struct sLongDirEntryList)))) {
     stderror();
     return 0;
   }
-  if (!(q->lde = malloc(sizeof(struct sLongDirEntry)))) {
+  if (!(nw->lde = malloc(sizeof(struct sLongDirEntry)))) {
     stderror();
-    free(q);
+    free(nw);
     return 0;
   }
-  memcpy(q->lde, lde, DIR_ENTRY_SIZE);
-  q->next = 0;
+  memcpy(nw->lde, lde, DIR_ENTRY_SIZE);
+  nw->next = 0;
 
   if (list) {
     tmp = list;
     while (tmp->next) {
       tmp = tmp->next;
     }
-    tmp->next = q;
+    tmp->next = nw;
     return list;
   }
   else {
-    return q;
+    return nw;
   }
 }
 
-int32_t stripSpecialPrefixes(char *old, char *q) {
+int32_t stripSpecialPrefixes(char *old, char *nw) {
   /*
    * strip special prefixes "a" and "the"
    */
@@ -121,8 +121,8 @@ int32_t stripSpecialPrefixes(char *old, char *q) {
   while (prefix->next) {
     len = strlen(prefix->next->str);
     if (!strncasecmp(old, prefix->next->str, len)) {
-      strncpy(q, old + len, len_old - len);
-      q[len_old - len] = 0;
+      strncpy(nw, old + len, len_old - len);
+      nw[len_old - len] = 0;
       return 1;
     }
     prefix = prefix->next;
@@ -276,7 +276,7 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   }
 }
 
-void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list) {
+void insertDirEntryList(struct sDirEntryList *nw, struct sDirEntryList *list) {
   /*
    * insert a directory entry into list
    */
@@ -285,13 +285,13 @@ void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list) {
 
   tmp = list;
 
-  while (tmp->next && cmpEntries(q, tmp->next) >= 0) {
+  while (tmp->next && cmpEntries(nw, tmp->next) >= 0) {
     tmp = tmp->next;
   }
 
   dummy = tmp->next;
-  tmp->next = q;
-  q->next = dummy;
+  tmp->next = nw;
+  nw->next = dummy;
 }
 
 void freeDirEntryList(struct sDirEntryList *list) {
