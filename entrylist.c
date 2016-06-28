@@ -14,9 +14,9 @@
 #include "stringlist.h"
 
 // random number
-uint32_t irand(uint32_t b, uint32_t e) {
-  double r = e - b + 1;
-  return b + r * rand() / (RAND_MAX + 1.0);
+uint32_t irand(uint32_t xr, uint32_t ya) {
+  double zu = ya - xr + 1;
+  return xr + zu * rand() / (RAND_MAX + 1.0);
 }
 
 // List functions

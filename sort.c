@@ -67,12 +67,12 @@ void parseShortFilename(struct sShortDirEntry *sde, char *str) {
    * parses short name of a file
    */
 
-  char *s;
+  char *go;
   strncpy(str, sde->DIR_Name, 8);
   str[8] = 0;
-  s = strchr(str, ' ');
-  if (s)
-    s[0] = 0;
+  go = strchr(str, ' ');
+  if (go)
+    go[0] = 0;
   if ((char) *(sde->DIR_Name + 8) != ' ') {
     strcat(str, ".");
     strncat(str, sde->DIR_Name + 8, 3);
@@ -272,14 +272,14 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
    */
 
   int32_t cluster;
-  uint32_t data, i = 0;
+  uint32_t data, ju = 0;
 
   cluster = startCluster;
 
   switch (fs->FATType) {
   case FATTYPE_FAT32:
     do {
-      if (i == fs->maxClusterChainLength) {
+      if (ju == fs->maxClusterChainLength) {
         myerror("Cluster chain is too long!");
         return -1;
       }
@@ -291,7 +291,7 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
         myerror("Failed to insert cluster!");
         return -1;
       }
-      i++;
+      ju++;
       if (getFATEntry(fs, cluster, &data)) {
         myerror("Failed to get FAT entry");
         return -1;
@@ -310,7 +310,7 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
     return -1;
   }
 
-  return i;
+  return ju;
 }
 
 int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
@@ -321,7 +321,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
 
   uint32_t i = 0, entries = 0;
   struct sLongDirEntryList *tmp;
-  struct sDirEntryList *p = list->next;
+  struct sDirEntryList *ki = list->next;
 
   chain = chain->next; // we don't need to look at the head element
 
@@ -334,20 +334,20 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
   char *zu = ya;
   fs_read(ya, 1, fs->clusterSize, fs->fd);
   fs_seek(fs->fd, -fs->clusterSize, SEEK_CUR);
-  while (p) {
-    if (entries + p->entries <= fs->maxDirEntriesPerCluster) {
-      tmp = p->ldel;
-      for (i = 1; i < p->entries; i++) {
+  while (ki) {
+    if (entries + ki->entries <= fs->maxDirEntriesPerCluster) {
+      tmp = ki->ldel;
+      for (i = 1; i < ki->entries; i++) {
         memcpy(zu, tmp->lde, DIR_ENTRY_SIZE);
         zu += DIR_ENTRY_SIZE;
         tmp = tmp->next;
       }
-      memcpy(zu, p->sde, DIR_ENTRY_SIZE);
+      memcpy(zu, ki->sde, DIR_ENTRY_SIZE);
       zu += DIR_ENTRY_SIZE;
-      entries += p->entries;
+      entries += ki->entries;
     }
     else {
-      tmp = p->ldel;
+      tmp = ki->ldel;
       for (i = 1; i <= fs->maxDirEntriesPerCluster - entries; i++) {
         memcpy(zu, tmp->lde, DIR_ENTRY_SIZE);
         zu += DIR_ENTRY_SIZE;
@@ -355,7 +355,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
       }
       chain = chain->next;
       // next cluster
-      entries = p->entries - (fs->maxDirEntriesPerCluster - entries);
+      entries = ki->entries - (fs->maxDirEntriesPerCluster - entries);
       if (fs_seek(fs->fd, getClusterOffset(fs, chain->cluster),
           SEEK_SET) == -1) {
         myerror("Seek error!");
@@ -366,10 +366,10 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
         zu += DIR_ENTRY_SIZE;
         tmp = tmp->next;
       }
-      memcpy(zu, p->sde, DIR_ENTRY_SIZE);
+      memcpy(zu, ki->sde, DIR_ENTRY_SIZE);
       zu += DIR_ENTRY_SIZE;
     }
-    p = p->next;
+    ki = ki->next;
   }
   if (entries < fs->maxDirEntriesPerCluster) {
     memset(zu, 0, DIR_ENTRY_SIZE);
@@ -388,45 +388,45 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   /*
    * sorts sub directories in a FAT file system
    */
-  struct sDirEntryList *p;
+  struct sDirEntryList *ki;
   char newpath[MAX_PATH_LEN + 1] = { 0 };
-  uint32_t c, value;
+  uint32_t qu, value;
 
   // sort sub directories
-  p = list->next;
-  while (p) {
-    if (p->sde->DIR_Atrr & ATTR_DIRECTORY &&
-      (uint8_t) p->sde->DIR_Name[0] != DE_FREE && p->sde->DIR_Atrr &
-      ~ATTR_VOLUME_ID && strcmp(p->sname, ".") && strcmp(p->sname, "..")) {
-      c = (p->sde->DIR_FstClusHI * 65536 + p->sde->DIR_FstClusLO);
-      if (getFATEntry(fs, c, &value) == -1) {
+  ki = list->next;
+  while (ki) {
+    if (ki->sde->DIR_Atrr & ATTR_DIRECTORY &&
+      (uint8_t) ki->sde->DIR_Name[0] != DE_FREE && ki->sde->DIR_Atrr &
+      ~ATTR_VOLUME_ID && strcmp(ki->sname, ".") && strcmp(ki->sname, "..")) {
+      qu = (ki->sde->DIR_FstClusHI * 65536 + ki->sde->DIR_FstClusLO);
+      if (getFATEntry(fs, qu, &value) == -1) {
         myerror("Failed to get FAT entry!");
         return -1;
       }
 
       strncpy(newpath, (char *) path, MAX_PATH_LEN - strlen(newpath));
       newpath[MAX_PATH_LEN] = 0;
-      if (p->lname && p->lname[0]) {
-        strncat(newpath, p->lname, MAX_PATH_LEN - strlen(newpath));
+      if (ki->lname && ki->lname[0]) {
+        strncat(newpath, ki->lname, MAX_PATH_LEN - strlen(newpath));
         newpath[MAX_PATH_LEN] = 0;
         strncat(newpath, "/", MAX_PATH_LEN - strlen(newpath));
         newpath[MAX_PATH_LEN] = 0;
       }
       else {
-        strncat(newpath, p->sname, MAX_PATH_LEN - strlen(newpath));
+        strncat(newpath, ki->sname, MAX_PATH_LEN - strlen(newpath));
         newpath[MAX_PATH_LEN] = 0;
         strncat(newpath, "/", MAX_PATH_LEN - strlen(newpath));
         newpath[MAX_PATH_LEN] = 0;
       }
 
-      if (sortClusterChain(fs, c,
+      if (sortClusterChain(fs, qu,
           (const char (*)[MAX_PATH_LEN + 1]) newpath) == -1) {
         myerror("Failed to sort cluster chain!");
         return -1;
       }
 
     }
-    p = p->next;
+    ki = ki->next;
   }
 
   return 0;

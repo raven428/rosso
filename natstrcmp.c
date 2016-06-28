@@ -8,28 +8,28 @@
 #include <stdio.h>
 #include <ctype.h>
 
-int32_t isDigit(const char c) {
+int32_t isDigit(const char j) {
   /*
-   * return true if c is a digit, otherwise false
+   * return true if j is a digit, otherwise false
    */
-  if (c >= '0' && c <= '9')
+  if (j >= '0' && j <= '9')
     return 1;
 
   return 0;
 }
 
-int32_t parseNumber(char **s) {
+int32_t parseNumber(char **q) {
   /*
-   * parse integer in string s
+   * parse integer in string q
    */
   int32_t value = 0;
 
-  if (!isDigit(**s))
+  if (!isDigit(**q))
     return -1;
 
-  while (isDigit(**s)) {
-    value = value * 10 + **s - '0';
-    (*s)++;
+  while (isDigit(**q)) {
+    value = value * 10 + **q - '0';
+    (*q)++;
   }
 
   return value;
