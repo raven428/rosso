@@ -20,7 +20,7 @@ struct sClusterChain {
 };
 
 // create new cluster chain
-struct sClusterChain *newClusterChain(void);
+struct sClusterChain *newClusterChain();
 
 // allocate memory and insert cluster into cluster chain
 int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster);

@@ -21,7 +21,7 @@ uint32_t irand(uint32_t xr, uint32_t ya) {
 
 // List functions
 
-struct sDirEntryList *newDirEntryList(void) {
+struct sDirEntryList *newDirEntryList() {
   /*
    * create new dir entry list
    */

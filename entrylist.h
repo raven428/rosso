@@ -31,7 +31,7 @@ struct sDirEntryList {
 };
 
 // create new dir entry list
-struct sDirEntryList *newDirEntryList(void);
+struct sDirEntryList *newDirEntryList();
 
 // randomize entry list
 void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries);

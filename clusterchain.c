@@ -11,7 +11,7 @@
 #include <errno.h>
 #include "errors.h"
 
-struct sClusterChain *newClusterChain(void) {
+struct sClusterChain *newClusterChain() {
   /*
    * create new cluster chain
    */
