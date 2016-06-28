@@ -14,7 +14,6 @@
 #include "errors.h"
 #include "options.h"
 #include "clusterchain.h"
-#include "signal.h"
 #include "fileio.h"
 #include "stringlist.h"
 
