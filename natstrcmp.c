@@ -79,8 +79,9 @@ int32_t natstrcompare(const char *str1, const char *str2,
         return 1;
       // both strings had numbers in it
     }
-    else if (n1 != n2)
+    else if (n1 != n2) {
       return n1 > n2 ? 1 : -1;
+    }
   }
 }
 

@@ -216,8 +216,9 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
       return -OPT_REVERSE;
     else if (md1 > md2)
       return OPT_REVERSE;
-    else
+    else {
       return 0;
+    }
   }
 
   // strip special prefixes

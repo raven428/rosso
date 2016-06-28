@@ -222,10 +222,10 @@ uint16_t isEOC(struct sFileSystem *fs, const uint32_t data) {
    * checks whether data marks the end of a cluster chain
    */
 
-  if (fs->FATType == FATTYPE_FAT32) {
-    if ((data & 0x0FFFFFFF) >= 0x0FFFFFF8)
+  if (fs->FATType == FATTYPE_FAT32)
+    if ((data & 0x0FFFFFFF) >= 0x0FFFFFF8) {
       return 1;
-  }
+    }
 
   return 0;
 }
@@ -234,10 +234,10 @@ uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data) {
   /*
    * checks whether data marks a bad cluster
    */
-  if (fs->FATType == FATTYPE_FAT32) {
-    if ((data & 0x0FFFFFFF) == 0x0FFFFFF7)
+  if (fs->FATType == FATTYPE_FAT32)
+    if ((data & 0x0FFFFFFF) == 0x0FFFFFF7) {
       return 1;
-  }
+    }
 
   return 0;
 }
@@ -358,8 +358,9 @@ int32_t checkFATs(struct sFileSystem *fs) {
       return -1;
     }
 
-    if ((result = memcmp(FAT1, FATx, FATSizeInBytes)))
+    if ((result = memcmp(FAT1, FATx, FATSizeInBytes))) {
       break; // FATs don't match
+    }
 
   }
 

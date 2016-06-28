@@ -469,16 +469,18 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
   if (!OPT_LIST) {
     if (match) {
       printf("Sorting directory %s\n", (char *) path);
-      if (OPT_MORE_INFO)
+      if (OPT_MORE_INFO) {
         printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
           clen * fs->clusterSize);
+      }
     }
   }
   else {
     printf("%s\n", (char *) path);
-    if (OPT_MORE_INFO)
+    if (OPT_MORE_INFO) {
       printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
         clen * fs->clusterSize);
+    }
   }
 
   if (parseClusterChain(fs, ClusterChain, list, &direntries) == -1) {
