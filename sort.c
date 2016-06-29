@@ -468,7 +468,10 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
 
   if (!OPT_LIST) {
     if (match) {
-      printf("Sorting directory %s\n", (char *) path);
+      if (OPT_RANDOM)
+        printf("Random sorting directory %s\n", (char *) path);
+      else
+        printf("Sorting directory %s\n", (char *) path);
       if (OPT_MORE_INFO) {
         printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
           clen * fs->clusterSize);
