@@ -50,8 +50,8 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
   }
 
   while (incount) {
-    if ((ret =
-        iconv(cd, &inptr, &incount, &outptr, &outcount)) == (size_t) -1) {
+    ret = iconv(cd, &inptr, &incount, &outptr, &outcount);
+    if (ret == (size_t) -1) {
       stderror();
       myerror("iconv failed! %d", ret);
       return -1;
@@ -103,7 +103,7 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
     for (i = 0; i < list->entries - 1; i++) {
       if (tmp->lde->LDIR_Ord != DE_FREE) { // ignore deleted entries
         nr = tmp->lde->LDIR_Ord & ~LAST_LONG_ENTRY; // index of long dir entry
-        if (nr != (list->entries - 1 - i)) {
+        if (nr != list->entries - 1 - i) {
           myerror("LongDirEntry number is %#x (%#x) but should be %#x!", nr,
             tmp->lde->LDIR_Ord, list->entries - 1 - i);
           return -1;

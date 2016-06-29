@@ -27,7 +27,8 @@ struct sDirEntryList *newDirEntryList() {
    */
   struct sDirEntryList *tmp;
 
-  if (!(tmp = malloc(sizeof(struct sDirEntryList)))) {
+  tmp = malloc(sizeof(struct sDirEntryList));
+  if (!tmp) {
     stderror();
     return 0;
   }
@@ -43,17 +44,20 @@ struct sDirEntryList *newDirEntry(char *sname, char *lname,
    */
   struct sDirEntryList *tmp;
 
-  if (!(tmp = malloc(sizeof(struct sDirEntryList)))) {
+  tmp = malloc(sizeof(struct sDirEntryList));
+  if (!tmp) {
     stderror();
     return 0;
   }
-  if (!(tmp->sname = malloc(strlen(sname) + 1))) {
+  tmp->sname = malloc(strlen(sname) + 1);
+  if (!tmp->sname) {
     stderror();
     free(tmp);
     return 0;
   }
   strcpy(tmp->sname, sname);
-  if (!(tmp->lname = malloc(strlen(lname) + 1))) {
+  tmp->lname = malloc(strlen(lname) + 1);
+  if (!tmp->lname) {
     stderror();
     free(tmp->sname);
     free(tmp);
@@ -61,7 +65,8 @@ struct sDirEntryList *newDirEntry(char *sname, char *lname,
   }
   strcpy(tmp->lname, lname);
 
-  if (!(tmp->sde = malloc(sizeof(struct sShortDirEntry)))) {
+  tmp->sde = malloc(sizeof(struct sShortDirEntry));
+  if (!tmp->sde) {
     stderror();
     free(tmp->lname);
     free(tmp->sname);
@@ -83,11 +88,13 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
 
   struct sLongDirEntryList *tmp, *nw;
 
-  if (!(nw = malloc(sizeof(struct sLongDirEntryList)))) {
+  nw = malloc(sizeof(struct sLongDirEntryList));
+  if (!nw) {
     stderror();
     return 0;
   }
-  if (!(nw->lde = malloc(sizeof(struct sLongDirEntry)))) {
+  nw->lde = malloc(sizeof(struct sLongDirEntry));
+  if (!nw->lde) {
     stderror();
     free(nw);
     return 0;

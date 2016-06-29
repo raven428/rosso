@@ -39,8 +39,7 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
     suffix = 1;
 
   // allocate memory for string
-  newStr = malloc(prefix + len + suffix + 1);
-  if (!newStr) {
+  if (!(newStr = malloc(prefix + len + suffix + 1))) {
     stderror();
     return -1;
   }

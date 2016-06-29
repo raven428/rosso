@@ -17,7 +17,8 @@ struct sClusterChain *newClusterChain() {
    */
   struct sClusterChain *tmp;
 
-  if (!(tmp = malloc(sizeof(struct sClusterChain)))) {
+  tmp = malloc(sizeof(struct sClusterChain));
+  if (!tmp) {
     stderror();
     return 0;
   }
@@ -38,7 +39,8 @@ int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster) {
     chain = chain->next;
   }
 
-  if (!(chain->next = malloc(sizeof(struct sClusterChain)))) {
+  chain->next = malloc(sizeof(struct sClusterChain));
+  if (!chain->next) {
     stderror();
     return -1;
   }
