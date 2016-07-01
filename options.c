@@ -39,7 +39,8 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
     suffix = 1;
 
   // allocate memory for string
-  if (!(newStr = malloc(prefix + len + suffix + 1))) {
+  newStr = malloc(prefix + len + suffix + 1);
+  if (!newStr) {
     stderror();
     return -1;
   }
@@ -148,28 +149,33 @@ int32_t parse_options(int argc, char *argv[]) {
   OPT_ASCII = 0;
 
   // empty string lists for inclusion and exclusion of dirs
-  if (!(OPT_INCL_DIRS = newStringList())) {
+  OPT_INCL_DIRS = newStringList();
+  if (!OPT_INCL_DIRS) {
     myerror("Could not create stringList!");
     return -1;
   }
-  if (!(OPT_INCL_DIRS_REC = newStringList())) {
-    myerror("Could not create stringList!");
-    freeOptions();
-    return -1;
-  }
-  if (!(OPT_EXCL_DIRS = newStringList())) {
+  OPT_INCL_DIRS_REC = newStringList();
+  if (!OPT_INCL_DIRS_REC) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
   }
-  if (!(OPT_EXCL_DIRS_REC = newStringList())) {
+  OPT_EXCL_DIRS = newStringList();
+  if (!OPT_EXCL_DIRS) {
+    myerror("Could not create stringList!");
+    freeOptions();
+    return -1;
+  }
+  OPT_EXCL_DIRS_REC = newStringList();
+  if (!OPT_EXCL_DIRS_REC) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;
   }
 
   // empty string list for to be ignored prefixes
-  if (!(OPT_IGNORE_PREFIXES_LIST = newStringList())) {
+  OPT_IGNORE_PREFIXES_LIST = newStringList();
+  if (!OPT_IGNORE_PREFIXES_LIST) {
     myerror("Could not create stringList!");
     freeOptions();
     return -1;

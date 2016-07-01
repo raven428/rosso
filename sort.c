@@ -448,18 +448,21 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
     matchesDirPathLists(OPT_INCL_DIRS, OPT_INCL_DIRS_REC, OPT_EXCL_DIRS,
     OPT_EXCL_DIRS_REC, path);
 
-  if (!(ClusterChain = newClusterChain())) {
+  ClusterChain = newClusterChain();
+  if (!ClusterChain) {
     myerror("Failed to generate new ClusterChain!");
     return -1;
   }
 
-  if (!(list = newDirEntryList())) {
+  list = newDirEntryList();
+  if (!list) {
     myerror("Failed to generate new dirEntryList!");
     freeClusterChain(ClusterChain);
     return -1;
   }
 
-  if ((clen = getClusterChain(fs, cluster, ClusterChain)) == -1) {
+  clen = getClusterChain(fs, cluster, ClusterChain);
+  if (clen == -1) {
     myerror("Failed to get cluster chain!");
     freeDirEntryList(list);
     freeClusterChain(ClusterChain);

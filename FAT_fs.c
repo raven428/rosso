@@ -181,7 +181,8 @@ int32_t getCountOfClusters(struct sBootSector *bs) {
     bs->BS_TotSec32 - bs->BS_RsvdSecCnt - bs->BS_NumFATs * bs->BS_FATSz32 -
     RootDirSectors;
 
-  if ((retvalue = DataSec / bs->BS_SecPerClus) <= 0) {
+  retvalue = DataSec / bs->BS_SecPerClus;
+  if (retvalue <= 0) {
     myerror("Failed to calculate count of clusters!");
     return -1;
   }
@@ -255,7 +256,8 @@ void *readFAT(struct sFileSystem *fs, uint16_t nr) {
 
   FATSizeInBytes = fs->FATSize * fs->sectorSize;
 
-  if (!(FAT = malloc(FATSizeInBytes))) {
+  FAT = malloc(FATSizeInBytes);
+  if (!FAT) {
     stderror();
     return 0;
   }
@@ -321,11 +323,13 @@ int32_t checkFATs(struct sFileSystem *fs) {
 
   FATSizeInBytes = fs->FATSize * fs->sectorSize;
 
-  if (!(FAT1 = malloc(FATSizeInBytes))) {
+  FAT1 = malloc(FATSizeInBytes);
+  if (!FAT1) {
     stderror();
     return -1;
   }
-  if (!(FATx = malloc(FATSizeInBytes))) {
+  FATx = malloc(FATSizeInBytes);
+  if (!FATx) {
     stderror();
     free(FAT1);
     return -1;
@@ -358,7 +362,8 @@ int32_t checkFATs(struct sFileSystem *fs) {
       return -1;
     }
 
-    if ((result = memcmp(FAT1, FATx, FATSizeInBytes))) {
+    result = memcmp(FAT1, FATx, FATSizeInBytes);
+    if (result) {
       break; // FATs don't match
     }
 
@@ -429,7 +434,8 @@ void *readCluster(struct sFileSystem *fs, uint32_t cluster) {
     return 0;
   }
 
-  if (!(dummy = malloc(fs->clusterSize))) {
+  dummy = malloc(fs->clusterSize);
+  if (!dummy) {
     stderror();
     return 0;
   }
@@ -496,13 +502,15 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 
   switch (mode) {
   case FS_MODE_RO:
-    if (!(fs->fd = fs_open(fs->path, GENERIC_READ))) {
+    fs->fd = fs_open(fs->path, GENERIC_READ);
+    if (!fs->fd) {
       stderror();
       return -1;
     }
     break;
   case FS_MODE_RW:
-    if (!(fs->fd = fs_open(fs->path, GENERIC_READ | GENERIC_WRITE))) {
+    fs->fd = fs_open(fs->path, GENERIC_READ | GENERIC_WRITE);
+    if (!fs->fd) {
       stderror();
       return -1;
     }
