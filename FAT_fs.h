@@ -156,9 +156,6 @@ struct sFileSystem {
 // opens file system and calculates file system information
 int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs);
 
-// update boot sector
-int32_t writeBootSector(struct sFileSystem *fs);
-
 // sync file system
 int32_t syncFileSystem(struct sFileSystem *fs);
 
@@ -171,27 +168,6 @@ int32_t check_bootsector(struct sBootSector *bs);
 // retrieves FAT entry for a cluster number
 int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data);
 
-// read FAT from file system
-void *readFAT(struct sFileSystem *fs, uint16_t nr);
-
-// write FAT to file system
-int32_t writeFAT(struct sFileSystem *fs, void *fat);
-
-// read cluster from file systen
-void *readCluster(struct sFileSystem *fs, uint32_t cluster);
-
-// write cluster to file systen
-int32_t writeCluster(struct sFileSystem *fs, uint32_t cluster, void *data);
-
-// checks whether data marks a free cluster
-uint16_t isFreeCluster(const uint32_t data);
-
-// checks whether data marks the end of a cluster chain
-uint16_t isEOC(struct sFileSystem *fs, const uint32_t data);
-
-// checks whether data marks a bad cluster
-uint16_t isBadCluster(struct sFileSystem *fs, const uint32_t data);
-
 // returns the offset of a specific cluster in the data region of the FS
 off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
 
@@ -203,11 +179,5 @@ uint8_t calculateChecksum(char *sname);
 
 // checks whether all FATs have the same content
 int32_t checkFATs(struct sFileSystem *fs);
-
-// reads FSInfo structure
-int32_t readFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo);
-
-// write FSInfo structure
-int32_t writeFSInfo(struct sFileSystem *fs, struct sFSInfo *fsInfo);
 
 #endif // __FAT_fs_h__

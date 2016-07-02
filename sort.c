@@ -237,32 +237,6 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
   return 0;
 }
 
-int32_t writeList(struct sFileSystem *fs, struct sDirEntryList *list) {
-  /*
-   * writes directory entries to file
-   */
-
-  struct sLongDirEntryList *tmp;
-
-  while (list->next) {
-    tmp = list->next->ldel;
-    while (tmp) {
-      if (!fs_write(tmp->lde, DIR_ENTRY_SIZE, 1, fs->fd)) {
-        stderror();
-        return -1;
-      }
-      tmp = tmp->next;
-    }
-    if (!fs_write(list->next->sde, DIR_ENTRY_SIZE, 1, fs->fd)) {
-      stderror();
-      return -1;
-    }
-    list = list->next;
-  }
-
-  return 0;
-}
-
 int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
   struct sClusterChain *chain) {
   /*
