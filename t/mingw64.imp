@@ -1,3 +1,4 @@
 [
-  include: [<_mingw_stdarg.h>, private, <stdarg.h>, public]
+  include: [<_mingw_stdarg.h>, private, <stdarg.h>, public],
+  include: [<winnt.h>, private, <windows.h>, public]
 ]

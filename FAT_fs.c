@@ -5,13 +5,13 @@
 
 #include "FAT_fs.h"
 
-#include <ddk/wdm.h>
 #include <iconv.h>
-#include <intrin.h>
 #include <malloc.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <windows.h>
 
 #include "errors.h"
 #include "fileio.h"
