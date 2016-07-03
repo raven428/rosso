@@ -3,12 +3,6 @@
  */
 
 #include "fileio.h"
-#include <fileapi.h>
-#include <handleapi.h>
-#include <minwindef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <sys/types.h>
 #include <windows.h>
 
 FILE *fs_open(char *path, uint32_t mode) {

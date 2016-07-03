@@ -1,4 +1,7 @@
 [
   include: [<_mingw_stdarg.h>, private, <stdarg.h>, public],
+  include: [<fileapi.h>, private, <windows.h>, public],
+  include: [<handleapi.h>, private, <windows.h>, public],
+  include: [<minwindef.h>, private, <windows.h>, public],
   include: [<winnt.h>, private, <windows.h>, public]
 ]
