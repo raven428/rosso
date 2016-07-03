@@ -8,9 +8,7 @@
 
 // FS open mode bits
 #define FS_MODE_RO 1
-#define FS_MODE_RO_EXCL 2
 #define FS_MODE_RW 3
-#define FS_MODE_RW_EXCL 4
 
 // FAT types
 #define FATTYPE_FAT32 32
