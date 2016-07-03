@@ -1,6 +1,6 @@
 ifdef INCLUDE
   CC = include-what-you-use
-  CFLAGS = -I C:/cygwin64/usr/x86_64-w64-mingw32/sys-root/mingw/include \
+  CFLAGS = -isystem C:/cygwin64/usr/x86_64-w64-mingw32/sys-root/mingw/include \
   -w -ferror-limit=1
 else
   CC = x86_64-w64-mingw32-gcc
