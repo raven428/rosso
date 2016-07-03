@@ -2,14 +2,14 @@
  * This file contains file io functions
  */
 
-#include "fileapi.h"
 #include "fileio.h"
-#include "handleapi.h"
-#include "minwindef.h"
-#include "stdint.h"
-#include "winnt.h"
+#include <fileapi.h>
+#include <handleapi.h>
+#include <minwindef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <winnt.h>
 
 FILE *fs_open(char *path, uint32_t mode) {
   return CreateFile(path, mode, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,

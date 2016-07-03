@@ -1,7 +1,7 @@
 #!/bin/dash -e
 make -k INCLUDE=1 2>&1 |
 sed '
-/should add these lines/ {
+/should add these lines\|has correct/ {
   s/^/\x1b[1;32m/
   s/$/\x1b[m/
 }
