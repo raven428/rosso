@@ -1,7 +1,7 @@
 ifdef INCLUDE
   CC = include-what-you-use
   CFLAGS = -isystem C:/cygwin64/usr/x86_64-w64-mingw32/sys-root/mingw/include \
-  -w -ferror-limit=1
+  -w -ferror-limit=1 -Xiwyu --mapping_file=t/mingw64.imp
 else
   CC = x86_64-w64-mingw32-gcc
   CFLAGS = -O -Wall -Wextra -pedantic -std=c11 -fdiagnostics-color \

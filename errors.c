@@ -2,7 +2,6 @@
  * This file contains/describes functions for error handling and messaging.
  */
 
-#include <_mingw_stdarg.h>
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
