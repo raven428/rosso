@@ -2,8 +2,11 @@
  * This file contains/describes functions for error handling and messaging.
  */
 
-#include <stdio.h>
+#include <_mingw_stdarg.h>
+#include <errno.h>
 #include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 #include "errors.h"
 
 void errormsg(const char *func, const char *str, ...) {
@@ -18,4 +21,7 @@ void errormsg(const char *func, const char *str, ...) {
   fprintf(stderr, "%s: %s\n", func, msg);
   va_end(argptr);
 
+}
+void stderror() {
+  errormsg(__func__, "%s!", strerror(errno));
 }

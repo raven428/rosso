@@ -3,8 +3,9 @@
  */
 #include "stringlist.h"
 
+#include <stdint.h>
 #include <stdlib.h>
-#include <errno.h>
+#include <string.h>
 #include "errors.h"
 
 struct sStringList *newStringList() {

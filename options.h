@@ -5,9 +5,9 @@
 #ifndef __options_h__
 #define __options_h__
 
-#include <sys/types.h>
 #include "FAT_fs.h"
-#include "stringlist.h"
+#include <stdint.h>
+struct sStringList;
 
 extern uint32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER,
   OPT_LIST, OPT_REVERSE, OPT_NATURAL_SORT, OPT_RECURSIVE, OPT_RANDOM,

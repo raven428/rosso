@@ -5,12 +5,13 @@
 
 #include "FAT_fs.h"
 
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/param.h>
+#include <ddk/wdm.h>
 #include <iconv.h>
+#include <intrin.h>
+#include <malloc.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "errors.h"
 #include "fileio.h"

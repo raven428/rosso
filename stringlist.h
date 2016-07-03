@@ -5,8 +5,7 @@
 #ifndef __stringlist_h__
 #define __stringlist_h__
 
-#include <sys/types.h>
-#include "FAT_fs.h"
+#include <stdint.h>
 
 struct sStringList {
   char *str;

@@ -8,7 +8,6 @@
 #ifndef __clusterchain_h__
 #define __clusterchain_h__
 
-#include <sys/types.h>
 #include <stdint.h>
 
 struct sClusterChain {

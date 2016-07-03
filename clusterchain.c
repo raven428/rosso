@@ -7,8 +7,8 @@
 
 #include "clusterchain.h"
 
+#include <stdint.h>
 #include <stdlib.h>
-#include <errno.h>
 #include "errors.h"
 
 struct sClusterChain *newClusterChain() {

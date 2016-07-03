@@ -3,14 +3,15 @@
  * structures of FAT directory entries and entry lists.
  */
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 #include "entrylist.h"
-#include "options.h"
 #include "errors.h"
+#include "FAT_fs.h"
 #include "natstrcmp.h"
+#include "options.h"
 #include "stringlist.h"
 
 // random number

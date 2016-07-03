@@ -4,18 +4,16 @@
 
 #include "sort.h"
 
+#include <iconv.h>
+#include <malloc.h>
+#include <stdint.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/param.h>
+#include "clusterchain.h"
 #include "entrylist.h"
 #include "errors.h"
-#include "options.h"
-#include "clusterchain.h"
 #include "fileio.h"
-#include "stringlist.h"
+#include "options.h"
 
 int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
   iconv_t cd) {

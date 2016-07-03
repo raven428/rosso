@@ -5,10 +5,9 @@
 #ifndef __sort_h__
 #define __sort_h__
 
-#include <stdlib.h>
-#include <sys/types.h>
+#include <stdint.h>
 #include "FAT_fs.h"
-#include "clusterchain.h"
+struct sClusterChain;
 
 // sorts FAT file system
 int32_t sortFileSystem(char *filename);

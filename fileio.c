@@ -2,7 +2,12 @@
  * This file contains file io functions
  */
 
+#include "fileapi.h"
 #include "fileio.h"
+#include "handleapi.h"
+#include "minwindef.h"
+#include "stdint.h"
+#include "winnt.h"
 #include <stdio.h>
 #include <sys/types.h>
 

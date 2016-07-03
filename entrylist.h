@@ -6,8 +6,9 @@
 #ifndef __entrylist_h__
 #define __entrylist_h__
 
-#include <sys/types.h>
-#include "FAT_fs.h"
+#include <stdint.h>
+struct sLongDirEntry;
+struct sShortDirEntry;
 
 struct sLongDirEntryList {
   /*

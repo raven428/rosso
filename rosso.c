@@ -2,23 +2,19 @@
  * This file contains the main function of rosso.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdarg.h>
-#include <errno.h>
+#include <getopt.h>
 #include <locale.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 // project includes
+#include "errors.h"
 #include "FAT_fs.h"
 #include "options.h"
-#include "errors.h"
-#include "sort.h"
-#include "clusterchain.h"
 #include "rosso.h"
+#include "sort.h"
 
 // program information
 #define INFO_OPTION_HELP \

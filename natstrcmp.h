@@ -5,7 +5,6 @@
 #ifndef __natstrcmp_h__
 #define __natstrcmp_h__
 
-#include <sys/types.h>
 #include <stdint.h>
 
 // natural order comparison

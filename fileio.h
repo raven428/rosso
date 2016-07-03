@@ -5,10 +5,9 @@
 #ifndef __fileio_h__
 #define __fileio_h__
 
+#include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
-#include <stdint.h>
-#include <windows.h>
 
 FILE *fs_open(char *path, uint32_t mode);
 int fs_seek(FILE *stream, off_t offset, int whence);
