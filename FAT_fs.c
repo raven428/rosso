@@ -6,7 +6,6 @@
 #include "FAT_fs.h"
 
 #include <iconv.h>
-#include <malloc.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -229,7 +228,7 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
       myerror("Seek error!");
       return -1;
     }
-    char *go = alloca(fs->sectorSize);
+    char *go = malloc(fs->sectorSize);
     if (!fs_read(go, fs->sectorSize, 1, fs->fd)) {
       myerror("Failed to read from file!");
       return -1;

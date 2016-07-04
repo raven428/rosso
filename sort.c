@@ -5,9 +5,9 @@
 #include "sort.h"
 
 #include <iconv.h>
-#include <malloc.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "clusterchain.h"
 #include "entrylist.h"
@@ -140,7 +140,7 @@ int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
 
   llist = 0;
   lname[0] = 0;
-  char *q = alloca(fs->clusterSize);
+  char *q = malloc(fs->clusterSize);
   while (chain) {
     fs_seek(fs->fd, getClusterOffset(fs, chain->cluster), SEEK_SET);
     fs_read(q, 1, fs->clusterSize, fs->fd);
@@ -301,7 +301,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
     return -1;
   }
 
-  char *ya = alloca(fs->clusterSize);
+  char *ya = malloc(fs->clusterSize);
   char *zu = ya;
   fs_read(ya, 1, fs->clusterSize, fs->fd);
   fs_seek(fs->fd, -fs->clusterSize, SEEK_CUR);
