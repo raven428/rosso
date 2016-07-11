@@ -39,7 +39,7 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
   incount = 26;
   outcount = MAX_PATH_LEN;
 
-  int i;
+  size_t i;
   for (i = 0; i < 12; i++) {
     if (!utf16str[i * 2] && !utf16str[i * 2 + 1]) {
       incount = i * 2;
@@ -49,7 +49,7 @@ int32_t parseLongFilenamePart(struct sLongDirEntry *lde, char *str,
 
   while (incount) {
     ret = iconv(cd, &inptr, &incount, &outptr, &outcount);
-    if (ret == (size_t) -1) {
+    if (ret == -1U) {
       stderror();
       myerror("iconv failed! %d", ret);
       return -1;
@@ -82,7 +82,7 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
   /*
    * does some integrity checks on LongDirEntries
    */
-  uint8_t calculatedChecksum;
+  int32_t calculatedChecksum;
   uint32_t i;
   uint32_t nr;
   struct sLongDirEntryList *tmp;
@@ -120,7 +120,7 @@ int32_t checkLongDirEntries(struct sDirEntryList *list) {
 }
 
 int32_t parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
-  struct sDirEntryList *list, uint32_t *direntries) {
+  struct sDirEntryList *list, int32_t *direntries) {
   /*
    * parses a cluster chain and puts found directory entries to list
    */
@@ -242,19 +242,19 @@ int32_t getClusterChain(struct sFileSystem *fs, uint32_t startCluster,
    * startCluster
    */
 
-  int32_t cluster;
-  uint32_t data, ju = 0;
+  uint32_t cluster, data;
+  int32_t ju = 0;
 
   cluster = startCluster;
 
   switch (fs->FATType) {
   case FATTYPE_FAT32:
     do {
-      if (ju == fs->maxClusterChainLength) {
+      if (ju == (int) fs->maxClusterChainLength) {
         myerror("Cluster chain is too long!");
         return -1;
       }
-      if ((cluster & 0x0fffffff) >= fs->clusters + 2) {
+      if ((cluster & 0x0fffffff) >= (uint32_t) fs->clusters + 2) {
         myerror("Cluster %08x does not exist!", data);
         return -1;
       }
@@ -304,7 +304,7 @@ int32_t writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
   char *ya = malloc(fs->clusterSize);
   char *zu = ya;
   fs_read(ya, 1, fs->clusterSize, fs->fd);
-  fs_seek(fs->fd, -fs->clusterSize, SEEK_CUR);
+  fs_seek(fs->fd, (long) -fs->clusterSize, SEEK_CUR);
   while (ki) {
     if (entries + ki->entries <= fs->maxDirEntriesPerCluster) {
       tmp = ki->ldel;
@@ -369,7 +369,7 @@ int32_t sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
     if (ki->sde->DIR_Atrr & ATTR_DIRECTORY &&
       (uint8_t) ki->sde->DIR_Name[0] != DE_FREE && ki->sde->DIR_Atrr &
       ~ATTR_VOLUME_ID && strcmp(ki->sname, ".") && strcmp(ki->sname, "..")) {
-      qu = (ki->sde->DIR_FstClusHI * 65536 + ki->sde->DIR_FstClusLO);
+      qu = (ki->sde->DIR_FstClusHI * 65536U + ki->sde->DIR_FstClusLO);
       if (getFATEntry(fs, qu, &value) == -1) {
         myerror("Failed to get FAT entry!");
         return -1;
@@ -409,12 +409,12 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
    * sorts directory entries in a cluster
    */
 
-  uint32_t direntries;
+  int32_t direntries;
   int32_t clen;
   struct sClusterChain *ClusterChain;
   struct sDirEntryList *list;
 
-  uint32_t match;
+  int32_t match;
 
   match =
     matchesDirPathLists(OPT_INCL_DIRS, OPT_INCL_DIRS_REC, OPT_EXCL_DIRS,
@@ -447,7 +447,7 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
         "Sorting directory %s\n", (char *) path);
       if (OPT_MORE_INFO) {
         printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
-          clen * fs->clusterSize);
+          clen * (int) fs->clusterSize);
       }
     }
   }
@@ -455,7 +455,7 @@ int32_t sortClusterChain(struct sFileSystem *fs, uint32_t cluster,
     printf("%s\n", (char *) path);
     if (OPT_MORE_INFO) {
       printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
-        clen * fs->clusterSize);
+        clen * (int) fs->clusterSize);
     }
   }
 

@@ -4,8 +4,8 @@ ifdef INCLUDE
   -w -ferror-limit=1 -Xiwyu --mapping_file=t/mingw64.imp
 else
   CC = x86_64-w64-mingw32-gcc
-  CFLAGS = -O -Wall -Wextra -pedantic -std=c11 -fdiagnostics-color \
-  -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+  CFLAGS = -O -Wall -Wextra -Wconversion -pedantic -std=c11 \
+  -fdiagnostics-color -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
 WINDRES = x86_64-w64-mingw32-windres

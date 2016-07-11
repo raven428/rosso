@@ -2,6 +2,7 @@
  * This file contains the main function of rosso.
  */
 
+#define __USE_MINGW_ANSI_STDIO 1
 #include <getopt.h>
 #include <locale.h>
 #include <stdint.h>
@@ -82,10 +83,10 @@ int32_t printFSInfo(char *filename) {
     "Cluster size: %d bytes\n"
     "Max. cluster chain length: %d clusters\n"
     "Data clusters: %d\n"
-    "FS size: %d MiBytes\n", fs.path, fs.sectorSize, fs.FATSize,
+    "FS size: %llu MiBytes\n", fs.path, fs.sectorSize, fs.FATSize,
     fs.FATSize * fs.sectorSize, fs.bs.BS_NumFATs,
     checkFATs(&fs) ? "different" : "same", fs.clusterSize,
-    fs.maxClusterChainLength, fs.clusters, (int) (fs.FSSize >> 20));
+    fs.maxClusterChainLength, fs.clusters, fs.FSSize >> 20);
 
   if (fs.FATType == FATTYPE_FAT32) {
     if (getFATEntry(&fs, fs.bs.BS_RootClus, &value) == -1) {
@@ -112,7 +113,7 @@ int main(int argc, char *argv[]) {
    */
 
   // initialize rng
-  srand(time(0));
+  srand((unsigned) time(0));
 
   // use locale from environment
   if (!setlocale(LC_ALL, "")) {

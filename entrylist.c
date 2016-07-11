@@ -15,9 +15,9 @@
 #include "stringlist.h"
 
 // random number
-uint32_t irand(uint32_t xr, uint32_t ya) {
-  double zu = ya - xr + 1;
-  return xr + zu * rand() / (RAND_MAX + 1.0);
+int32_t irand(int32_t xr, int32_t ya) {
+  int32_t zu = ya - xr + 1;
+  return xr + zu * rand() / (RAND_MAX + 1);
 }
 
 // List functions
@@ -121,7 +121,7 @@ int32_t stripSpecialPrefixes(char *old, char *nw) {
    */
   struct sStringList *prefix = OPT_IGNORE_PREFIXES_LIST;
 
-  int32_t len, len_old;
+  size_t len, len_old;
 
   len_old = strlen(old);
 
@@ -217,7 +217,7 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   // consider last modification time
   if (OPT_MODIFICATION) {
-    uint32_t md1, md2;
+    int32_t md1, md2;
     md1 = de1->sde->DIR_WrtDate << 16 | de1->sde->DIR_WrtTime;
     md2 = de2->sde->DIR_WrtDate << 16 | de2->sde->DIR_WrtTime;
     if (md1 < md2)
@@ -317,13 +317,13 @@ void freeDirEntryList(struct sDirEntryList *list) {
   }
 }
 
-void randomizeDirEntryList(struct sDirEntryList *list, uint32_t entries) {
+void randomizeDirEntryList(struct sDirEntryList *list, int32_t entries) {
   /*
    * randomize entry list
    */
   struct sDirEntryList *randlist, *tmp, *dummy1, *dummy2;
-  uint32_t i, j, pos;
-  uint32_t skip = 0;
+  int32_t i, j, pos;
+  int32_t skip = 0;
 
   randlist = list;
 

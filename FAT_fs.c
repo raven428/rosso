@@ -108,7 +108,7 @@ int32_t getCountOfClusters(struct sBootSector *bs) {
     bs->BS_TotSec32 - bs->BS_RsvdSecCnt - bs->BS_NumFATs * bs->BS_FATSz32 -
     RootDirSectors;
 
-  retvalue = DataSec / bs->BS_SecPerClus;
+  retvalue = (int) DataSec / bs->BS_SecPerClus;
   if (retvalue <= 0) {
     myerror("Failed to calculate count of clusters!");
     return -1;
@@ -146,7 +146,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
   int32_t result = 0;
   int32_t i;
 
-  off_t BSOffset;
+  int BSOffset;
 
   char *FAT1, *FATx;
 
@@ -167,7 +167,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
     free(FAT1);
     return -1;
   }
-  BSOffset = (off_t) fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
+  BSOffset = fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
   if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
     myerror("Seek error!");
     free(FAT1);
@@ -182,7 +182,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
   }
 
   for (i = 1; i < fs->bs.BS_NumFATs; i++) {
-    if (fs_seek(fs->fd, BSOffset + FATSizeInBytes, SEEK_SET) == -1) {
+    if (fs_seek(fs->fd, BSOffset + (int) FATSizeInBytes, SEEK_SET) == -1) {
       myerror("Seek error!");
       free(FAT1);
       free(FATx);
@@ -213,18 +213,18 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
    * retrieves FAT entry for a cluster number
    */
 
-  off_t FATOffset;
-  div_t BSOffset;
+  int FATOffset;
+  int BSOffset;
 
   *data = 0;
 
   switch (fs->FATType) {
   case FATTYPE_FAT32:
-    FATOffset = cluster * 4;
     BSOffset =
-      div(fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec + FATOffset,
-      fs->sectorSize);
-    if (fs_seek(fs->fd, BSOffset.quot * fs->sectorSize, SEEK_SET) == -1) {
+      fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec +
+      (int) (cluster * sizeof cluster);
+    FATOffset = BSOffset % (int) fs->sectorSize;
+    if (fs_seek(fs->fd, BSOffset - FATOffset, SEEK_SET) == -1) {
       myerror("Seek error!");
       return -1;
     }
@@ -233,7 +233,7 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
       myerror("Failed to read from file!");
       return -1;
     }
-    memcpy(data, go + BSOffset.rem, sizeof *data);
+    memcpy(data, go + FATOffset, sizeof *data);
     *data = *data & 0x0fffffff;
     break;
   default:
@@ -245,14 +245,14 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
 
 }
 
-off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
+int getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
   /*
    * returns the offset of a specific cluster in the data region of the file
    * system
    */
 
-  return ((cluster - 2) * fs->bs.BS_SecPerClus +
-    fs->firstDataSector) * fs->sectorSize;
+  return (int) (((cluster - 2) * fs->bs.BS_SecPerClus +
+      fs->firstDataSector) * fs->sectorSize);
 
 }
 
@@ -271,13 +271,13 @@ int32_t parseEntry(union sDirEntry *de) {
   return 1; // short dir entry
 }
 
-uint8_t calculateChecksum(char *sname) {
-  uint8_t len;
-  uint8_t sum;
+int calculateChecksum(char *sname) {
+  int len;
+  int sum;
 
   sum = 0;
   for (len = 11; len != 0; len--)
-    sum = ((sum & 1) ? 0x80 : 0) + (sum >> 1) + *sname++;
+    sum = ((sum & 1) ? 128 : 0 + (sum >> 1) + *sname++) % 256;
   return sum;
 }
 
@@ -363,19 +363,19 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
 
   fs->sectorSize = fs->bs.BS_BytesPerSec;
 
-  fs->clusterSize = fs->bs.BS_SecPerClus * fs->bs.BS_BytesPerSec;
+  fs->clusterSize = (uint32_t) fs->bs.BS_SecPerClus * fs->bs.BS_BytesPerSec;
 
   fs->FSSize = (uint64_t) fs->clusters * fs->clusterSize;
 
   fs->maxDirEntriesPerCluster = fs->clusterSize / DIR_ENTRY_SIZE;
 
-  fs->maxClusterChainLength = (uint32_t) MAX_FILE_LEN / fs->clusterSize;
+  fs->maxClusterChainLength = MAX_FILE_LEN / fs->clusterSize;
 
   uint32_t rootDirSectors;
 
   rootDirSectors =
-    ((fs->bs.BS_RootEntCnt * DIR_ENTRY_SIZE) + (fs->bs.BS_BytesPerSec -
-      1)) / fs->bs.BS_BytesPerSec;
+    (fs->bs.BS_RootEntCnt * DIR_ENTRY_SIZE + fs->bs.BS_BytesPerSec -
+    1) / fs->bs.BS_BytesPerSec;
   fs->firstDataSector =
     fs->bs.BS_RsvdSecCnt + (fs->bs.BS_NumFATs * fs->FATSize)
     + rootDirSectors;

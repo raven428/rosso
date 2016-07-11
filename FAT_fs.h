@@ -27,9 +27,9 @@
 // constants for the LDIR structure
 #define DE_FREE 0xe5
 #define DE_FOLLOWING_FREE 0x00
-#define LAST_LONG_ENTRY 0x40
+#define LAST_LONG_ENTRY 0x40U
 
-#define DIR_ENTRY_SIZE 32
+#define DIR_ENTRY_SIZE 32U
 
 // maximum path len on FAT file systems (above specification)
 #define MAX_PATH_LEN 512
@@ -41,7 +41,6 @@
 #define MAX_DIR_ENTRIES 65536
 
 #include <stdio.h>
-#include <sys/types.h>
 #include <iconv.h>
 
 #include <stdint.h>
@@ -167,13 +166,13 @@ int32_t check_bootsector(struct sBootSector *bs);
 int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data);
 
 // returns the offset of a specific cluster in the data region of the FS
-off_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
+int32_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
 
 // parses one directory entry
 int32_t parseEntry(union sDirEntry *de);
 
 // calculate checksum for short dir entry name
-uint8_t calculateChecksum(char *sname);
+int32_t calculateChecksum(char *sname);
 
 // checks whether all FATs have the same content
 int32_t checkFATs(struct sFileSystem *fs);

@@ -8,26 +8,16 @@
 #include <stdint.h>
 #include <string.h>
 
-int32_t isDigit(const char j) {
-  /*
-   * return true if j is a digit, otherwise false
-   */
-  if (j >= '0' && j <= '9')
-    return 1;
-
-  return 0;
-}
-
 int32_t parseNumber(char **q) {
   /*
    * parse integer in string q
    */
   int32_t value = 0;
 
-  if (!isDigit(**q))
+  if (!isdigit(**q))
     return -1;
 
-  while (isDigit(**q)) {
+  while (isdigit(**q)) {
     value = value * 10 + **q - '0';
     (*q)++;
   }
@@ -51,7 +41,7 @@ int32_t natstrcompare(const char *str1, const char *str2,
 
     // compare characters until the first digit occurs
     while (1) {
-      if (isDigit(*s1) || isDigit(*s2))
+      if (isdigit(*s1) || isdigit(*s2))
         break;
       else if (!*s1 && !*s2)
         return 0;

@@ -11,9 +11,9 @@
 #include "errors.h"
 #include "stringlist.h"
 
-uint32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER,
-  OPT_LIST, OPT_REVERSE, OPT_NATURAL_SORT, OPT_RECURSIVE, OPT_RANDOM,
-  OPT_MORE_INFO, OPT_MODIFICATION, OPT_ASCII;
+int32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER, OPT_LIST,
+  OPT_REVERSE, OPT_NATURAL_SORT, OPT_RECURSIVE, OPT_RANDOM, OPT_MORE_INFO,
+  OPT_MODIFICATION, OPT_ASCII;
 
 struct sStringList *OPT_INCL_DIRS = 0;
 struct sStringList *OPT_EXCL_DIRS = 0;
@@ -29,7 +29,8 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
 
   char *newStr;
 
-  int32_t ret, prefix = 0, suffix = 0, len;
+  int32_t ret;
+  size_t prefix = 0, suffix = 0, len;
 
   len = strlen((char *) str);
 
@@ -110,7 +111,7 @@ int32_t parse_options(int argc, char *argv[]) {
    * parses command line options
    */
 
-  int8_t j;
+  int j;
 
   static struct option longOpts[] = {
     // name, has_arg, flag, val

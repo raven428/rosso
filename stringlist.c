@@ -30,7 +30,7 @@ int32_t addStringToStringList(struct sStringList *stringList, const char *str) {
   /*
    * insert new string into string list
    */
-  int32_t len;
+  size_t len;
 
   // find end of list
   while (stringList->next)
