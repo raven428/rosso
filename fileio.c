@@ -3,8 +3,10 @@
  */
 
 #include "fileio.h"
+#include <fileapi.h>
+#include <handleapi.h>
 #include <string.h>
-#include <windows.h>
+#include <winnt.h>
 
 FILE *fs_open(char *path, char *mode) {
   return CreateFile(path, strcmp(mode,
