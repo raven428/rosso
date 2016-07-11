@@ -5,11 +5,10 @@
 #ifndef __fileio_h__
 #define __fileio_h__
 
-#include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
 
-FILE *fs_open(char *path, uint32_t mode);
+FILE *fs_open(char *path, char *mode);
 int fs_seek(FILE *stream, long offset, int whence);
 off_t fs_read(void *ptr, size_t size, size_t n, FILE *stream);
 off_t fs_write(const void *ptr, size_t size, size_t n, FILE *stream);

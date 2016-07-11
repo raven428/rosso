@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
 
 #include "errors.h"
 #include "fileio.h"
@@ -282,7 +281,7 @@ int calculateChecksum(char *sname) {
 }
 
 
-int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
+int32_t openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
   /*
    * opens file system and assemlbes file system information into data
    * structure
@@ -291,23 +290,9 @@ int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs) {
   strcpy(fs->path, "\\\\.\\");
   strcpy(fs->path + 4, path);
 
-  switch (mode) {
-  case FS_MODE_RO:
-    fs->fd = fs_open(fs->path, GENERIC_READ);
-    if (!fs->fd) {
-      stderror();
-      return -1;
-    }
-    break;
-  case FS_MODE_RW:
-    fs->fd = fs_open(fs->path, GENERIC_READ | GENERIC_WRITE);
-    if (!fs->fd) {
-      stderror();
-      return -1;
-    }
-    break;
-  default:
-    myerror("Mode not supported!");
+  fs->fd = fs_open(fs->path, mode);
+  if (!fs->fd) {
+    stderror();
     return -1;
   }
 

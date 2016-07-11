@@ -71,7 +71,7 @@ int32_t printFSInfo(char *filename) {
 
   struct sFileSystem fs;
 
-  if (openFileSystem(filename, FS_MODE_RO, &fs)) {
+  if (openFileSystem(filename, "rb", &fs)) {
     myerror("Failed to open file system!");
     return -1;
   }

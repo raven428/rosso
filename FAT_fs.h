@@ -6,10 +6,6 @@
 #ifndef __FAT_fs_h__
 #define __FAT_fs_h__
 
-// FS open mode bits
-#define FS_MODE_RO 1
-#define FS_MODE_RW 3
-
 // FAT types
 #define FATTYPE_FAT32 32
 
@@ -151,7 +147,7 @@ struct sFileSystem {
 // functions
 
 // opens file system and calculates file system information
-int32_t openFileSystem(char *path, uint32_t mode, struct sFileSystem *fs);
+int32_t openFileSystem(char *path, char *mode, struct sFileSystem *fs);
 
 // sync file system
 int32_t syncFileSystem(struct sFileSystem *fs);

@@ -502,16 +502,9 @@ int32_t sortFileSystem(char *filename) {
    * sort FAT file system
    */
 
-  uint32_t mode;
-
   struct sFileSystem fs;
 
-  if (OPT_LIST)
-    mode = FS_MODE_RO;
-  else
-    mode = FS_MODE_RW;
-
-  if (openFileSystem(filename, mode, &fs)) {
+  if (openFileSystem(filename, OPT_LIST ? "rb" : "r+b", &fs)) {
     myerror("Failed to open file system!");
     return -1;
   }
