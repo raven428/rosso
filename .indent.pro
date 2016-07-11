@@ -44,6 +44,7 @@
 // tell indent the name of typenames
 -T FILE
 -T iconv_t
+-T int32_t
 -T sBootSector
 -T sClusterChain
 -T sDirEntry
