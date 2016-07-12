@@ -6,7 +6,6 @@
 #ifndef __entrylist_h__
 #define __entrylist_h__
 
-#include <stdint.h>
 struct sLongDirEntry;
 struct sShortDirEntry;
 
@@ -27,7 +26,7 @@ struct sDirEntryList {
   char *sname, *lname; // short and long name strings
   struct sShortDirEntry *sde; // short dir entry
   struct sLongDirEntryList *ldel; // long name entries in a list
-  uint32_t entries; // number of entries
+  unsigned entries; // number of entries
   struct sDirEntryList *next; // next dir entry
 };
 
@@ -35,19 +34,19 @@ struct sDirEntryList {
 struct sDirEntryList *newDirEntryList();
 
 // randomize entry list
-void randomizeDirEntryList(struct sDirEntryList *list, int32_t entries);
+void randomizeDirEntryList(struct sDirEntryList *list, int entries);
 
 // create a new directory entry holder
 struct sDirEntryList *newDirEntry(char *sname, char *lname,
   struct sShortDirEntry *sde, struct sLongDirEntryList *ldel,
-  uint32_t entries);
+  unsigned entries);
 
 // insert a long directory entry to list
 struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
   struct sLongDirEntryList *list);
 
 // compare two directory entries
-int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2);
+int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2);
 
 // insert a directory entry into list
 void insertDirEntryList(struct sDirEntryList *q, struct sDirEntryList *list);

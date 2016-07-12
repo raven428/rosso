@@ -5,7 +5,6 @@
 #define __USE_MINGW_ANSI_STDIO 1
 #include <getopt.h>
 #include <locale.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -62,12 +61,12 @@
 "  IF SOMEONE ELSE HAS ACCESS TO THE DEVICE HE MIGHT EXPLOIT ROSSO WITH A\n" \
 "  FORGED CORRUPT FILESYSTEM! USE THIS PROGRAM AT YOUR OWN RISK!\n"
 
-int32_t printFSInfo(char *filename) {
+int printFSInfo(char *filename) {
   /*
    * print file system information
    */
 
-  uint32_t value;
+  unsigned value;
 
   struct sFileSystem fs;
 

@@ -7,7 +7,6 @@
 
 #include "clusterchain.h"
 
-#include <stdint.h>
 #include <stdlib.h>
 #include "errors.h"
 
@@ -27,7 +26,7 @@ struct sClusterChain *newClusterChain() {
   return tmp;
 }
 
-int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster) {
+int insertCluster(struct sClusterChain *chain, unsigned cluster) {
   /*
    * allocate memory and insert cluster into cluster chain
    */

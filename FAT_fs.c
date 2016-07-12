@@ -6,7 +6,6 @@
 #include "FAT_fs.h"
 
 #include <iconv.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +13,7 @@
 #include "errors.h"
 #include "fileio.h"
 
-int32_t check_bootsector(struct sBootSector *bs) {
+int check_bootsector(struct sBootSector *bs) {
   /*
    * lazy check if this is really a FAT bootsector
    */
@@ -63,7 +62,7 @@ int32_t check_bootsector(struct sBootSector *bs) {
   return 0;
 }
 
-int32_t read_bootsector(FILE *fd, struct sBootSector *bs) {
+int read_bootsector(FILE *fd, struct sBootSector *bs) {
   /*
    * reads bootsector
    */
@@ -91,13 +90,13 @@ int32_t read_bootsector(FILE *fd, struct sBootSector *bs) {
   return 0;
 }
 
-int32_t getCountOfClusters(struct sBootSector *bs) {
+int getCountOfClusters(struct sBootSector *bs) {
   /*
    * calculates count of clusters
    */
 
-  uint32_t RootDirSectors, DataSec;
-  int32_t retvalue;
+  unsigned RootDirSectors, DataSec;
+  int retvalue;
 
   RootDirSectors =
     (bs->BS_RootEntCnt * DIR_ENTRY_SIZE + bs->BS_BytesPerSec -
@@ -115,12 +114,12 @@ int32_t getCountOfClusters(struct sBootSector *bs) {
   return retvalue;
 }
 
-int32_t getFATType(struct sBootSector *bs) {
+int getFATType(struct sBootSector *bs) {
   /*
    * retrieves FAT type from bootsector
    */
 
-  int32_t CountOfClusters;
+  int CountOfClusters;
 
   CountOfClusters = getCountOfClusters(bs);
   if (CountOfClusters == -1) {
@@ -136,14 +135,14 @@ int32_t getFATType(struct sBootSector *bs) {
   }
 }
 
-int32_t checkFATs(struct sFileSystem *fs) {
+int checkFATs(struct sFileSystem *fs) {
   /*
    * checks whether all FATs have the same content
    */
 
-  uint32_t FATSizeInBytes;
-  int32_t result = 0;
-  int32_t i;
+  unsigned FATSizeInBytes;
+  int result = 0;
+  int i;
 
   int BSOffset;
 
@@ -207,7 +206,7 @@ int32_t checkFATs(struct sFileSystem *fs) {
   return result;
 }
 
-int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
+int getFATEntry(struct sFileSystem *fs, unsigned cluster, unsigned *data) {
   /*
    * retrieves FAT entry for a cluster number
    */
@@ -244,7 +243,7 @@ int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data) {
 
 }
 
-int getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
+int getClusterOffset(struct sFileSystem *fs, unsigned cluster) {
   /*
    * returns the offset of a specific cluster in the data region of the file
    * system
@@ -255,7 +254,7 @@ int getClusterOffset(struct sFileSystem *fs, uint32_t cluster) {
 
 }
 
-int32_t parseEntry(union sDirEntry *de) {
+int parseEntry(union sDirEntry *de) {
   /*
    * parses one directory entry
    */
@@ -276,12 +275,12 @@ int calculateChecksum(char *sname) {
 
   sum = 0;
   for (len = 11; len != 0; len--)
-    sum = ((sum & 1) ? 128 : 0 + (sum >> 1) + *sname++) % 256;
+    sum = ((sum & 1) ? 128 : 0 + (sum >> 1) + *sname++) & 0xFF;
   return sum;
 }
 
 
-int32_t openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
+int openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
   /*
    * opens file system and assemlbes file system information into data
    * structure
@@ -348,15 +347,15 @@ int32_t openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
 
   fs->sectorSize = fs->bs.BS_BytesPerSec;
 
-  fs->clusterSize = (uint32_t) fs->bs.BS_SecPerClus * fs->bs.BS_BytesPerSec;
+  fs->clusterSize = (unsigned) fs->bs.BS_SecPerClus * fs->bs.BS_BytesPerSec;
 
-  fs->FSSize = (uint64_t) fs->clusters * fs->clusterSize;
+  fs->FSSize = (size_t) fs->clusters * fs->clusterSize;
 
   fs->maxDirEntriesPerCluster = fs->clusterSize / DIR_ENTRY_SIZE;
 
   fs->maxClusterChainLength = MAX_FILE_LEN / fs->clusterSize;
 
-  uint32_t rootDirSectors;
+  unsigned rootDirSectors;
 
   rootDirSectors =
     (fs->bs.BS_RootEntCnt * DIR_ENTRY_SIZE + fs->bs.BS_BytesPerSec -
@@ -375,7 +374,7 @@ int32_t openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
   return 0;
 }
 
-int32_t closeFileSystem(struct sFileSystem *fs) {
+int closeFileSystem(struct sFileSystem *fs) {
   /*
    * closes file system
    */

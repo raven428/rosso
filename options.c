@@ -5,13 +5,12 @@
 #include "options.h"
 
 #include <getopt.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "errors.h"
 #include "stringlist.h"
 
-int32_t OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER, OPT_LIST,
+int OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER, OPT_LIST,
   OPT_REVERSE, OPT_NATURAL_SORT, OPT_RECURSIVE, OPT_RANDOM, OPT_MORE_INFO,
   OPT_MODIFICATION, OPT_ASCII;
 
@@ -21,7 +20,7 @@ struct sStringList *OPT_INCL_DIRS_REC = 0;
 struct sStringList *OPT_EXCL_DIRS_REC = 0;
 struct sStringList *OPT_IGNORE_PREFIXES_LIST = 0;
 
-int32_t addDirPathToStringList(struct sStringList *stringList,
+int addDirPathToStringList(struct sStringList *stringList,
   const char (*str)[MAX_PATH_LEN + 1]) {
   /*
    * insert new string into string list
@@ -29,7 +28,7 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
 
   char *newStr;
 
-  int32_t ret;
+  int ret;
   size_t prefix = 0, suffix = 0, len;
 
   len = strlen((char *) str);
@@ -66,7 +65,7 @@ int32_t addDirPathToStringList(struct sStringList *stringList,
 
 }
 
-int32_t matchesDirPathLists(struct sStringList *includes,
+int matchesDirPathLists(struct sStringList *includes,
   struct sStringList *includes_recursion, struct sStringList *excludes,
   struct sStringList *excludes_recursion,
   const char (*str)[MAX_PATH_LEN + 1]) {
@@ -75,7 +74,7 @@ int32_t matchesDirPathLists(struct sStringList *includes,
    * not
    */
 
-  int32_t incl, incl_rec, excl, excl_rec;
+  int incl, incl_rec, excl, excl_rec;
 
   incl = matchesStringList(includes, (const char *) str);
   incl_rec = matchesStringList(includes_recursion, (const char *) str);
@@ -106,7 +105,7 @@ int32_t matchesDirPathLists(struct sStringList *includes,
   return 0; // no match
 }
 
-int32_t parse_options(int argc, char *argv[]) {
+int parse_options(int argc, char *argv[]) {
   /*
    * parses command line options
    */

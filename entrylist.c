@@ -3,7 +3,6 @@
  * structures of FAT directory entries and entry lists.
  */
 
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -15,8 +14,8 @@
 #include "stringlist.h"
 
 // random number
-int32_t irand(int32_t xr, int32_t ya) {
-  int32_t zu = ya - xr + 1;
+int irand(int xr, int ya) {
+  int zu = ya - xr + 1;
   return xr + zu * rand() / (RAND_MAX + 1);
 }
 
@@ -39,7 +38,7 @@ struct sDirEntryList *newDirEntryList() {
 
 struct sDirEntryList *newDirEntry(char *sname, char *lname,
   struct sShortDirEntry *sde, struct sLongDirEntryList *ldel,
-  uint32_t entries) {
+  unsigned entries) {
   /*
    * create a new directory entry holder
    */
@@ -115,7 +114,7 @@ struct sLongDirEntryList *insertLongDirEntryList(struct sLongDirEntry *lde,
   }
 }
 
-int32_t stripSpecialPrefixes(char *old, char *nw) {
+int stripSpecialPrefixes(char *old, char *nw) {
   /*
    * strip special prefixes "a" and "the"
    */
@@ -138,7 +137,7 @@ int32_t stripSpecialPrefixes(char *old, char *nw) {
   return 0;
 }
 
-int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
+int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   /*
    * compare two directory entries
    */
@@ -172,9 +171,9 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
     return 1;
     // deleted entries should be moved to the end of the directory
   }
-  else if ((uint8_t) de1->sname[0] == DE_FREE)
+  else if ((de1->sname[0] & 0xFF) == DE_FREE)
     return 1;
-  else if ((uint8_t) de2->sname[0] == DE_FREE)
+  else if ((de2->sname[0] & 0xFF) == DE_FREE)
     return -1;
 
   char *ss1, *ss2;
@@ -217,7 +216,7 @@ int32_t cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   // consider last modification time
   if (OPT_MODIFICATION) {
-    int32_t md1, md2;
+    int md1, md2;
     md1 = de1->sde->DIR_WrtDate << 16 | de1->sde->DIR_WrtTime;
     md2 = de2->sde->DIR_WrtDate << 16 | de2->sde->DIR_WrtTime;
     if (md1 < md2)
@@ -317,13 +316,13 @@ void freeDirEntryList(struct sDirEntryList *list) {
   }
 }
 
-void randomizeDirEntryList(struct sDirEntryList *list, int32_t entries) {
+void randomizeDirEntryList(struct sDirEntryList *list, int entries) {
   /*
    * randomize entry list
    */
   struct sDirEntryList *randlist, *tmp, *dummy1, *dummy2;
-  int32_t i, j, pos;
-  int32_t skip = 0;
+  int i, j, pos;
+  int skip = 0;
 
   randlist = list;
 

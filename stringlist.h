@@ -5,8 +5,6 @@
 #ifndef __stringlist_h__
 #define __stringlist_h__
 
-#include <stdint.h>
-
 struct sStringList {
   char *str;
   struct sStringList *next;
@@ -21,14 +19,13 @@ struct sStringList {
 struct sStringList *newStringList();
 
 // insert new directory path into directory path list
-int32_t addStringToStringList(struct sStringList *stringList,
-  const char *str);
+int addStringToStringList(struct sStringList *stringList, const char *str);
 
 // evaluates whether str is contained in strList
-int32_t matchesStringList(struct sStringList *stringList, const char *str);
+int matchesStringList(struct sStringList *stringList, const char *str);
 
 // evaluate whether str matches the include an exclude dir path lists or not
-int32_t matchesStringLists(struct sStringList *includes,
+int matchesStringLists(struct sStringList *includes,
   struct sStringList *includes_recursion, struct sStringList *excludes,
   struct sStringList *excludes_recursion, const char *str);
 

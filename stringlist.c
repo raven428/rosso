@@ -3,7 +3,6 @@
  */
 #include "stringlist.h"
 
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "errors.h"
@@ -26,7 +25,7 @@ struct sStringList *newStringList() {
   return stringList;
 }
 
-int32_t addStringToStringList(struct sStringList *stringList, const char *str) {
+int addStringToStringList(struct sStringList *stringList, const char *str) {
   /*
    * insert new string into string list
    */
@@ -60,12 +59,12 @@ int32_t addStringToStringList(struct sStringList *stringList, const char *str) {
 
 }
 
-int32_t matchesStringList(struct sStringList *stringList, const char *str) {
+int matchesStringList(struct sStringList *stringList, const char *str) {
   /*
    * evaluates whether str is contained in stringList
    */
 
-  int32_t ret = 0; // not in list
+  int ret = 0; // not in list
 
   stringList = stringList->next;
   while (stringList) {

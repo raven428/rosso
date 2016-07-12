@@ -8,13 +8,11 @@
 #ifndef __clusterchain_h__
 #define __clusterchain_h__
 
-#include <stdint.h>
-
 struct sClusterChain {
   /*
    * this structure contains cluster chains
    */
-  uint32_t cluster;
+  unsigned cluster;
   struct sClusterChain *next;
 };
 
@@ -22,7 +20,7 @@ struct sClusterChain {
 struct sClusterChain *newClusterChain();
 
 // allocate memory and insert cluster into cluster chain
-int32_t insertCluster(struct sClusterChain *chain, uint32_t cluster);
+int insertCluster(struct sClusterChain *chain, unsigned cluster);
 
 // free cluster chain
 void freeClusterChain(struct sClusterChain *chain);

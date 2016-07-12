@@ -5,14 +5,13 @@
 #include "natstrcmp.h"
 
 #include <ctype.h>
-#include <stdint.h>
 #include <string.h>
 
-int32_t parseNumber(char **q) {
+int parseNumber(char **q) {
   /*
    * parse integer in string q
    */
-  int32_t value = 0;
+  int value = 0;
 
   if (!isdigit(**q))
     return -1;
@@ -25,13 +24,13 @@ int32_t parseNumber(char **q) {
   return value;
 }
 
-int32_t natstrcompare(const char *str1, const char *str2,
-  const uint32_t respectCase) {
+int natstrcompare(const char *str1, const char *str2,
+  const unsigned respectCase) {
   /*
    * natural order string compare
    */
 
-  int32_t n1 = 0, n2 = 0;
+  int n1 = 0, n2 = 0;
   char *s1 = (char *) str1;
   char *s2 = (char *) str2;
 
@@ -75,10 +74,10 @@ int32_t natstrcompare(const char *str1, const char *str2,
   }
 }
 
-int32_t natstrcmp(const char *str1, const char *str2) {
+int natstrcmp(const char *str1, const char *str2) {
   return natstrcompare(str1, str2, 0);
 }
 
-int32_t natstrcasecmp(const char *str1, const char *str2) {
+int natstrcasecmp(const char *str1, const char *str2) {
   return natstrcompare(str1, str2, 1);
 }
