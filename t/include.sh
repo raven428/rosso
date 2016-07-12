@@ -1,9 +1,9 @@
 #!/bin/dash -e
 # decorate
-j=$(mktemp | cygpath -wf-)
-for each in *.c *.h
+br=$(mktemp | cygpath -wf-)
+for ch in *.c *.h
 do
-  printf '#include "%s"\n' "$j" >> "$each"
+  printf '#include "%s"\n' "$br" >> "$ch"
 done
 
 # transform
@@ -24,4 +24,7 @@ sed '
 '
 
 # undecorate
-git checkout *.c *.h
+for ch in *.c *.h
+do
+  ex -sc 'd|x' "$ch"
+done
