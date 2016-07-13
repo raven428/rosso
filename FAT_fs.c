@@ -275,7 +275,7 @@ int calculateChecksum(char *sname) {
 
   sum = 0;
   for (len = 11; len != 0; len--)
-    sum = ((sum & 1) ? 128 : 0 + (sum >> 1) + *sname++) & 0xFF;
+    sum = ((sum & 1) ? 0x80 : 0 + (sum >> 1) + *sname++) & 0xFF;
   return sum;
 }
 

@@ -97,7 +97,7 @@ int printFSInfo(char *filename) {
     printf("FAT32 root first cluster: %#x\n"
       "First cluster data offset: %#x\n"
       "First cluster FAT entry: %#x\n", fs.bs.BS_RootClus,
-      (int) getClusterOffset(&fs, fs.bs.BS_RootClus), value);
+      getClusterOffset(&fs, fs.bs.BS_RootClus), value);
   }
 
   closeFileSystem(&fs);
