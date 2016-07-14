@@ -341,7 +341,7 @@ int writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
   }
   if (entries < fs->maxDirEntriesPerCluster) {
     memset(zu, 0, DIR_ENTRY_SIZE);
-    if (!fs_write(ya, fs->clusterSize, 1, fs->fd)) {
+    if (!fs_write(ya, 1, fs->clusterSize, fs->fd)) {
       stderror();
       return -1;
     }

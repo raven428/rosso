@@ -73,7 +73,7 @@ int read_bootsector(FILE *fd, struct sBootSector *bs) {
     return -1;
   }
 
-  if (!fs_read(bs, sizeof(struct sBootSector), 1, fd)) {
+  if (!fs_read(bs, 1, sizeof(struct sBootSector), fd)) {
     if (feof(fd)) {
       myerror("Boot sector is too short!");
     }
@@ -172,7 +172,7 @@ int checkFATs(struct sFileSystem *fs) {
     free(FATx);
     return -1;
   }
-  if (!fs_read(FAT1, FATSizeInBytes, 1, fs->fd)) {
+  if (!fs_read(FAT1, 1, FATSizeInBytes, fs->fd)) {
     myerror("Failed to read from file!");
     free(FAT1);
     free(FATx);
@@ -186,7 +186,7 @@ int checkFATs(struct sFileSystem *fs) {
       free(FATx);
       return -1;
     }
-    if (!fs_read(FATx, FATSizeInBytes, 1, fs->fd)) {
+    if (!fs_read(FATx, 1, FATSizeInBytes, fs->fd)) {
       myerror("Failed to read from file!");
       free(FAT1);
       free(FATx);
@@ -227,7 +227,7 @@ int getFATEntry(struct sFileSystem *fs, unsigned cluster, unsigned *data) {
       return -1;
     }
     char *go = malloc(fs->sectorSize);
-    if (!fs_read(go, fs->sectorSize, 1, fs->fd)) {
+    if (!fs_read(go, 1, fs->sectorSize, fs->fd)) {
       myerror("Failed to read from file!");
       return -1;
     }
