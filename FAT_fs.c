@@ -114,7 +114,7 @@ int getCountOfClusters(struct sBootSector *bs) {
   return retvalue;
 }
 
-int getFATType(struct sBootSector *bs) {
+int checkFSType(struct sBootSector *bs) {
   /*
    * retrieves FAT type from bootsector
    */
@@ -126,13 +126,11 @@ int getFATType(struct sBootSector *bs) {
     myerror("Failed to get count of clusters!");
     return -1;
   }
-  else if (CountOfClusters <= 65536) {
+  if (CountOfClusters <= 65536) {
     myerror("Count of clusters not FAT32!");
     return -1;
   }
-  else { // FAT32!
-    return FATTYPE_FAT32;
-  }
+  return 0; // FAT32!
 }
 
 int checkFATs(struct sFileSystem *fs) {
@@ -216,29 +214,26 @@ int getFATEntry(struct sFileSystem *fs, unsigned cluster, unsigned *data) {
 
   *data = 0;
 
-  switch (fs->FATType) {
-  case FATTYPE_FAT32:
-    BSOffset =
-      fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec +
-      (int) (cluster * sizeof cluster);
-    FATOffset = BSOffset % (int) fs->sectorSize;
-    if (fs_seek(fs->fd, BSOffset - FATOffset, SEEK_SET) == -1) {
-      myerror("Seek error!");
-      return -1;
-    }
-    char *go = malloc(fs->sectorSize);
-    if (!fs_read(go, 1, fs->sectorSize, fs->fd)) {
-      myerror("Failed to read from file!");
-      return -1;
-    }
-    memcpy(data, go + FATOffset, sizeof *data);
-    *data = *data & 0x0fffffff;
-    break;
-  default:
+  if (fs->FSType == -1) {
     myerror("Failed to get FAT type!");
     return -1;
   }
 
+  BSOffset =
+    fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec +
+    (int) (cluster * sizeof cluster);
+  FATOffset = BSOffset % (int) fs->sectorSize;
+  if (fs_seek(fs->fd, BSOffset - FATOffset, SEEK_SET) == -1) {
+    myerror("Seek error!");
+    return -1;
+  }
+  char *go = malloc(fs->sectorSize);
+  if (!fs_read(go, 1, fs->sectorSize, fs->fd)) {
+    myerror("Failed to read from file!");
+    return -1;
+  }
+  memcpy(data, go + FATOffset, sizeof *data);
+  *data = *data & 0x0fffffff;
   return 0;
 
 }
@@ -308,14 +303,14 @@ int openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
     return -1;
   }
 
-  fs->FATType = getFATType(&(fs->bs));
-  if (fs->FATType == -1) {
+  fs->FSType = checkFSType(&(fs->bs));
+  if (fs->FSType == -1) {
     myerror("Failed to get FAT type!");
     fs_close(fs->fd);
     return -1;
   }
 
-  if (fs->FATType == FATTYPE_FAT32 && !fs->bs.BS_FATSz32) {
+  if (!fs->bs.BS_FATSz32) {
     myerror("32-bit count of FAT sectors must not be zero for FAT32!");
     fs_close(fs->fd);
     return -1;
@@ -324,7 +319,7 @@ int openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
   fs->FATSize = fs->bs.BS_FATSz32;
 
   // check whether count of root dir entries is ok for given FAT type
-  if (fs->FATType == FATTYPE_FAT32 && fs->bs.BS_RootEntCnt) {
+  if (fs->bs.BS_RootEntCnt) {
     myerror("Count of root directory entries must be zero for FAT32 (%u)!",
       fs->bs.BS_RootEntCnt);
     fs_close(fs->fd);

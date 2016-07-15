@@ -6,9 +6,6 @@
 #ifndef __FAT_fs_h__
 #define __FAT_fs_h__
 
-// FAT types
-#define FATTYPE_FAT32 32
-
 // file attributes
 #define ATTR_READ_ONLY 0x01
 #define ATTR_HIDDEN 0x02
@@ -130,7 +127,7 @@ struct sFileSystem {
   uint32_t mode;
   char path[MAX_PATH_LEN + 1];
   struct sBootSector bs;
-  int32_t FATType;
+  int32_t FSType;
   uint32_t clusterCount;
   uint16_t sectorSize;
   uint32_t totalSectors;

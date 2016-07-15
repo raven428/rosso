@@ -42,7 +42,7 @@ int printFSInfo(char *filename) {
     checkFATs(&fs) ? "different" : "same", fs.clusterSize,
     fs.maxClusterChainLength, fs.clusters, fs.FSSize >> 20);
 
-  if (fs.FATType == FATTYPE_FAT32) {
+  if (fs.FSType != -1) {
     if (getFATEntry(&fs, fs.bs.BS_RootClus, &value) == -1) {
       myerror("Failed to get FAT entry!");
       closeFileSystem(&fs);

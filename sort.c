@@ -244,40 +244,36 @@ int getClusterChain(struct sFileSystem *fs, unsigned startCluster,
 
   cluster = startCluster;
 
-  switch (fs->FATType) {
-  case FATTYPE_FAT32:
-    do {
-      if (ju == (int) fs->maxClusterChainLength) {
-        myerror("Cluster chain is too long!");
-        return -1;
-      }
-      if ((cluster & 0x0fffffff) >= (unsigned) fs->clusters + 2) {
-        myerror("Cluster %08x does not exist!", data);
-        return -1;
-      }
-      if (insertCluster(chain, cluster) == -1) {
-        myerror("Failed to insert cluster!");
-        return -1;
-      }
-      ju++;
-      if (getFATEntry(fs, cluster, &data)) {
-        myerror("Failed to get FAT entry");
-        return -1;
-      }
-      if (!(data & 0x0fffffff)) {
-        myerror("Cluster %08x is marked as unused!", cluster);
-        return -1;
-      }
-      cluster = data;
-    } while ((cluster & 0x0fffffff) != 0x0ff8fff8 && (cluster &
-        0x0fffffff) < 0x0ffffff8); // end of cluster
-    break;
-  case -1:
-  default:
+  if (fs->FSType == -1) {
     myerror("Failed to get FAT type!");
     return -1;
   }
 
+  do {
+    if (ju == (int) fs->maxClusterChainLength) {
+      myerror("Cluster chain is too long!");
+      return -1;
+    }
+    if ((cluster & 0x0fffffff) >= (unsigned) fs->clusters + 2) {
+      myerror("Cluster %08x does not exist!", data);
+      return -1;
+    }
+    if (insertCluster(chain, cluster) == -1) {
+      myerror("Failed to insert cluster!");
+      return -1;
+    }
+    ju++;
+    if (getFATEntry(fs, cluster, &data)) {
+      myerror("Failed to get FAT entry");
+      return -1;
+    }
+    if (!(data & 0x0fffffff)) {
+      myerror("Cluster %08x is marked as unused!", cluster);
+      return -1;
+    }
+    cluster = data;
+  } while ((cluster & 0x0fffffff) != 0x0ff8fff8 && (cluster &
+      0x0fffffff) < 0x0ffffff8); // end of cluster
   return ju;
 }
 
@@ -512,20 +508,17 @@ int sortFileSystem(char *filename) {
     return -1;
   }
 
-  switch (fs.FATType) {
-  case FATTYPE_FAT32:
-    // FAT32
-    // root directory lies in cluster chain,
-    // so sort it like all other directories
-    if (sortClusterChain(&fs, fs.bs.BS_RootClus,
-        (const char (*)[MAX_PATH_LEN + 1]) "/") == -1) {
-      myerror("Failed to sort first cluster chain!");
-      closeFileSystem(&fs);
-      return -1;
-    }
-    break;
-  default:
+  if (fs.FSType == -1) {
     myerror("Failed to get FAT type!");
+    closeFileSystem(&fs);
+    return -1;
+  }
+  // FAT32
+  // root directory lies in cluster chain,
+  // so sort it like all other directories
+  if (sortClusterChain(&fs, fs.bs.BS_RootClus,
+      (const char (*)[MAX_PATH_LEN + 1]) "/") == -1) {
+    myerror("Failed to sort first cluster chain!");
     closeFileSystem(&fs);
     return -1;
   }
