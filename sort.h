@@ -1,14 +1,14 @@
 /*
- * This file contains/describes functions for sorting of FAT filesystems.
+ * This file contains/describes functions for sorting of FAT32 filesystems.
  */
 
 #ifndef __sort_h__
 #define __sort_h__
 
-#include "FAT_fs.h"
+#include "FAT32.h"
 struct sClusterChain;
 
-// sorts FAT file system
+// sorts FAT32 file system
 int sortFileSystem(char *filename);
 
 // sorts directory entries in a cluster

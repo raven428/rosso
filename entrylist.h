@@ -1,6 +1,6 @@
 /*
  * This file contains/describes some ADOs which are used to represent the
- * structures of FAT directory entries and entry lists.
+ * structures of FAT32 directory entries and entry lists.
  */
 
 #ifndef __entrylist_h__

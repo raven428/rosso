@@ -1,6 +1,6 @@
 /*
  * This file contains/describes some ADOs which are used to represent the
- * structures of FAT directory entries and entry lists.
+ * structures of FAT32 directory entries and entry lists.
  */
 
 #include <stdlib.h>
@@ -8,7 +8,7 @@
 
 #include "entrylist.h"
 #include "errors.h"
-#include "FAT_fs.h"
+#include "FAT32.h"
 #include "natstrcmp.h"
 #include "options.h"
 #include "stringlist.h"

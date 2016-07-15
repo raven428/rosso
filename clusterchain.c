@@ -2,7 +2,7 @@
  * This file contains/describes the cluster chain ADO with its structures and
  * functions. Cluster chain ADOs hold a linked list of cluster numbers.
  * Together all clusters in a cluster chain hold the date of a file or a
- * directory in a FAT filesystem.
+ * directory in a FAT32 filesystem.
  */
 
 #include "clusterchain.h"

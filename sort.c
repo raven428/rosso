@@ -1,5 +1,5 @@
 /*
- * This file contains/describes functions for sorting of FAT filesystems.
+ * This file contains/describes functions for sorting of FAT32 filesystems.
  */
 
 #include "sort.h"
@@ -245,7 +245,7 @@ int getClusterChain(struct sFileSystem *fs, unsigned startCluster,
   cluster = startCluster;
 
   if (fs->FSType == -1) {
-    myerror("Failed to get FAT type!");
+    myerror("File system not FAT32!");
     return -1;
   }
 
@@ -263,8 +263,8 @@ int getClusterChain(struct sFileSystem *fs, unsigned startCluster,
       return -1;
     }
     ju++;
-    if (getFATEntry(fs, cluster, &data)) {
-      myerror("Failed to get FAT entry");
+    if (getFAT32Entry(fs, cluster, &data)) {
+      myerror("Failed to get FAT32 entry");
       return -1;
     }
     if (!(data & 0x0fffffff)) {
@@ -350,7 +350,7 @@ int writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
 int sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
   const char (*path)[MAX_PATH_LEN + 1]) {
   /*
-   * sorts sub directories in a FAT file system
+   * sorts sub directories in a FAT32 file system
    */
   struct sDirEntryList *ki;
   char newpath[MAX_PATH_LEN + 1] = { 0 };
@@ -363,8 +363,8 @@ int sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
         0xFF) != DE_FREE && ki->sde->DIR_Atrr & ~ATTR_VOLUME_ID &&
       strcmp(ki->sname, ".") && strcmp(ki->sname, "..")) {
       qu = (ki->sde->DIR_FstClusHI * 65536U + ki->sde->DIR_FstClusLO);
-      if (getFATEntry(fs, qu, &value) == -1) {
-        myerror("Failed to get FAT entry!");
+      if (getFAT32Entry(fs, qu, &value) == -1) {
+        myerror("Failed to get FAT32 entry!");
         return -1;
       }
 
@@ -492,7 +492,7 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
 
 int sortFileSystem(char *filename) {
   /*
-   * sort FAT file system
+   * sort FAT32 file system
    */
 
   struct sFileSystem fs;
@@ -502,18 +502,17 @@ int sortFileSystem(char *filename) {
     return -1;
   }
 
-  if (checkFATs(&fs)) {
-    myerror("FATs don't match! Please repair file system!");
+  if (checkFAT32s(&fs)) {
+    myerror("FAT32s don't match! Please repair file system!");
     closeFileSystem(&fs);
     return -1;
   }
 
   if (fs.FSType == -1) {
-    myerror("Failed to get FAT type!");
+    myerror("File system not FAT32!");
     closeFileSystem(&fs);
     return -1;
   }
-  // FAT32
   // root directory lies in cluster chain,
   // so sort it like all other directories
   if (sortClusterChain(&fs, fs.bs.BS_RootClus,

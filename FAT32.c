@@ -1,9 +1,9 @@
 /*
  * This file contains/describes functions that are used to read, write,
- * check, and use FAT filesystems.
+ * check, and use FAT32 filesystems.
  */
 
-#include "FAT_fs.h"
+#include "FAT32.h"
 
 #include <iconv.h>
 #include <stdio.h>
@@ -15,7 +15,7 @@
 
 int check_bootsector(struct sBootSector *bs) {
   /*
-   * lazy check if this is really a FAT bootsector
+   * lazy check if this is really a FAT32 bootsector
    */
 
   if (!(bs->BS_JmpBoot[0] == 0xeb && bs->BS_JmpBoot[2] == 0x90) &&
@@ -49,8 +49,8 @@ int check_bootsector(struct sBootSector *bs) {
     myerror("Reserved sector count is zero!");
     return -1;
   }
-  else if (!bs->BS_NumFATs) {
-    myerror("Number of FATs is zero!");
+  else if (!bs->BS_NumFAT32s) {
+    myerror("Number of FAT32s is zero!");
     return -1;
   }
   else if (bs->BS_RootEntCnt % DIR_ENTRY_SIZE) {
@@ -83,7 +83,7 @@ int read_bootsector(FILE *fd, struct sBootSector *bs) {
   }
 
   if (check_bootsector(bs)) {
-    myerror("This is not a FAT boot sector or sector is damaged!");
+    myerror("This is not a FAT32 boot sector or sector is damaged!");
     return -1;
   }
 
@@ -103,7 +103,7 @@ int getCountOfClusters(struct sBootSector *bs) {
     1) / bs->BS_BytesPerSec;
 
   DataSec =
-    bs->BS_TotSec32 - bs->BS_RsvdSecCnt - bs->BS_NumFATs * bs->BS_FATSz32 -
+    bs->BS_TotSec32 - bs->BS_RsvdSecCnt - bs->BS_NumFAT32s * bs->BS_FAT32Sz -
     RootDirSectors;
 
   retvalue = (int) DataSec / bs->BS_SecPerClus;
@@ -116,7 +116,7 @@ int getCountOfClusters(struct sBootSector *bs) {
 
 int checkFSType(struct sBootSector *bs) {
   /*
-   * retrieves FAT type from bootsector
+   * retrieves FAT32 type from bootsector
    */
 
   int CountOfClusters;
@@ -133,97 +133,97 @@ int checkFSType(struct sBootSector *bs) {
   return 0; // FAT32!
 }
 
-int checkFATs(struct sFileSystem *fs) {
+int checkFAT32s(struct sFileSystem *fs) {
   /*
-   * checks whether all FATs have the same content
+   * checks whether all FAT32s have the same content
    */
 
-  unsigned FATSizeInBytes;
+  unsigned FAT32SizeInBytes;
   int result = 0;
   int i;
 
   int BSOffset;
 
-  char *FAT1, *FATx;
+  char *FS1, *FSx;
 
-  // if there is just one FAT, we don't have to check anything
-  if (fs->bs.BS_NumFATs < 2)
+  // if there is just one FAT32, we don't have to check anything
+  if (fs->bs.BS_NumFAT32s < 2)
     return 0;
 
-  FATSizeInBytes = fs->FATSize * fs->sectorSize;
+  FAT32SizeInBytes = fs->FAT32Size * fs->sectorSize;
 
-  FAT1 = malloc(FATSizeInBytes);
-  if (!FAT1) {
+  FS1 = malloc(FAT32SizeInBytes);
+  if (!FS1) {
     stderror();
     return -1;
   }
-  FATx = malloc(FATSizeInBytes);
-  if (!FATx) {
+  FSx = malloc(FAT32SizeInBytes);
+  if (!FSx) {
     stderror();
-    free(FAT1);
+    free(FS1);
     return -1;
   }
   BSOffset = fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec;
   if (fs_seek(fs->fd, BSOffset, SEEK_SET) == -1) {
     myerror("Seek error!");
-    free(FAT1);
-    free(FATx);
+    free(FS1);
+    free(FSx);
     return -1;
   }
-  if (!fs_read(FAT1, 1, FATSizeInBytes, fs->fd)) {
+  if (!fs_read(FS1, 1, FAT32SizeInBytes, fs->fd)) {
     myerror("Failed to read from file!");
-    free(FAT1);
-    free(FATx);
+    free(FS1);
+    free(FSx);
     return -1;
   }
 
-  for (i = 1; i < fs->bs.BS_NumFATs; i++) {
-    if (fs_seek(fs->fd, BSOffset + (int) FATSizeInBytes, SEEK_SET) == -1) {
+  for (i = 1; i < fs->bs.BS_NumFAT32s; i++) {
+    if (fs_seek(fs->fd, BSOffset + (int) FAT32SizeInBytes, SEEK_SET) == -1) {
       myerror("Seek error!");
-      free(FAT1);
-      free(FATx);
+      free(FS1);
+      free(FSx);
       return -1;
     }
-    if (!fs_read(FATx, 1, FATSizeInBytes, fs->fd)) {
+    if (!fs_read(FSx, 1, FAT32SizeInBytes, fs->fd)) {
       myerror("Failed to read from file!");
-      free(FAT1);
-      free(FATx);
+      free(FS1);
+      free(FSx);
       return -1;
     }
 
-    result = memcmp(FAT1, FATx, FATSizeInBytes);
+    result = memcmp(FS1, FSx, FAT32SizeInBytes);
     if (result) {
-      break; // FATs don't match
+      break; // FAT32s do not match
     }
 
   }
 
-  free(FAT1);
-  free(FATx);
+  free(FS1);
+  free(FSx);
 
   return result;
 }
 
-int getFATEntry(struct sFileSystem *fs, unsigned cluster, unsigned *data) {
+int getFAT32Entry(struct sFileSystem *fs, unsigned cluster, unsigned *data) {
   /*
-   * retrieves FAT entry for a cluster number
+   * retrieves FAT32 entry for a cluster number
    */
 
-  int FATOffset;
+  int FAT32Offset;
   int BSOffset;
 
   *data = 0;
 
   if (fs->FSType == -1) {
-    myerror("Failed to get FAT type!");
+    myerror("File system not FAT32!");
     return -1;
   }
 
   BSOffset =
     fs->bs.BS_RsvdSecCnt * fs->bs.BS_BytesPerSec +
     (int) (cluster * sizeof cluster);
-  FATOffset = BSOffset % (int) fs->sectorSize;
-  if (fs_seek(fs->fd, BSOffset - FATOffset, SEEK_SET) == -1) {
+  FAT32Offset = BSOffset % (int) fs->sectorSize;
+  if (fs_seek(fs->fd, BSOffset - FAT32Offset, SEEK_SET) == -1) {
     myerror("Seek error!");
     return -1;
   }
@@ -232,7 +232,7 @@ int getFATEntry(struct sFileSystem *fs, unsigned cluster, unsigned *data) {
     myerror("Failed to read from file!");
     return -1;
   }
-  memcpy(data, go + FATOffset, sizeof *data);
+  memcpy(data, go + FAT32Offset, sizeof *data);
   *data = *data & 0x0fffffff;
   return 0;
 
@@ -305,20 +305,20 @@ int openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
 
   fs->FSType = checkFSType(&(fs->bs));
   if (fs->FSType == -1) {
-    myerror("Failed to get FAT type!");
+    myerror("File system not FAT32!");
     fs_close(fs->fd);
     return -1;
   }
 
-  if (!fs->bs.BS_FATSz32) {
-    myerror("32-bit count of FAT sectors must not be zero for FAT32!");
+  if (!fs->bs.BS_FAT32Sz) {
+    myerror("32-bit count of sectors must not be zero for FAT32!");
     fs_close(fs->fd);
     return -1;
   }
 
-  fs->FATSize = fs->bs.BS_FATSz32;
+  fs->FAT32Size = fs->bs.BS_FAT32Sz;
 
-  // check whether count of root dir entries is ok for given FAT type
+  // check whether count of root dir entries is ok for FAT32
   if (fs->bs.BS_RootEntCnt) {
     myerror("Count of root directory entries must be zero for FAT32 (%u)!",
       fs->bs.BS_RootEntCnt);
@@ -356,7 +356,7 @@ int openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
     (fs->bs.BS_RootEntCnt * DIR_ENTRY_SIZE + fs->bs.BS_BytesPerSec -
     1) / fs->bs.BS_BytesPerSec;
   fs->firstDataSector =
-    fs->bs.BS_RsvdSecCnt + (fs->bs.BS_NumFATs * fs->FATSize)
+    fs->bs.BS_RsvdSecCnt + (fs->bs.BS_NumFAT32s * fs->FAT32Size)
     + rootDirSectors;
 
   // convert utf 16 le to local charset

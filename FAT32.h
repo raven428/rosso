@@ -1,10 +1,10 @@
 /*
  * This file contains/describes functions that are used to read, write,
- * check, and use FAT filesystems.
+ * check, and use FAT32 filesystems.
  */
 
-#ifndef __FAT_fs_h__
-#define __FAT_fs_h__
+#ifndef __FAT32_h__
+#define __FAT32_h__
 
 // file attributes
 #define ATTR_READ_ONLY 0x01
@@ -24,7 +24,7 @@
 
 #define DIR_ENTRY_SIZE 32U
 
-// maximum path len on FAT file systems (above specification)
+// maximum path len on FAT32 file systems (above specification)
 #define MAX_PATH_LEN 512
 
 // maximum file len
@@ -82,16 +82,16 @@ struct sBootSector {
   uint8_t BS_SecPerClus; // Sectors per cluster
   // Reserved sector count (including boot sector)
   uint16_t BS_RsvdSecCnt;
-  uint8_t BS_NumFATs; // Number of file allocation tables
+  uint8_t BS_NumFAT32s; // Number of FAT32s
   uint16_t BS_RootEntCnt; // Number of root directory entries
   uint16_t BS_TotSec16; // Total sectors (bits 0-15)
   uint8_t BS_Media; // Media descriptor
-  uint16_t BS_FATSz16; // Sectors per file allocation table
+  uint16_t BS_FAT16Sz; // Sectors per FAT16
   uint16_t BS_SecPerTrk; // Sectors per track
   uint16_t BS_NumHeads; // Number of heads
   uint32_t BS_HiddSec; // Hidden sectors
   uint32_t BS_TotSec32; // Total sectors (bits 16-47)
-  uint32_t BS_FATSz32; // Sectors per FAT
+  uint32_t BS_FAT32Sz; // Sectors per FAT32
   uint16_t BS_ExtFlags; // Flags
   uint16_t BS_FSVer; // Version
   uint32_t BS_RootClus; // Root Directory Cluster
@@ -133,7 +133,7 @@ struct sFileSystem {
   uint32_t totalSectors;
   uint32_t clusterSize;
   int32_t clusters;
-  uint32_t FATSize;
+  uint32_t FAT32Size;
   uint64_t FSSize;
   uint32_t maxDirEntriesPerCluster;
   uint32_t maxClusterChainLength;
@@ -152,11 +152,11 @@ int32_t syncFileSystem(struct sFileSystem *fs);
 // closes file system
 int32_t closeFileSystem(struct sFileSystem *fs);
 
-// lazy check if this is really a FAT bootsector
+// lazy check if this is really a FAT32 bootsector
 int32_t check_bootsector(struct sBootSector *bs);
 
-// retrieves FAT entry for a cluster number
-int32_t getFATEntry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data);
+// retrieves FAT32 entry for a cluster number
+int32_t getFAT32Entry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data);
 
 // returns the offset of a specific cluster in the data region of the FS
 int32_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
@@ -167,7 +167,7 @@ int32_t parseEntry(union sDirEntry *de);
 // calculate checksum for short dir entry name
 int32_t calculateChecksum(char *sname);
 
-// checks whether all FATs have the same content
-int32_t checkFATs(struct sFileSystem *fs);
+// checks whether all FAT32s have the same content
+int32_t checkFAT32s(struct sFileSystem *fs);
 
-#endif // __FAT_fs_h__
+#endif // __FAT32_h__

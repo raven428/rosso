@@ -5,7 +5,7 @@
 #ifndef __options_h__
 #define __options_h__
 
-#include "FAT_fs.h"
+#include "FAT32.h"
 struct sStringList;
 
 extern int OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER,

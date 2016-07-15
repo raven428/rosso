@@ -11,7 +11,7 @@
 
 // project includes
 #include "errors.h"
-#include "FAT_fs.h"
+#include "FAT32.h"
 #include "options.h"
 #include "rosso.h"
 #include "sort.h"
@@ -32,26 +32,26 @@ int printFSInfo(char *filename) {
 
   printf("Device: %s\n"
     "Sector size: %d bytes\n"
-    "FAT size: %d sectors (%d bytes)\n"
-    "Number of FATs: %d %s\n"
+    "FAT32 size: %d sectors (%d bytes)\n"
+    "Number of FAT32s: %d %s\n"
     "Cluster size: %d bytes\n"
     "Max. cluster chain length: %d clusters\n"
     "Data clusters: %d\n"
-    "FS size: %llu MiBytes\n", fs.path, fs.sectorSize, fs.FATSize,
-    fs.FATSize * fs.sectorSize, fs.bs.BS_NumFATs,
-    checkFATs(&fs) ? "different" : "same", fs.clusterSize,
+    "FS size: %llu MiBytes\n", fs.path, fs.sectorSize, fs.FAT32Size,
+    fs.FAT32Size * fs.sectorSize, fs.bs.BS_NumFAT32s,
+    checkFAT32s(&fs) ? "different" : "same", fs.clusterSize,
     fs.maxClusterChainLength, fs.clusters, fs.FSSize >> 20);
 
   if (fs.FSType != -1) {
-    if (getFATEntry(&fs, fs.bs.BS_RootClus, &value) == -1) {
-      myerror("Failed to get FAT entry!");
+    if (getFAT32Entry(&fs, fs.bs.BS_RootClus, &value) == -1) {
+      myerror("Failed to get FAT32 entry!");
       closeFileSystem(&fs);
       return -1;
     }
 
     printf("FAT32 root first cluster: %#x\n"
       "First cluster data offset: %#x\n"
-      "First cluster FAT entry: %#x\n", fs.bs.BS_RootClus,
+      "First cluster FAT32 entry: %#x\n", fs.bs.BS_RootClus,
       getClusterOffset(&fs, fs.bs.BS_RootClus), value);
   }
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
       "  rosso [OPTIONS] DEVICE\n"
       "\n"
       "DESCRIPTION\n"
-      "  Rosso sorts directory structures of FAT file systems. Many hardware\n"
+      "  Rosso sorts directory structures of FAT32 file systems. Many hardware\n"
       "  players do not sort files automatically but play them in the order they\n"
       "  were transferred to the device. Rosso can help here.\n"
       "\n"

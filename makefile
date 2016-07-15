@@ -15,7 +15,7 @@ LDLIBS = -liconv
 
 VR = $(shell ./rosso -v)
 
-rosso: rosso.coff rosso.o FAT_fs.o fileio.o entrylist.o errors.o options.o \
+rosso: rosso.coff rosso.o FAT32.o fileio.o entrylist.o errors.o options.o \
   clusterchain.o sort.o natstrcmp.o stringlist.o
 
 %.coff:
