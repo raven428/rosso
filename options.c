@@ -88,8 +88,8 @@ int matchesDirPathLists(struct sStringList *includes,
     if (excl != RETURN_EXACT_MATCH && excl_rec == RETURN_NO_MATCH) {
       return 1; // match
     }
-    // if options -d and -D are used
   }
+  // if options -d and -D are used
   else {
     /*
      * match all dirs that are supplied via -d, and all dirs and subdirs that
