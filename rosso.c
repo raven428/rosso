@@ -120,6 +120,7 @@ int main(int argc, char *argv[]) {
       "EXAMPLES\n"
       "  rosso -l F:\n"
       "  rosso F:\n"
+      "  rosso -d / F:\n"
       "\n"
       "NOTES\n"
       "  DEVICE must be a FAT32 file system.\n"
