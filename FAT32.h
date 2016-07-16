@@ -156,7 +156,8 @@ int32_t closeFileSystem(struct sFileSystem *fs);
 int32_t check_bootsector(struct sBootSector *bs);
 
 // retrieves FAT32 entry for a cluster number
-int32_t getFAT32Entry(struct sFileSystem *fs, uint32_t cluster, uint32_t *data);
+int32_t getFAT32Entry(struct sFileSystem *fs, uint32_t cluster,
+  uint32_t *data);
 
 // returns the offset of a specific cluster in the data region of the FS
 int32_t getClusterOffset(struct sFileSystem *fs, uint32_t cluster);
