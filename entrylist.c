@@ -154,26 +154,26 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
         ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
     return -1;
   }
-  else if ((de2->sde->DIR_Atrr &
+  if ((de2->sde->DIR_Atrr &
       (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
         ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
     return 1;
     // the special "." and ".." directories must always remain at the
     // beginning of directories, in this order
   }
-  else if (!strcmp(de1->sname, "."))
+  if (!strcmp(de1->sname, "."))
     return -1;
-  else if (!strcmp(de2->sname, "."))
+  if (!strcmp(de2->sname, "."))
     return 1;
-  else if (!strcmp(de1->sname, ".."))
+  if (!strcmp(de1->sname, ".."))
     return -1;
-  else if (!strcmp(de2->sname, "..")) {
+  if (!strcmp(de2->sname, "..")) {
     return 1;
     // deleted entries should be moved to the end of the directory
   }
-  else if ((de1->sname[0] & 0xFF) == DE_FREE)
+  if ((de1->sname[0] & 0xFF) == DE_FREE)
     return 1;
-  else if ((de2->sname[0] & 0xFF) == DE_FREE)
+  if ((de2->sname[0] & 0xFF) == DE_FREE)
     return -1;
 
   char *ss1, *ss2;
@@ -198,7 +198,7 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
       ~ATTR_DIRECTORY) {
       return -1;
     }
-    else if (de1->sde->DIR_Atrr & ~ATTR_DIRECTORY && de2->sde->DIR_Atrr &
+    if (de1->sde->DIR_Atrr & ~ATTR_DIRECTORY && de2->sde->DIR_Atrr &
       ATTR_DIRECTORY) {
       return 1;
     }
@@ -208,7 +208,7 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
       ~ATTR_DIRECTORY) {
       return 1;
     }
-    else if (de1->sde->DIR_Atrr & ~ATTR_DIRECTORY && de2->sde->DIR_Atrr &
+    if (de1->sde->DIR_Atrr & ~ATTR_DIRECTORY && de2->sde->DIR_Atrr &
       ATTR_DIRECTORY) {
       return -1;
     }
@@ -221,11 +221,9 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
     md2 = de2->sde->DIR_WrtDate << 16 | de2->sde->DIR_WrtTime;
     if (md1 < md2)
       return -OPT_REVERSE;
-    else if (md1 > md2)
+    if (md1 > md2)
       return OPT_REVERSE;
-    else {
-      return 0;
-    }
+    return 0;
   }
 
   // strip special prefixes
@@ -249,25 +247,17 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   if (OPT_NATURAL_SORT) {
     if (OPT_IGNORE_CASE)
       return natstrcasecmp(ss1, ss2) * OPT_REVERSE;
-    else {
-      return natstrcmp(ss1, ss2) * OPT_REVERSE;
-    }
+    return natstrcmp(ss1, ss2) * OPT_REVERSE;
   }
-  else if (OPT_ASCII) {
+  if (OPT_ASCII) {
     // use plain ASCII corder
     if (OPT_IGNORE_CASE)
       return strcasecmp(ss1, ss2) * OPT_REVERSE;
-    else {
-      return strcmp(ss1, ss2) * OPT_REVERSE;
-    }
+    return strcmp(ss1, ss2) * OPT_REVERSE;
   }
-  else {
-    if (OPT_IGNORE_CASE)
-      return strcasecmp(s1_col, s2_col) * OPT_REVERSE;
-    else {
-      return strcmp(s1_col, s2_col) * OPT_REVERSE;
-    }
-  }
+  if (OPT_IGNORE_CASE)
+    return strcasecmp(s1_col, s2_col) * OPT_REVERSE;
+  return strcmp(s1_col, s2_col) * OPT_REVERSE;
 }
 
 void insertDirEntryList(struct sDirEntryList *nw, struct sDirEntryList *list) {

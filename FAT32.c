@@ -24,36 +24,36 @@ int check_bootsector(struct sBootSector *bs) {
     myerror("Boot sector does not begin with jump instruction!");
     return -1;
   }
-  else if (bs->BS_EndOfBS != 0xaa55) {
+  if (bs->BS_EndOfBS != 0xaa55) {
     // end of bootsector marker is missing
     myerror("End of boot sector marker is missing!");
     return -1;
   }
-  else if (!bs->BS_BytesPerSec) {
+  if (!bs->BS_BytesPerSec) {
     myerror("Sectors have a size of zero!");
     return -1;
   }
-  else if (bs->BS_BytesPerSec % 512) {
+  if (bs->BS_BytesPerSec % 512) {
     myerror("Sector size is not a multiple of 512 (%u)!", bs->BS_BytesPerSec);
     return -1;
   }
-  else if (!bs->BS_SecPerClus) {
+  if (!bs->BS_SecPerClus) {
     myerror("Cluster size is zero!");
     return -1;
   }
-  else if (bs->BS_SecPerClus * bs->BS_BytesPerSec > 32768) {
+  if (bs->BS_SecPerClus * bs->BS_BytesPerSec > 32768) {
     myerror("Cluster size is larger than 32k!");
     return -1;
   }
-  else if (!bs->BS_RsvdSecCnt) {
+  if (!bs->BS_RsvdSecCnt) {
     myerror("Reserved sector count is zero!");
     return -1;
   }
-  else if (!bs->BS_NumFAT32s) {
+  if (!bs->BS_NumFAT32s) {
     myerror("Number of FAT32s is zero!");
     return -1;
   }
-  else if (bs->BS_RootEntCnt % DIR_ENTRY_SIZE) {
+  if (bs->BS_RootEntCnt % DIR_ENTRY_SIZE) {
     myerror("Count of root directory entries must be zero or "
       "a multiple or 32! (%u)", bs->BS_RootEntCnt);
     return -1;

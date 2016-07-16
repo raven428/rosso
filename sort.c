@@ -104,7 +104,7 @@ int checkLongDirEntries(struct sDirEntryList *list) {
             tmp->lde->LDIR_Ord, list->entries - 1 - i);
           return -1;
         }
-        else if (tmp->lde->LDIR_Checksum != calculatedChecksum) {
+        if (tmp->lde->LDIR_Checksum != calculatedChecksum) {
           myerror("Checksum for LongDirEntry is %#x but should be %#x!",
             tmp->lde->LDIR_Checksum, calculatedChecksum);
           return -1;
@@ -159,19 +159,17 @@ int parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
             "(cluster: %08lx, entry %u)!", chain->cluster, j);
           return -1;
         }
-        else {
-          return 0;
-        }
+        return 0;
       case 1: // short dir entry
         parseShortFilename(&de.ShortDirEntry, sname);
         if (OPT_LIST && strcmp(sname, ".") && strcmp(sname, "..") &&
           (sname[0] & 0xFF) != DE_FREE && de.ShortDirEntry.DIR_Atrr &
           ~ATTR_VOLUME_ID) {
 
-          if (!OPT_MORE_INFO)
-            printf("%s\n", lname[0] ? lname : sname);
-          else {
+          if (OPT_MORE_INFO)
             printf("%s (%s)\n", lname[0] ? lname : "n/a", sname);
+          else {
+            printf("%s\n", lname[0] ? lname : sname);
           }
         }
 
@@ -434,7 +432,14 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
     return -1;
   }
 
-  if (!OPT_LIST) {
+  if (OPT_LIST) {
+    printf("%s\n", (char *) path);
+    if (OPT_MORE_INFO) {
+      printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
+        clen * (int) fs->clusterSize);
+    }
+  }
+  else {
     if (match) {
       printf(OPT_RANDOM ? "Random sorting directory %s\n" :
         "Sorting directory %s\n", (char *) path);
@@ -444,14 +449,6 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
       }
     }
   }
-  else {
-    printf("%s\n", (char *) path);
-    if (OPT_MORE_INFO) {
-      printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
-        clen * (int) fs->clusterSize);
-    }
-  }
-
   if (parseClusterChain(fs, ClusterChain, list, &direntries) == -1) {
     myerror("Failed to parse cluster chain!");
     freeDirEntryList(list);
@@ -459,23 +456,22 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
     return -1;
   }
 
-  if (!OPT_LIST) {
-    // sort directory if selected
-    if (match) {
+  if (OPT_LIST) {
+    printf("\n");
+  }
+  // sort directory is selected
+  else if (match) {
 
-      if (OPT_RANDOM)
-        randomizeDirEntryList(list, direntries);
+    if (OPT_RANDOM)
+      randomizeDirEntryList(list, direntries);
 
-      if (writeClusterChain(fs, list, ClusterChain) == -1) {
-        myerror("Failed to write cluster chain!");
-        freeDirEntryList(list);
-        freeClusterChain(ClusterChain);
-        return -1;
-      }
+    if (writeClusterChain(fs, list, ClusterChain) == -1) {
+      myerror("Failed to write cluster chain!");
+      freeDirEntryList(list);
+      freeClusterChain(ClusterChain);
+      return -1;
     }
   }
-  else
-    printf("\n");
 
   freeClusterChain(ClusterChain);
 

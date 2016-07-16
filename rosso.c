@@ -129,16 +129,16 @@ int main(int argc, char *argv[]) {
       "  FORGED CORRUPT FILESYSTEM! USE THIS PROGRAM AT YOUR OWN RISK!\n");
     return 0;
   }
-  else if (OPT_VERSION) {
+  if (OPT_VERSION) {
     printf("%d.%d.%d\n", MAJOR, MINOR, PATCH);
     return 0;
   }
-  else if (optind < argc - 1) {
+  if (optind < argc - 1) {
     myerror("Too many arguments!");
     myerror("Use -h for more help.");
     return -1;
   }
-  else if (optind == argc) {
+  if (optind == argc) {
     myerror("Device must be given!");
     myerror("Use -h for more help.");
     return -1;
