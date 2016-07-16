@@ -439,16 +439,15 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
         clen * (int) fs->clusterSize);
     }
   }
-  else {
-    if (match) {
-      printf(OPT_RANDOM ? "Random sorting directory %s\n" :
-        "Sorting directory %s\n", (char *) path);
-      if (OPT_MORE_INFO) {
-        printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
-          clen * (int) fs->clusterSize);
-      }
+  else if (match) {
+    printf(OPT_RANDOM ? "Random sorting directory %s\n" :
+      "Sorting directory %s\n", (char *) path);
+    if (OPT_MORE_INFO) {
+      printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
+        clen * (int) fs->clusterSize);
     }
   }
+
   if (parseClusterChain(fs, ClusterChain, list, &direntries) == -1) {
     myerror("Failed to parse cluster chain!");
     freeDirEntryList(list);
