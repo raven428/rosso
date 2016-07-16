@@ -456,9 +456,9 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
   }
 
   if (OPT_LIST) {
-    printf("\n");
+    puts("");
   }
-  // sort directory is selected
+  // sort directory if it is selected
   else if (match) {
 
     if (OPT_RANDOM)
