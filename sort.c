@@ -360,6 +360,8 @@ int sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
     if (ki->sde->DIR_Atrr & ATTR_DIRECTORY && (ki->sde->DIR_Name[0] &
         0xFF) != DE_FREE && ki->sde->DIR_Atrr & ~ATTR_VOLUME_ID &&
       strcmp(ki->sname, ".") && strcmp(ki->sname, "..")) {
+      if (OPT_LIST)
+        puts("");
       qu = (ki->sde->DIR_FstClusHI * 65536U + ki->sde->DIR_FstClusLO);
       if (getFAT32Entry(fs, qu, &value) == -1) {
         myerror("Failed to get FAT32 entry!");
@@ -455,11 +457,8 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
     return -1;
   }
 
-  if (OPT_LIST) {
-    puts("");
-  }
   // sort directory if it is selected
-  else if (match) {
+  if (!OPT_LIST && match) {
 
     if (OPT_RANDOM)
       randomizeDirEntryList(list, direntries);
