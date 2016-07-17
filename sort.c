@@ -360,8 +360,6 @@ int sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
     if (ki->sde->DIR_Atrr & ATTR_DIRECTORY && (ki->sde->DIR_Name[0] &
         0xFF) != DE_FREE && ki->sde->DIR_Atrr & ~ATTR_VOLUME_ID &&
       strcmp(ki->sname, ".") && strcmp(ki->sname, "..")) {
-      if (OPT_LIST)
-        puts("");
       qu = (ki->sde->DIR_FstClusHI * 65536U + ki->sde->DIR_FstClusLO);
       if (getFAT32Entry(fs, qu, &value) == -1) {
         myerror("Failed to get FAT32 entry!");
@@ -426,57 +424,61 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
     return -1;
   }
 
-  clen = getClusterChain(fs, cluster, ClusterChain);
-  if (clen == -1) {
-    myerror("Failed to get cluster chain!");
-    freeDirEntryList(list);
-    freeClusterChain(ClusterChain);
-    return -1;
-  }
-
-  if (OPT_LIST) {
-    printf("%s\n", (char *) path);
-    if (OPT_MORE_INFO) {
-      printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
-        clen * (int) fs->clusterSize);
-    }
-  }
-  else if (match) {
-    printf(OPT_RANDOM ? "Random sorting directory %s\n" :
-      "Sorting directory %s\n", (char *) path);
-    if (OPT_MORE_INFO) {
-      printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
-        clen * (int) fs->clusterSize);
-    }
-  }
-
-  if (parseClusterChain(fs, ClusterChain, list, &direntries) == -1) {
-    myerror("Failed to parse cluster chain!");
-    freeDirEntryList(list);
-    freeClusterChain(ClusterChain);
-    return -1;
-  }
-
-  // sort directory if it is selected
-  if (!OPT_LIST && match) {
-
-    if (OPT_RANDOM)
-      randomizeDirEntryList(list, direntries);
-
-    if (writeClusterChain(fs, list, ClusterChain) == -1) {
-      myerror("Failed to write cluster chain!");
+  if (match) {
+    clen = getClusterChain(fs, cluster, ClusterChain);
+    if (clen == -1) {
+      myerror("Failed to get cluster chain!");
       freeDirEntryList(list);
       freeClusterChain(ClusterChain);
       return -1;
     }
-  }
 
-  freeClusterChain(ClusterChain);
+    if (OPT_LIST) {
+      if (strcmp((char *) path, "/"))
+        puts("");
+      printf("%s\n", (char *) path);
+      if (OPT_MORE_INFO) {
+        printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
+          clen * (int) fs->clusterSize);
+      }
+    }
+    else {
+      printf(OPT_RANDOM ? "Random sorting directory %s\n" :
+        "Sorting directory %s\n", (char *) path);
+      if (OPT_MORE_INFO) {
+        printf("Start cluster: %08d, length: %d (%d bytes)\n", cluster, clen,
+          clen * (int) fs->clusterSize);
+      }
+    }
 
-  // sort subdirectories
-  if (sortSubdirectories(fs, list, path) == -1) {
-    myerror("Failed to sort subdirectories!");
-    return -1;
+    if (parseClusterChain(fs, ClusterChain, list, &direntries) == -1) {
+      myerror("Failed to parse cluster chain!");
+      freeDirEntryList(list);
+      freeClusterChain(ClusterChain);
+      return -1;
+    }
+
+    // sort directory if it is selected
+    if (!OPT_LIST) {
+
+      if (OPT_RANDOM)
+        randomizeDirEntryList(list, direntries);
+
+      if (writeClusterChain(fs, list, ClusterChain) == -1) {
+        myerror("Failed to write cluster chain!");
+        freeDirEntryList(list);
+        freeClusterChain(ClusterChain);
+        return -1;
+      }
+    }
+
+    freeClusterChain(ClusterChain);
+
+    // sort subdirectories
+    if (sortSubdirectories(fs, list, path) == -1) {
+      myerror("Failed to sort subdirectories!");
+      return -1;
+    }
   }
 
   freeDirEntryList(list);
