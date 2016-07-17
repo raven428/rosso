@@ -147,8 +147,10 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   char s1_col[MAX_PATH_LEN * 2 + 1];
   char s2_col[MAX_PATH_LEN * 2 + 1];
 
-  // the volume label must always remain at the beginning of the (root)
-  // directory
+  /*
+   * the volume label must always remain at the beginning of the (root)
+   * directory
+   */
   if ((de1->sde->DIR_Atrr &
       (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
         ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
@@ -158,19 +160,20 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
       (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
         ATTR_DIRECTORY)) == ATTR_VOLUME_ID) {
     return 1;
-    // the special "." and ".." directories must always remain at the
-    // beginning of directories, in this order
   }
+  /*
+   * the special "." and ".." directories must always remain at the beginning
+   * of directories, in this order
+   */
   if (!strcmp(de1->sname, "."))
     return -1;
   if (!strcmp(de2->sname, "."))
     return 1;
   if (!strcmp(de1->sname, ".."))
     return -1;
-  if (!strcmp(de2->sname, "..")) {
+  if (!strcmp(de2->sname, ".."))
     return 1;
-    // deleted entries should be moved to the end of the directory
-  }
+  // deleted entries should be moved to the end of the directory
   if ((de1->sname[0] & 0xFF) == DE_FREE)
     return 1;
   if ((de2->sname[0] & 0xFF) == DE_FREE)
@@ -187,8 +190,10 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
   else
     ss2 = de2->sname;
 
-  // it's not necessary to compare files for listing and randomization,
-  // each entry will be put to the end of the list
+  /*
+   * it's not necessary to compare files for listing and randomization, each
+   * entry will be put to the end of the list
+   */
   if (OPT_LIST || OPT_RANDOM)
     return 1;
 
@@ -316,10 +321,11 @@ void randomizeDirEntryList(struct sDirEntryList *list, int entries) {
 
   randlist = list;
 
-  // the volume label must always remain at the beginning of the (root)
-  // directory
-  // the special "." and ".." directories must always remain at the beginning
-  // of directories, so skip them
+  /*
+   * the volume label must always remain at the beginning of the (root)
+   * directory. the special "." and ".." directories must always remain at
+   * the beginning of directories, so skip them
+   */
   while (randlist->next && ((randlist->next->sde->DIR_Atrr &
         (ATTR_READ_ONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_VOLUME_ID |
           ATTR_DIRECTORY)) == ATTR_VOLUME_ID ||

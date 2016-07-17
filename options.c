@@ -83,8 +83,10 @@ int matchesDirPathLists(struct sStringList *includes,
 
   // if no options -d and -D are used
   if (!includes->next && !includes_recursion->next) {
-    // match all directories except those are supplied via -x
-    // and those and subdirs that are supplied via -X
+    /*
+     * match all directories except those are supplied via -x and those and
+     * subdirs that are supplied via -X
+     */
     if (excl != RETURN_EXACT_MATCH && excl_rec == RETURN_NO_MATCH) {
       return 1; // match
     }
@@ -123,9 +125,7 @@ int parse_options(int argc, char *argv[]) {
   OPT_INFO = 0;
   OPT_MORE_INFO = 0;
 
-  /*
-   * Default (1) is normal order, use -1 for reverse order.
-   */
+  // Default (1) is normal order, use -1 for reverse order.
   OPT_REVERSE = 1;
 
   // natural sort

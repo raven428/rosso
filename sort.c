@@ -509,8 +509,10 @@ int sortFileSystem(char *filename) {
     closeFileSystem(&fs);
     return -1;
   }
-  // root directory lies in cluster chain,
-  // so sort it like all other directories
+  /*
+   * root directory lies in cluster chain, so sort it like all other
+   * directories
+   */
   if (sortClusterChain(&fs, fs.bs.BS_RootClus,
       (const char (*)[MAX_PATH_LEN + 1]) "/") == -1) {
     myerror("Failed to sort first cluster chain!");

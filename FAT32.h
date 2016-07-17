@@ -27,9 +27,10 @@
 // maximum path len on FAT32 file systems (above specification)
 #define MAX_PATH_LEN 512
 
-// maximum file len
-// (specification: file < 4GB which is
-// maximum clusters in chain * cluster size)
+/*
+ * maximum file len (specification: file < 4GB which is maximum clusters in
+ * chain * cluster size)
+ */
 #define MAX_FILE_LEN 0xFFFFFFFF
 #define MAX_DIR_ENTRIES 65536
 
@@ -39,6 +40,7 @@
 #include <stdint.h>
 
 // Directory entry structures
+
 // Structure for long directory names
 struct sLongDirEntry {
   uint8_t LDIR_Ord; // Order of entry in sequence
