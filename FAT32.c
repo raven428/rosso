@@ -139,10 +139,7 @@ int checkFAT32s(struct sFileSystem *fs) {
    */
 
   unsigned FAT32SizeInBytes;
-  int result = 0;
-  int i;
-
-  int BSOffset;
+  int i, BSOffset, result = 0;
 
   char *FS1, *FSx;
 
@@ -209,8 +206,7 @@ int getFAT32Entry(struct sFileSystem *fs, unsigned cluster, unsigned *data) {
    * retrieves FAT32 entry for a cluster number
    */
 
-  int FAT32Offset;
-  int BSOffset;
+  int BSOffset, FAT32Offset;
 
   *data = 0;
 
@@ -265,10 +261,7 @@ int parseEntry(union sDirEntry *de) {
 }
 
 int calculateChecksum(char *sname) {
-  int len;
-  int sum;
-
-  sum = 0;
+  int len, sum = 0;
   for (len = 11; len != 0; len--)
     sum = ((sum & 1) ? 0x80 : 0 + (sum >> 1) + *sname++) & 0xFF;
   return sum;
@@ -347,9 +340,7 @@ int openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
 
   fs->maxClusterChainLength = MAX_FILE_LEN / fs->clusterSize;
 
-  unsigned rootDirSectors;
-
-  rootDirSectors =
+  unsigned rootDirSectors =
     (fs->bs.BS_RootEntCnt * DIR_ENTRY_SIZE + fs->bs.BS_BytesPerSec -
     1) / fs->bs.BS_BytesPerSec;
   fs->firstDataSector =

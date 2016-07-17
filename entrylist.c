@@ -143,10 +143,8 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
    * compare two directory entries
    */
 
-  char s1[PATH_MAX + 1];
-  char s2[PATH_MAX + 1];
-  char s1_col[PATH_MAX * 2 + 1];
-  char s2_col[PATH_MAX * 2 + 1];
+  char s1[PATH_MAX + 1], s2[PATH_MAX + 1], s1_col[PATH_MAX * 2 + 1],
+    s2_col[PATH_MAX * 2 + 1];
 
   /*
    * the volume label must always remain at the beginning of the (root)
@@ -317,8 +315,7 @@ void randomizeDirEntryList(struct sDirEntryList *list, int entries) {
    * randomize entry list
    */
   struct sDirEntryList *randlist, *tmp, *dummy1, *dummy2;
-  int i, j, pos;
-  int skip = 0;
+  int i, j, pos, skip = 0;
 
   randlist = list;
 

@@ -22,12 +22,10 @@ int parseLongFilenamePart(struct sLongDirEntry *lde, char *str, iconv_t cd) {
    * for this ugly hack...)
    */
 
-  size_t incount;
-  size_t outcount;
+  size_t incount, outcount, ret;
   char *outptr = &(str[0]);
   char utf16str[28];
   char *inptr = &(utf16str[0]);
-  size_t ret;
 
   str[0] = 0;
 
@@ -83,8 +81,7 @@ int checkLongDirEntries(struct sDirEntryList *list) {
    * does some integrity checks on LongDirEntries
    */
   int calculatedChecksum;
-  unsigned i;
-  unsigned nr;
+  unsigned i, nr;
   struct sLongDirEntryList *tmp;
 
   if (list->entries > 1) {
@@ -125,9 +122,8 @@ int parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
    * parses a cluster chain and puts found directory entries to list
    */
 
-  unsigned j;
+  unsigned j, entries = 0;
   int ret;
-  unsigned entries = 0;
   union sDirEntry de;
   struct sDirEntryList *lnde;
   struct sLongDirEntryList *llist;
@@ -402,12 +398,9 @@ int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
    * sorts directory entries in a cluster
    */
 
-  int direntries;
-  int clen;
+  int direntries, clen, match;
   struct sClusterChain *ClusterChain;
   struct sDirEntryList *list;
-
-  int match;
 
   match =
     matchesDirPathLists(OPT_INCL_DIRS, OPT_INCL_DIRS_REC, OPT_EXCL_DIRS,
