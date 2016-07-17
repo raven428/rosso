@@ -5,11 +5,13 @@
 #include "fileio.h"
 #include <fileapi.h>
 #include <handleapi.h>
-#include <string.h>
 #include <winnt.h>
 
 FILE *fs_open(char *path, char *mode) {
-  return CreateFile(path, strcmp(mode,
+  char q[PATH_MAX + 1];
+  strcpy(q, "\\\\.\\");
+  strcpy(q + 4, path);
+  return CreateFile(q, strcmp(mode,
       "r+b") ? GENERIC_READ : GENERIC_READ | GENERIC_WRITE, 0, 0,
     OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 }

@@ -5,7 +5,7 @@
 #ifndef __options_h__
 #define __options_h__
 
-#include "FAT32.h"
+#include <limits.h>
 struct sStringList;
 
 extern int OPT_VERSION, OPT_HELP, OPT_INFO, OPT_IGNORE_CASE, OPT_ORDER,
@@ -20,8 +20,7 @@ int parse_options(int argc, char *argv[]);
 // evaluate whether str matches the include an exclude dir path lists or not
 int matchesDirPathLists(struct sStringList *includes,
   struct sStringList *includes_recursion, struct sStringList *excludes,
-  struct sStringList *excludes_recursion,
-  const char (*str)[MAX_PATH_LEN + 1]);
+  struct sStringList *excludes_recursion, const char (*str)[PATH_MAX + 1]);
 
 // free options
 void freeOptions();

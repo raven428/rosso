@@ -30,14 +30,13 @@ int printFSInfo(char *filename) {
     return -1;
   }
 
-  printf("Device: %s\n"
-    "Sector size: %d bytes\n"
+  printf("Sector size: %d bytes\n"
     "FAT32 size: %d sectors (%d bytes)\n"
     "Number of FAT32s: %d %s\n"
     "Cluster size: %d bytes\n"
     "Max. cluster chain length: %d clusters\n"
     "Data clusters: %d\n"
-    "FS size: %llu MiBytes\n", fs.path, fs.sectorSize, fs.FAT32Size,
+    "FS size: %llu MiBytes\n", fs.sectorSize, fs.FAT32Size,
     fs.FAT32Size * fs.sectorSize, fs.bs.BS_NumFAT32s,
     checkFAT32s(&fs) ? "different" : "same", fs.clusterSize,
     fs.maxClusterChainLength, fs.clusters, fs.FSSize >> 20);

@@ -15,7 +15,7 @@ NOTES
 fi
 
 j=$1
-find "$j"/ -mindepth 1 -exec rm -r {} +
+find "$j"/ -mindepth 1 -maxdepth 1 -exec rm -r {} +
 
 for k in 1 2 3 4 5
 do

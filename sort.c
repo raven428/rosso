@@ -5,12 +5,14 @@
 #include "sort.h"
 
 #include <iconv.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "clusterchain.h"
 #include "entrylist.h"
 #include "errors.h"
+#include "FAT32.h"
 #include "fileio.h"
 #include "options.h"
 
@@ -35,7 +37,7 @@ int parseLongFilenamePart(struct sLongDirEntry *lde, char *str, iconv_t cd) {
   memset(utf16str + 26, 0, 2);
 
   incount = 26;
-  outcount = MAX_PATH_LEN;
+  outcount = PATH_MAX;
 
   size_t i;
   for (i = 0; i < 12; i++) {
@@ -129,8 +131,8 @@ int parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
   union sDirEntry de;
   struct sDirEntryList *lnde;
   struct sLongDirEntryList *llist;
-  char tmp[MAX_PATH_LEN + 1], dummy[MAX_PATH_LEN + 1],
-    sname[MAX_PATH_LEN + 1], lname[MAX_PATH_LEN + 1];
+  char tmp[PATH_MAX + 1], dummy[PATH_MAX + 1], sname[PATH_MAX + 1],
+    lname[PATH_MAX + 1];
 
   *direntries = 0;
 
@@ -204,12 +206,12 @@ int parseClusterChain(struct sFileSystem *fs, struct sClusterChain *chain,
           return -1;
         }
 
-        strncpy(dummy, tmp, MAX_PATH_LEN);
-        dummy[MAX_PATH_LEN] = 0;
-        strncat(dummy, lname, MAX_PATH_LEN - strlen(dummy));
-        dummy[MAX_PATH_LEN] = 0;
-        strncpy(lname, dummy, MAX_PATH_LEN);
-        dummy[MAX_PATH_LEN] = 0;
+        strncpy(dummy, tmp, PATH_MAX);
+        dummy[PATH_MAX] = 0;
+        strncat(dummy, lname, PATH_MAX - strlen(dummy));
+        dummy[PATH_MAX] = 0;
+        strncpy(lname, dummy, PATH_MAX);
+        dummy[PATH_MAX] = 0;
         break;
       default:
         myerror("Unhandled return code!");
@@ -346,12 +348,12 @@ int writeClusterChain(struct sFileSystem *fs, struct sDirEntryList *list,
 }
 
 int sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
-  const char (*path)[MAX_PATH_LEN + 1]) {
+  const char (*path)[PATH_MAX + 1]) {
   /*
    * sorts sub directories in a FAT32 file system
    */
   struct sDirEntryList *ki;
-  char newpath[MAX_PATH_LEN + 1] = { 0 };
+  char newpath[PATH_MAX + 1] = { 0 };
   unsigned qu, value;
 
   // sort sub directories
@@ -366,23 +368,23 @@ int sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
         return -1;
       }
 
-      strncpy(newpath, (char *) path, MAX_PATH_LEN - strlen(newpath));
-      newpath[MAX_PATH_LEN] = 0;
+      strncpy(newpath, (char *) path, PATH_MAX - strlen(newpath));
+      newpath[PATH_MAX] = 0;
       if (ki->lname && ki->lname[0]) {
-        strncat(newpath, ki->lname, MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = 0;
-        strncat(newpath, "/", MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = 0;
+        strncat(newpath, ki->lname, PATH_MAX - strlen(newpath));
+        newpath[PATH_MAX] = 0;
+        strncat(newpath, "/", PATH_MAX - strlen(newpath));
+        newpath[PATH_MAX] = 0;
       }
       else {
-        strncat(newpath, ki->sname, MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = 0;
-        strncat(newpath, "/", MAX_PATH_LEN - strlen(newpath));
-        newpath[MAX_PATH_LEN] = 0;
+        strncat(newpath, ki->sname, PATH_MAX - strlen(newpath));
+        newpath[PATH_MAX] = 0;
+        strncat(newpath, "/", PATH_MAX - strlen(newpath));
+        newpath[PATH_MAX] = 0;
       }
 
       if (sortClusterChain(fs, qu,
-          (const char (*)[MAX_PATH_LEN + 1]) newpath) == -1) {
+          (const char (*)[PATH_MAX + 1]) newpath) == -1) {
         myerror("Failed to sort cluster chain!");
         return -1;
       }
@@ -395,7 +397,7 @@ int sortSubdirectories(struct sFileSystem *fs, struct sDirEntryList *list,
 }
 
 int sortClusterChain(struct sFileSystem *fs, unsigned cluster,
-  const char (*path)[MAX_PATH_LEN + 1]) {
+  const char (*path)[PATH_MAX + 1]) {
   /*
    * sorts directory entries in a cluster
    */
@@ -514,7 +516,7 @@ int sortFileSystem(char *filename) {
    * directories
    */
   if (sortClusterChain(&fs, fs.bs.BS_RootClus,
-      (const char (*)[MAX_PATH_LEN + 1]) "/") == -1) {
+      (const char (*)[PATH_MAX + 1]) "/") == -1) {
     myerror("Failed to sort first cluster chain!");
     closeFileSystem(&fs);
     return -1;

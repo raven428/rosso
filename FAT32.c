@@ -281,10 +281,7 @@ int openFileSystem(char *path, char *mode, struct sFileSystem *fs) {
    * structure
    */
 
-  strcpy(fs->path, "\\\\.\\");
-  strcpy(fs->path + 4, path);
-
-  fs->fd = fs_open(fs->path, mode);
+  fs->fd = fs_open(path, mode);
   if (!fs->fd) {
     stderror();
     return -1;

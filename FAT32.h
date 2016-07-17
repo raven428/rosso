@@ -24,9 +24,6 @@
 
 #define DIR_ENTRY_SIZE 32U
 
-// maximum path len on FAT32 file systems (above specification)
-#define MAX_PATH_LEN 512
-
 /*
  * maximum file len (specification: file < 4GB which is maximum clusters in
  * chain * cluster size)
@@ -127,7 +124,6 @@ struct sFSInfo {
 struct sFileSystem {
   FILE *fd;
   uint32_t mode;
-  char path[MAX_PATH_LEN + 1];
   struct sBootSector bs;
   int32_t FSType;
   uint32_t clusterCount;

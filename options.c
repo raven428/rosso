@@ -5,6 +5,7 @@
 #include "options.h"
 
 #include <getopt.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include "errors.h"
@@ -21,7 +22,7 @@ struct sStringList *OPT_EXCL_DIRS_REC = 0;
 struct sStringList *OPT_IGNORE_PREFIXES_LIST = 0;
 
 int addDirPathToStringList(struct sStringList *stringList,
-  const char (*str)[MAX_PATH_LEN + 1]) {
+  const char (*str)[PATH_MAX + 1]) {
   /*
    * insert new string into string list
    */
@@ -52,8 +53,8 @@ int addDirPathToStringList(struct sStringList *stringList,
   strncat(newStr, (const char *) str, len);
   strncat(newStr, "/", suffix);
 
-  if (prefix + len + suffix > MAX_PATH_LEN)
-    newStr[MAX_PATH_LEN] = 0;
+  if (prefix + len + suffix > PATH_MAX)
+    newStr[PATH_MAX] = 0;
   else
     newStr[prefix + len + suffix] = 0;
 
@@ -67,8 +68,7 @@ int addDirPathToStringList(struct sStringList *stringList,
 
 int matchesDirPathLists(struct sStringList *includes,
   struct sStringList *includes_recursion, struct sStringList *excludes,
-  struct sStringList *excludes_recursion,
-  const char (*str)[MAX_PATH_LEN + 1]) {
+  struct sStringList *excludes_recursion, const char (*str)[PATH_MAX + 1]) {
   /*
    * evaluate whether str matches the include an exclude dir path lists or
    * not
@@ -225,7 +225,7 @@ int parse_options(int argc, char *argv[]) {
       break;
     case 'd':
       if (addDirPathToStringList(OPT_INCL_DIRS,
-          (const char (*)[MAX_PATH_LEN + 1]) optarg)) {
+          (const char (*)[PATH_MAX + 1]) optarg)) {
         myerror("Could not add directory path to dirPathList");
         freeOptions();
         return -1;
@@ -233,7 +233,7 @@ int parse_options(int argc, char *argv[]) {
       break;
     case 'D':
       if (addDirPathToStringList(OPT_INCL_DIRS_REC,
-          (const char (*)[MAX_PATH_LEN + 1]) optarg)) {
+          (const char (*)[PATH_MAX + 1]) optarg)) {
         myerror("Could not add directory path to string list");
         freeOptions();
         return -1;
@@ -241,7 +241,7 @@ int parse_options(int argc, char *argv[]) {
       break;
     case 'x':
       if (addDirPathToStringList(OPT_EXCL_DIRS,
-          (const char (*)[MAX_PATH_LEN + 1]) optarg)) {
+          (const char (*)[PATH_MAX + 1]) optarg)) {
         myerror("Could not add directory path to string list");
         freeOptions();
         return -1;
@@ -249,7 +249,7 @@ int parse_options(int argc, char *argv[]) {
       break;
     case 'X':
       if (addDirPathToStringList(OPT_EXCL_DIRS_REC,
-          (const char (*)[MAX_PATH_LEN + 1]) optarg)) {
+          (const char (*)[PATH_MAX + 1]) optarg)) {
         myerror("Could not add directory path to string list");
         freeOptions();
         return -1;

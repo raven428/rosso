@@ -3,6 +3,7 @@
  * structures of FAT32 directory entries and entry lists.
  */
 
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -142,10 +143,10 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
    * compare two directory entries
    */
 
-  char s1[MAX_PATH_LEN + 1];
-  char s2[MAX_PATH_LEN + 1];
-  char s1_col[MAX_PATH_LEN * 2 + 1];
-  char s2_col[MAX_PATH_LEN * 2 + 1];
+  char s1[PATH_MAX + 1];
+  char s2[PATH_MAX + 1];
+  char s1_col[PATH_MAX * 2 + 1];
+  char s2_col[PATH_MAX * 2 + 1];
 
   /*
    * the volume label must always remain at the beginning of the (root)
@@ -242,8 +243,8 @@ int cmpEntries(struct sDirEntryList *de1, struct sDirEntryList *de2) {
 
   if (!OPT_ASCII) {
     // consider locale for comparison
-    if (strxfrm(s1_col, ss1, MAX_PATH_LEN * 2) == MAX_PATH_LEN * 2 ||
-      strxfrm(s2_col, ss2, MAX_PATH_LEN * 2) == MAX_PATH_LEN * 2) {
+    if (strxfrm(s1_col, ss1, PATH_MAX * 2) == PATH_MAX * 2 ||
+      strxfrm(s2_col, ss2, PATH_MAX * 2) == PATH_MAX * 2) {
       myerror("String collation error!");
       exit(1);
     }
