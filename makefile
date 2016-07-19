@@ -18,17 +18,17 @@ VR = $(shell ./rosso -v)
 rosso: rosso.coff FAT32.o fileio.o entrylist.o errors.o options.o \
   clusterchain.o sort.o natstrcmp.o stringlist.o
 
-%.coff:
+rosso.coff:
   $(WINDRES) rosso.rc $@
 
 release: zip
   hub release create -a rosso-$(VR).zip $(VR)
 
-zip: rosso readme.txt
-  zip rosso-$(VR).zip $<.exe readme.txt
+zip: readme.txt rosso
+  zip --to-crlf rosso-$(VR).zip $< rosso.exe
 
-%.txt:
-  ln -f $*.md $@
+readme.txt:
+  ln -f readme.md $@
 
 clean:
-  $(RM) -v *.exe *.o *.zip *.coff *.txt
+  $(RM) -v rosso.exe rosso.coff readme.txt *.zip *.o
