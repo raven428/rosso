@@ -16,13 +16,10 @@ Package requirements
 - mingw64-x86_64-gcc-core
 - mingw64-x86_64-win-iconv
 
-Website
--------
-http://svnpenn.github.io/rosso
-
-Download
---------
-http://github.com/svnpenn/rosso/releases
+Links
+-----
+- [Website][rosso]
+- [Download][releases]
 
 Author
 ------
@@ -60,4 +57,6 @@ Thanks
 [38330104]:http://stackoverflow.com/a/38330104
 [38426921]:http://stackoverflow.com/a/38426921
 [38448093]:http://stackoverflow.com/a/38448093
+[releases]:http://github.com/svnpenn/rosso/releases
+[rosso]:http://svnpenn.github.io/rosso
 [rosso-360h]:http://rawgit.com/svnpenn/rosso/master/rosso-360h.jpg
