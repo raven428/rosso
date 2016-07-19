@@ -1,5 +1,5 @@
-*.o
-*.exe
-*.coff
+rosso.exe
+rosso.coff
+readme.txt
 *.zip
-/readme.txt
+*.o

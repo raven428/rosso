@@ -40,7 +40,6 @@ Thanks
 - [No warning with conversion to int from size_t][38292639]
 - [SetFilePointer without FILE_FLAG_NO_BUFFERING][37107816]
 - [struct order with ReadFile][37177360]
-- [Why g++ isn't performing structure packing here?][37199340]
 
 <!-- protocol is needed for image to render -->
 [289360]:http://unix.stackexchange.com/a/289360
@@ -48,7 +47,6 @@ Thanks
 [33833]:http://softwarerecs.stackexchange.com/a/33833
 [37107816]:http://stackoverflow.com/a/37107816
 [37177360]:http://stackoverflow.com/a/37177360
-[37199340]:http://stackoverflow.com/a/37199340
 [37232308]:http://stackoverflow.com/a/37232308
 [37643687]:http://stackoverflow.com/a/37643687
 [37912630]:http://stackoverflow.com/a/37912630
