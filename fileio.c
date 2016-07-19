@@ -8,9 +8,9 @@
 #include <winnt.h>
 
 FILE *fs_open(char *path, char *mode) {
-  char q[PATH_MAX + 1];
-  strcpy(q, "\\\\.\\");
-  strcpy(q + 4, path);
+  char q[PATH_MAX + 1] = {0};
+  strcat(q, "\\\\.\\");
+  strcat(q, path);
   return CreateFile(q, strcmp(mode,
       "r+b") ? GENERIC_READ : GENERIC_READ | GENERIC_WRITE, 0, 0,
     OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
