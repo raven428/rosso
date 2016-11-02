@@ -31,7 +31,7 @@ Thanks
 - [Break long lines that end with comment][37912630]
 - [C++ source code formatter][33833]
 - [Centralize variable definition][38426921]
-- [convert Windows (CRLF) to Unix newline (\n) in bash script?][38448093]
+- [convert line breaks between the Windows and Unix/Linux formats][790580]
 - [Disable GNU Indent backup files][290638]
 - [Finding “dead code” in a large C++ legacy application][38330104]
 - [How to fwrite to removable volume][37232308]
@@ -54,7 +54,7 @@ Thanks
 [38292639]:http://stackoverflow.com/a/38292639
 [38330104]:http://stackoverflow.com/a/38330104
 [38426921]:http://stackoverflow.com/a/38426921
-[38448093]:http://stackoverflow.com/a/38448093
+[790580]:http://serverfault.com/a/790580
 [releases]:http://github.com/svnpenn/rosso/releases
 [rosso]:http://svnpenn.github.io/rosso
 [rosso-360h]:http://rawgit.com/svnpenn/rosso/master/rosso-360h.jpg
