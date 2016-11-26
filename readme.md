@@ -10,16 +10,11 @@ Supported platforms
 -------------------
 Windows 64-bit
 
-Package requirements
---------------------
-- make
-- mingw64-x86_64-gcc-core
-- mingw64-x86_64-win-iconv
-
 Links
 -----
 - [Website][rosso]
 - [Download][releases]
+- [Glade files for building Rosso package][glade]
 
 Author
 ------
@@ -55,6 +50,7 @@ Thanks
 [38292639]:http://stackoverflow.com/a/38292639
 [38330104]:http://stackoverflow.com/a/38330104
 [38426921]:http://stackoverflow.com/a/38426921
+[glade]:http://github.com/svnpenn/glade/tree/master/rosso
 [releases]:http://github.com/svnpenn/rosso/releases
 [rosso]:http://svnpenn.github.io/rosso
 [rosso-360h]:http://rawgit.com/svnpenn/rosso/master/rosso-360h.jpg
