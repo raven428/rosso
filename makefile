@@ -13,22 +13,8 @@ LDFLAGS = -static -s
 LDLIBS = -liconv
 .RECIPEPREFIX +=
 
-VR = $(shell ./rosso -v)
-
 rosso: rosso.coff FAT32.o fileio.o entrylist.o errors.o options.o \
   clusterchain.o sort.o natstrcmp.o stringlist.o
 
 rosso.coff:
   $(WINDRES) rosso.rc $@
-
-release: zip
-  hub release create -a rosso-$(VR).zip $(VR)
-
-zip: readme.txt rosso
-  zip --to-crlf rosso-$(VR).zip $< rosso.exe
-
-readme.txt:
-  ln -f readme.md $@
-
-clean:
-  $(RM) -v rosso.exe rosso.coff readme.txt *.zip *.o

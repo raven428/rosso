@@ -31,7 +31,7 @@ Thanks
 - [Break long lines that end with comment][37912630]
 - [C++ source code formatter][33833]
 - [Centralize variable definition][38426921]
-- [convert line breaks between the Windows and Unix/Linux formats][790580]
+- [convert DOS/Windows newline (CRLF) to Unix newline (\n) in bash][23385171]
 - [Disable GNU Indent backup files][290638]
 - [Finding “dead code” in a large C++ legacy application][38330104]
 - [How to fwrite to removable volume][37232308]
@@ -42,6 +42,7 @@ Thanks
 - [struct order with ReadFile][37177360]
 
 <!-- protocol is needed for image to render -->
+[23385171]:http://stackoverflow.com/a/23385171
 [289360]:http://unix.stackexchange.com/a/289360
 [290638]:http://unix.stackexchange.com/a/290638
 [33833]:http://softwarerecs.stackexchange.com/a/33833
@@ -54,7 +55,6 @@ Thanks
 [38292639]:http://stackoverflow.com/a/38292639
 [38330104]:http://stackoverflow.com/a/38330104
 [38426921]:http://stackoverflow.com/a/38426921
-[790580]:http://serverfault.com/a/790580
 [releases]:http://github.com/svnpenn/rosso/releases
 [rosso]:http://svnpenn.github.io/rosso
 [rosso-360h]:http://rawgit.com/svnpenn/rosso/master/rosso-360h.jpg
