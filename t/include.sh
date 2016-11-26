@@ -1,6 +1,7 @@
 #!/bin/dash -e
 # decorate
-br=$(mktemp | cygpath -wf-)
+br=$(mktemp "$LOCALAPPDATA"/temp/XXX)
+
 for ch in *.c *.h
 do
   printf '#include "%s"\n' "$br" >> "$ch"
