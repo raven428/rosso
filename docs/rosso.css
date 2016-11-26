@@ -1,0 +1,38 @@
+@font-face {
+  font-family: Open Sans;
+  src: url(open-sans.woff2);
+}
+a {
+  text-decoration: none;
+}
+img {
+  max-width: 100%;
+  border-radius: 1rem;
+}
+h1, h2 {
+  font-family: Calibri;
+  margin: 1rem 0;
+}
+h1 {
+  color: #af111c;
+}
+p, li {
+  font-family: Open Sans;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0efe7;
+  font-size: 1.1rem;
+  margin: 0;
+}
+#left {
+  flex: 0 0 40%;
+  margin: 0 1rem;
+}
+#right {
+  flex: 0 0 30%;
+  text-align: center;
+  margin: 0 1rem;
+}
