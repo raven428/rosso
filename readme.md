@@ -1,6 +1,6 @@
 Rosso
 =====
-![porco][rosso-360h]
+![porco][360h]
 
 Rosso is a C utility that sorts FAT32 file systems. Many hardware players do not
 sort files automatically but play them in the order they were transferred to the
@@ -41,6 +41,7 @@ Thanks
 [289360]:http://unix.stackexchange.com/a/289360
 [290638]:http://unix.stackexchange.com/a/290638
 [33833]:http://softwarerecs.stackexchange.com/a/33833
+[360h]:http://raw.githubusercontent.com/svnpenn/rosso/master/rosso-360h.jpg
 [37107816]:http://stackoverflow.com/a/37107816
 [37177360]:http://stackoverflow.com/a/37177360
 [37232308]:http://stackoverflow.com/a/37232308
@@ -53,4 +54,3 @@ Thanks
 [glade]:http://github.com/svnpenn/glade/tree/master/rosso
 [releases]:http://github.com/svnpenn/rosso/releases
 [rosso]:http://svnpenn.github.io/rosso
-[rosso-360h]:http://rawgit.com/svnpenn/rosso/master/rosso-360h.jpg
