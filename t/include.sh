@@ -8,19 +8,20 @@ done
 
 # transform
 make -k INCLUDE=1 2>&1 |
-sed '
-/should add these lines\|has correct/ {
-  s/^/\x1b[1;32m/
+awk '
+/should add these lines|has correct/ {
+  $0 = "\33[1;32m" $0
 }
 /should remove these lines/ {
-  s/^/\x1b[1;31m/
+  $0 = "\33[1;31m" $0
 }
 /full include-list for/ {
-  s/^/\x1b[1;33m/
+  $0 = "\33[1;33m" $0
 }
-/make\|^$\|---/ {
-  s/^/\x1b[m/
+/make|^$|---/ {
+  $0 = "\33[m" $0
 }
+1
 '
 
 # undecorate
