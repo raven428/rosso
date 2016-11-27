@@ -6,8 +6,8 @@ Rosso is a C utility that sorts FAT32 file systems. Many hardware players do not
 sort files automatically but play them in the order they were transferred to the
 device.
 
-Supported platforms
--------------------
+Supported platform
+------------------
 Windows 64-bit
 
 Links
