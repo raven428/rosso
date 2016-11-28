@@ -16,5 +16,5 @@ LDLIBS = -liconv
 rosso: rosso.coff FAT32.o fileio.o entrylist.o errors.o options.o \
   clusterchain.o sort.o natstrcmp.o stringlist.o
 
-rosso.coff:
-  $(WINDRES) rosso.rc $@
+%.coff:
+  $(WINDRES) $*.rc $@
