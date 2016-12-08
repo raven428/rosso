@@ -1,13 +1,13 @@
 #!/bin/dash -e
 if [ "$#" != 1 ]
 then  
-  cat <<+
+  cat <<'g'
 SYNOPSIS
   input.sh [drive]
 
 EXAMPLE
   input.sh F:
-+
+g
   exit
 fi
 

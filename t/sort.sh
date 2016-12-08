@@ -1,25 +1,19 @@
 #!/bin/dash -e
 xc() {
-  awk '
-  BEGIN {
-    x = "\47"
-    printf "\33[36m"
-    while (++i < ARGC) {
-      y = split(ARGV[i], z, x)
-      for (j in z) {
+  awk 'BEGIN {
+    x = "\47"; printf "\33[36m"; while (++i < ARGC) {
+      y = split(ARGV[i], z, x); for (j in z) {
         printf z[j] ~ /[^[:alnum:]%+,./:=@_-]/ ? x z[j] x : z[j]
         if (j < y) printf "\\" x
-      }
-      printf i == ARGC - 1 ? "\33[m\n" : FS
+      } printf i == ARGC - 1 ? "\33[m\n" : FS
     }
-  }
-  ' "$@"
+  }' "$@"
   "$@"
 }
 
 if [ "$#" != 1 ]
 then  
-  cat <<+
+  cat <<'q'
 SYNOPSIS
   sort.sh [drive]
 
@@ -28,7 +22,7 @@ EXAMPLE
 
 NOTES
   All files will be removed from drive
-+
+q
   exit
 fi
 
