@@ -1,13 +1,9 @@
 #!/bin/dash -e
 xc() {
-  awk 'BEGIN {
-    x = "\47"; printf "\33[36m"; while (++i < ARGC) {
-      y = split(ARGV[i], z, x); for (j in z) {
-        printf z[j] ~ /[^[:alnum:]%+,./:=@_-]/ ? x z[j] x : z[j]
-        if (j < y) printf "\\" x
-      } printf i == ARGC - 1 ? "\33[m\n" : FS
-    }
-  }' "$@"
+  awk 'BEGIN {d = "\47"; printf "\33[36m"; while (++j < ARGC) {
+  k = split(ARGV[j], q, d); q[1]; for (x in q) {
+  printf q[x] ~ /^[[:alnum:]%+,./:=@_-]+$/ ? q[x] : d q[x] d
+  if (x < k) printf "\\" d} printf j == ARGC - 1 ? "\33[m\n" : FS}}' "$@"
   "$@"
 }
 
