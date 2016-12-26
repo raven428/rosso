@@ -1,7 +1,7 @@
 #!/bin/dash -e
 if [ "$#" != 1 ]
 then  
-  cat <<'g'
+  cat <<'eof'
 SYNOPSIS
   input.sh [drive]
 
@@ -10,7 +10,7 @@ EXAMPLE
 
 NOTES
   All files will be removed from drive
-g
+eof
   exit
 fi
 

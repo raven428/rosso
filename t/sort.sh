@@ -9,7 +9,7 @@ xc() {
 
 if [ "$#" != 1 ]
 then  
-  cat <<'q'
+  cat <<'eof'
 SYNOPSIS
   sort.sh [drive]
 
@@ -18,7 +18,7 @@ EXAMPLE
 
 NOTES
   All files will be removed from drive
-q
+eof
   exit
 fi
 
