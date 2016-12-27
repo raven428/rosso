@@ -1,0 +1,14 @@
+
+- http://softwarerecs.stackexchange.com/q/17505#33833
+- http://stackoverflow.com/q/19362802#37643687
+- http://stackoverflow.com/q/2380153#38330104
+- http://stackoverflow.com/q/2613800#23385171
+- http://stackoverflow.com/q/34867283#38426921
+- http://stackoverflow.com/q/37103491#37107816
+- http://stackoverflow.com/q/37176659#37177360
+- http://stackoverflow.com/q/37228874#37232308
+- http://stackoverflow.com/q/37895963#37912630
+- http://stackoverflow.com/q/38257604#38292639
+- http://stackoverflow.com/q/9225567#38191552
+- http://unix.stackexchange.com/q/105088#290638
+- http://unix.stackexchange.com/q/154741#289360
