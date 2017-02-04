@@ -1,5 +1,5 @@
-#!/bin/dash -e
-. stdlib.sh
+#!/usr/local/bin/stdlib sh
+# github.com/svnpenn/stdlib
 
 if [ "$#" != 1 ]
 then  
