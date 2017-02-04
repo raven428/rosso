@@ -1,11 +1,5 @@
 #!/bin/dash -e
-xc() {
-  awk 'BEGIN {d = "\47"; printf "\33[36m"; while (++j < ARGC) {
-  k = split(ARGV[j], q, d); q[1]; for (x in q) printf "%s%s",
-  q[x] ~ /^[[:alnum:]%+,./:=@_-]+$/ ? q[x] : d q[x] d, x < k ? "\\" d : ""
-  printf j == ARGC - 1 ? "\33[m\n" : FS}}' "$@"
-  "$@"
-}
+. stdlib.sh
 
 if [ "$#" != 1 ]
 then  
@@ -34,16 +28,16 @@ do
   done
 done
 
-xc ./rosso -R "$j"
-xc ./rosso "$j"
-xc ./rosso -l "$j"
+xtrace ./rosso -R "$j"
+xtrace ./rosso "$j"
+xtrace ./rosso -l "$j"
 
-xc ./rosso -R "$j"
-xc ./rosso -d / "$j"
-xc ./rosso -l "$j"
-xc ./rosso -l -d / "$j"
+xtrace ./rosso -R "$j"
+xtrace ./rosso -d / "$j"
+xtrace ./rosso -l "$j"
+xtrace ./rosso -l -d / "$j"
 
-xc ./rosso -R "$j"
-xc ./rosso -d / -d CHARLIE F:
-xc ./rosso -l "$j"
-xc ./rosso -l -d / -d CHARLIE "$j"
+xtrace ./rosso -R "$j"
+xtrace ./rosso -d / -d CHARLIE F:
+xtrace ./rosso -l "$j"
+xtrace ./rosso -l -d / -d CHARLIE "$j"
