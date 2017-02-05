@@ -10,6 +10,10 @@ Supported platform
 ------------------
 Windows 64-bit
 
+Requirements
+------------
+[StdLib][x]
+
 Links
 -----
 - [Website][rosso]
@@ -25,3 +29,4 @@ Steven Penny
 [glade]:http://github.com/svnpenn/glade/tree/master/rosso
 [releases]:http://github.com/svnpenn/rosso/releases
 [rosso]:http://svnpenn.github.io/rosso
+[x]:http://github.com/svnpenn/stdlib
