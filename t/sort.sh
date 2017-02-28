@@ -1,4 +1,4 @@
-#!/usr/local/bin/shlib -f
+#!/usr/local/bin/shlib
 
 if [ "$#" != 1 ]
 then  
