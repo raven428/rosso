@@ -25,7 +25,7 @@ Author
 Steven Penny
 
 <!-- protocol is needed for image to render -->
-[360h]:http://raw.githubusercontent.com/svnpenn/rosso/master/rosso-360h.jpg
+[360h]:http://svnpenn.github.io/rosso/rosso-360h.jpg
 [glade]:http://github.com/svnpenn/glade/tree/master/rosso
 [releases]:http://github.com/svnpenn/rosso/releases
 [rosso]:http://svnpenn.github.io/rosso
