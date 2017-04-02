@@ -27,16 +27,16 @@ do
   done
 done
 
-xtrace ./rosso -R "$j"
-xtrace ./rosso "$j"
-xtrace ./rosso -l "$j"
+sh_trace ./rosso -R "$j"
+sh_trace ./rosso "$j"
+sh_trace ./rosso -l "$j"
 
-xtrace ./rosso -R "$j"
-xtrace ./rosso -d / "$j"
-xtrace ./rosso -l "$j"
-xtrace ./rosso -l -d / "$j"
+sh_trace ./rosso -R "$j"
+sh_trace ./rosso -d / "$j"
+sh_trace ./rosso -l "$j"
+sh_trace ./rosso -l -d / "$j"
 
-xtrace ./rosso -R "$j"
-xtrace ./rosso -d / -d CHARLIE F:
-xtrace ./rosso -l "$j"
-xtrace ./rosso -l -d / -d CHARLIE "$j"
+sh_trace ./rosso -R "$j"
+sh_trace ./rosso -d / -d CHARLIE F:
+sh_trace ./rosso -l "$j"
+sh_trace ./rosso -l -d / -d CHARLIE "$j"
