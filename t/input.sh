@@ -3,7 +3,7 @@ if [ "$#" != 1 ]
 then  
   cat <<'eof'
 SYNOPSIS
-  input.sh [drive]
+  input.sh <drive>
 
 EXAMPLE
   input.sh F:
@@ -11,7 +11,7 @@ EXAMPLE
 NOTES
   All files will be removed from drive
 eof
-  exit
+  exit 1
 fi
 
 j=$1

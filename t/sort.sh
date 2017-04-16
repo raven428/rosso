@@ -4,7 +4,7 @@ if [ "$#" != 1 ]
 then  
   cat <<'eof'
 SYNOPSIS
-  sort.sh [drive]
+  sort.sh <drive>
 
 EXAMPLE
   sort.sh F:
@@ -12,7 +12,7 @@ EXAMPLE
 NOTES
   All files will be removed from drive
 eof
-  exit
+  exit 1
 fi
 
 j=$1
