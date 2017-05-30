@@ -64,8 +64,9 @@ int natstrcompare(const char *str1, const char *str2,
         return '0' < *s2 ? -1 : 1;
       if (!*s2 && n1 == -1)
         return '0' < *s1 ? 1 : -1;
-      if (!*s2 && n2 == -1)
+      if (!*s2 && n2 == -1) {
         return 1;
+      }
     }
     // both strings had numbers in it
     else if (n1 != n2) {
